@@ -1,0 +1,1232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GCSE Revision Timer</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0d0f14;--surface:#14171f;--surface2:#1c2030;--border:#252a38;
+  --text:#e8eaf0;--muted:#5a6080;--accent:#7c6af7;--accent2:#4ecca3;
+  --warn:#f7a34a;--danger:#f76a6a;--higher:#f7c948;
+  --green:#27ae60;--green-bg:rgba(39,174,96,0.12);--green-border:rgba(39,174,96,0.35);
+  --amber:#e67e22;--amber-bg:rgba(230,126,34,0.12);--amber-border:rgba(230,126,34,0.35);
+  --red:#e74c3c;--red-bg:rgba(231,76,60,0.12);--red-border:rgba(231,76,60,0.35);
+  --ns:#5a6080;--ns-bg:rgba(90,96,128,0.1);--ns-border:rgba(90,96,128,0.25);
+}
+body{font-family:'Syne',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:0 0 4rem;overflow-x:hidden}
+body::before{content:'';position:fixed;top:-20%;left:50%;transform:translateX(-50%);width:800px;height:500px;background:radial-gradient(ellipse,rgba(124,106,247,0.1) 0%,transparent 70%);pointer-events:none;z-index:0}
+
+/* ── NAV TABS ── */
+.nav{width:100%;background:var(--surface);border-bottom:1px solid var(--border);display:flex;justify-content:center;gap:0;position:sticky;top:0;z-index:50}
+.nav-tab{font-family:'DM Mono',monospace;font-size:0.72rem;letter-spacing:0.08em;text-transform:uppercase;padding:1rem 2rem;background:none;border:none;color:var(--muted);cursor:pointer;transition:all 0.15s;border-bottom:2px solid transparent;margin-bottom:-1px}
+.nav-tab:hover{color:var(--text)}
+.nav-tab.active{color:var(--accent);border-bottom-color:var(--accent)}
+
+.page{display:none;width:100%;max-width:780px;padding:2rem 1rem;position:relative;z-index:1}
+.page.active{display:block}
+
+/* ── SHARED ── */
+.section-label{font-family:'DM Mono',monospace;font-size:0.62rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted);margin-bottom:0.75rem}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:10px;overflow:hidden}
+
+/* ── TIMER PAGE ── */
+header{text-align:center;margin-bottom:2rem}
+.badge{display:inline-block;font-family:'DM Mono',monospace;font-size:0.62rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--accent);border:1px solid rgba(124,106,247,0.35);padding:0.28rem 0.75rem;border-radius:2px;margin-bottom:0.85rem}
+h1{font-size:clamp(1.8rem,5vw,2.5rem);font-weight:800;letter-spacing:-0.02em;line-height:1.1;margin-bottom:0.3rem}
+h1 span{color:var(--accent)}
+.subtitle{font-family:'DM Mono',monospace;font-size:0.75rem;color:var(--muted)}
+
+.subjects-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(128px,1fr));gap:0.45rem;margin-bottom:1.75rem}
+.subject-btn{background:var(--surface);border:1px solid var(--border);color:var(--muted);font-family:'Syne',sans-serif;font-size:0.76rem;font-weight:600;padding:0.6rem 0.7rem;border-radius:6px;cursor:pointer;transition:all 0.15s;display:flex;align-items:center;gap:0.45rem;text-align:left;line-height:1.3;position:relative}
+.subject-btn .icon{font-size:0.95rem;flex-shrink:0}
+.subject-btn:hover{border-color:var(--accent);color:var(--text);background:var(--surface2)}
+.subject-btn.active{background:rgba(124,106,247,0.12);border-color:var(--accent);color:var(--text)}
+.subject-rag-pip{position:absolute;top:6px;right:6px;width:7px;height:7px;border-radius:50%}
+
+/* ── TOPICS PANEL ── */
+.topics-panel{background:var(--surface);border:1px solid var(--border);border-radius:10px;margin-bottom:1.75rem;overflow:hidden;display:none}
+.topics-panel.visible{display:block;animation:slideDown 0.22s ease}
+@keyframes slideDown{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:translateY(0)}}
+.topics-header{display:flex;align-items:center;justify-content:space-between;padding:0.8rem 1rem;border-bottom:1px solid var(--border);background:var(--surface2);flex-wrap:wrap;gap:0.5rem}
+.topics-header-left{display:flex;align-items:center;gap:0.6rem}
+.topics-subject-name{font-size:0.88rem;font-weight:700}
+.topic-count-badge{font-family:'DM Mono',monospace;font-size:0.62rem;background:rgba(124,106,247,0.15);color:var(--accent);border:1px solid rgba(124,106,247,0.3);padding:0.12rem 0.5rem;border-radius:20px}
+.topics-hint{font-family:'DM Mono',monospace;font-size:0.6rem;color:var(--muted)}
+
+/* ── RAG LEGEND in header ── */
+.rag-legend{display:flex;align-items:center;gap:0.6rem}
+.rag-legend-item{display:flex;align-items:center;gap:0.25rem;font-family:'DM Mono',monospace;font-size:0.58rem;color:var(--muted)}
+.rag-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.rag-dot.green{background:var(--green)}
+.rag-dot.amber{background:var(--amber)}
+.rag-dot.red{background:var(--red)}
+.rag-dot.ns{background:var(--ns);border:1px solid var(--border)}
+
+.topics-body{padding:0.7rem;max-height:360px;overflow-y:auto}
+.topics-body::-webkit-scrollbar{width:4px}
+.topics-body::-webkit-scrollbar-thumb{background:var(--border);border-radius:4px}
+.section-group{margin-bottom:0.8rem}
+.section-group:last-child{margin-bottom:0}
+.section-heading{font-family:'DM Mono',monospace;font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);padding:0.28rem 0.5rem;margin-bottom:0.25rem;border-left:2px solid var(--border)}
+.topic-items{display:flex;flex-direction:column;gap:0.2rem}
+
+/* Each topic row */
+.topic-item{display:flex;align-items:center;gap:0.5rem;padding:0.42rem 0.6rem;border-radius:5px;border:1px solid transparent;transition:background 0.1s;cursor:pointer}
+.topic-item:hover{background:var(--surface2);border-color:var(--border)}
+.topic-item.selected{background:rgba(124,106,247,0.08);border-color:rgba(124,106,247,0.25)}
+
+.topic-select-check{width:15px;height:15px;border-radius:3px;border:1.5px solid var(--border);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:0.6rem;transition:all 0.12s}
+.topic-item.selected .topic-select-check{background:var(--accent);border-color:var(--accent);color:#fff}
+
+.topic-text{font-family:'DM Mono',monospace;font-size:0.7rem;color:var(--muted);line-height:1.4;flex:1}
+.topic-item.selected .topic-text{color:var(--text)}
+.higher-tag{font-size:0.52rem;background:rgba(247,201,72,0.12);color:var(--higher);border:1px solid rgba(247,201,72,0.28);padding:0.08rem 0.3rem;border-radius:3px;white-space:nowrap;flex-shrink:0}
+
+/* RAG toggle buttons on each topic row */
+.rag-btns{display:flex;gap:0.2rem;flex-shrink:0;margin-left:0.25rem}
+.rag-btn{width:22px;height:22px;border-radius:4px;border:1.5px solid var(--border);background:transparent;cursor:pointer;font-size:0.6rem;display:flex;align-items:center;justify-content:center;transition:all 0.12s;color:var(--muted);font-weight:700}
+.rag-btn:hover{transform:scale(1.1)}
+.rag-btn.g{border-color:var(--green-border);color:var(--green)}
+.rag-btn.g.active{background:var(--green);border-color:var(--green);color:#fff}
+.rag-btn.a{border-color:var(--amber-border);color:var(--amber)}
+.rag-btn.a.active{background:var(--amber);border-color:var(--amber);color:#fff}
+.rag-btn.r{border-color:var(--red-border);color:var(--red)}
+.rag-btn.r.active{background:var(--red);border-color:var(--red);color:#fff}
+
+/* topic row background tint when rated */
+.topic-item.rag-green{background:var(--green-bg) !important;border-color:var(--green-border) !important}
+.topic-item.rag-amber{background:var(--amber-bg) !important;border-color:var(--amber-border) !important}
+.topic-item.rag-red{background:var(--red-bg) !important;border-color:var(--red-border) !important}
+.topic-item.rag-green .topic-text,
+.topic-item.rag-amber .topic-text,
+.topic-item.rag-red .topic-text{color:var(--text)}
+
+/* Selected topic bar */
+.selected-topic-bar{background:rgba(124,106,247,0.08);border:1px solid rgba(124,106,247,0.2);border-radius:6px;padding:0.55rem 0.85rem;margin-bottom:1.75rem;display:none;align-items:center;gap:0.6rem}
+.selected-topic-bar.visible{display:flex}
+.stb-label{font-family:'DM Mono',monospace;font-size:0.6rem;text-transform:uppercase;letter-spacing:0.1em;color:var(--accent);white-space:nowrap}
+.stb-text{font-family:'DM Mono',monospace;font-size:0.7rem;color:var(--text);flex:1}
+.stb-clear{background:none;border:none;color:var(--muted);cursor:pointer;font-size:0.85rem;line-height:1;padding:0}
+.stb-clear:hover{color:var(--danger)}
+
+/* Duration */
+.duration-row{display:flex;gap:0.45rem;margin-bottom:1.75rem;flex-wrap:wrap}
+.dur-btn{flex:1;min-width:66px;background:var(--surface);border:1px solid var(--border);color:var(--muted);font-family:'DM Mono',monospace;font-size:0.78rem;padding:0.5rem;border-radius:6px;cursor:pointer;transition:all 0.15s;text-align:center}
+.dur-btn:hover{border-color:var(--accent2);color:var(--text)}
+.dur-btn.active{background:rgba(78,204,163,0.12);border-color:var(--accent2);color:var(--accent2)}
+.custom-row{display:flex;align-items:center;gap:0.75rem;margin-bottom:1.75rem}
+.custom-row label{font-family:'DM Mono',monospace;font-size:0.68rem;color:var(--muted);white-space:nowrap;text-transform:uppercase;letter-spacing:0.08em}
+.custom-row input{background:var(--surface);border:1px solid var(--border);color:var(--text);font-family:'DM Mono',monospace;font-size:0.88rem;padding:0.48rem 0.7rem;border-radius:6px;width:78px;text-align:center;outline:none;transition:border-color 0.15s}
+.custom-row input:focus{border-color:var(--accent)}
+
+/* Stats bar */
+.stats-bar{display:flex;gap:0.85rem;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:0.8rem 1.1rem;margin-bottom:1.5rem;flex-wrap:wrap}
+.stat{display:flex;flex-direction:column;gap:0.12rem}
+.stat-val{font-family:'DM Mono',monospace;font-size:1.05rem;font-weight:500;color:var(--text)}
+.stat-key{font-family:'DM Mono',monospace;font-size:0.58rem;text-transform:uppercase;letter-spacing:0.1em;color:var(--muted)}
+.stat-divider{width:1px;background:var(--border);align-self:stretch}
+
+/* Timer card */
+.timer-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:2.2rem 2rem;text-align:center;margin-bottom:1.5rem;position:relative;overflow:hidden}
+.timer-card::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 50% 0%,rgba(124,106,247,0.06) 0%,transparent 65%);pointer-events:none}
+.current-subject{font-family:'DM Mono',monospace;font-size:0.68rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--accent);margin-bottom:0.25rem;min-height:1.1em;transition:all 0.2s}
+.current-topic-display{font-family:'DM Mono',monospace;font-size:0.67rem;color:var(--muted);margin-bottom:1.1rem;min-height:0.9em;padding:0 1rem;line-height:1.4}
+.ring-wrap{position:relative;width:190px;height:190px;margin:0 auto 1.4rem}
+.ring-svg{position:absolute;inset:0;transform:rotate(-90deg)}
+.ring-bg{fill:none;stroke:var(--surface2);stroke-width:6}
+.ring-prog{fill:none;stroke:var(--accent);stroke-width:6;stroke-linecap:round;stroke-dasharray:534.07;stroke-dashoffset:0;transition:stroke-dashoffset 1s linear,stroke 0.3s}
+.ring-prog.warn{stroke:var(--warn)}
+.ring-prog.danger{stroke:var(--danger)}
+.time-display{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.time-digits{font-family:'DM Mono',monospace;font-size:2.6rem;font-weight:500;letter-spacing:-0.02em;line-height:1;color:var(--text)}
+.time-label{font-family:'DM Mono',monospace;font-size:0.58rem;letter-spacing:0.12em;color:var(--muted);text-transform:uppercase;margin-top:0.25rem}
+.controls{display:flex;gap:0.7rem;justify-content:center}
+.ctrl-btn{font-family:'Syne',sans-serif;font-size:0.83rem;font-weight:700;letter-spacing:0.05em;padding:0.7rem 1.8rem;border-radius:8px;border:none;cursor:pointer;transition:all 0.15s}
+.btn-start{background:var(--accent);color:#fff}
+.btn-start:hover{background:#9380ff;transform:translateY(-1px)}
+.btn-reset{background:transparent;border:1px solid var(--border);color:var(--muted)}
+.btn-reset:hover{border-color:var(--danger);color:var(--danger)}
+@keyframes pulse-ring{0%,100%{opacity:1}50%{opacity:0.7}}
+.timer-card.running .time-digits{animation:pulse-ring 2s ease-in-out infinite}
+
+/* Log */
+.log-section{margin-top:1.75rem}
+.log-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:0.7rem}
+.clear-btn{font-family:'DM Mono',monospace;font-size:0.62rem;color:var(--muted);background:none;border:none;cursor:pointer;text-decoration:underline;text-underline-offset:3px}
+.clear-btn:hover{color:var(--danger)}
+.log-list{display:flex;flex-direction:column;gap:0.35rem;max-height:240px;overflow-y:auto}
+.log-list::-webkit-scrollbar{width:4px}
+.log-list::-webkit-scrollbar-thumb{background:var(--border);border-radius:4px}
+.log-item{background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:0.5rem 0.8rem;display:flex;align-items:flex-start;gap:0.7rem;font-family:'DM Mono',monospace;font-size:0.72rem;animation:fadeIn 0.3s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
+.log-dot{width:7px;height:7px;border-radius:50%;background:var(--accent2);flex-shrink:0;margin-top:4px}
+.log-info{flex:1}
+.log-subject{color:var(--text);font-weight:500}
+.log-topic-text{color:var(--muted);font-size:0.65rem;margin-top:0.12rem}
+.log-right{display:flex;flex-direction:column;align-items:flex-end;gap:0.12rem}
+.log-duration{color:var(--accent2)}
+.log-time{color:var(--muted);font-size:0.65rem}
+
+/* Completion overlay */
+.complete-flash{display:none;position:fixed;inset:0;background:rgba(13,15,20,0.92);z-index:100;align-items:center;justify-content:center;flex-direction:column;text-align:center;gap:0.9rem;backdrop-filter:blur(8px);padding:2rem}
+.complete-flash.show{display:flex;animation:fadeIn 0.3s ease}
+.complete-flash .big-emoji{font-size:3.2rem}
+.complete-flash h2{font-size:1.9rem;font-weight:800}
+.completed-topic-display{font-family:'DM Mono',monospace;font-size:0.76rem;color:var(--accent2);background:rgba(78,204,163,0.08);border:1px solid rgba(78,204,163,0.2);border-radius:6px;padding:0.55rem 1.1rem;max-width:440px}
+
+/* ── RAG prompt in completion overlay ── */
+.rag-prompt{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:1rem 1.2rem;max-width:380px;width:100%}
+.rag-prompt p{font-family:'DM Mono',monospace;font-size:0.7rem;color:var(--muted);margin-bottom:0.65rem}
+.rag-prompt-btns{display:flex;gap:0.5rem;justify-content:center}
+.rag-prompt-btn{flex:1;padding:0.6rem 0.5rem;border-radius:7px;border:1.5px solid transparent;font-family:'Syne',sans-serif;font-weight:700;font-size:0.78rem;cursor:pointer;transition:all 0.15s}
+.rag-prompt-btn.g{background:var(--green-bg);border-color:var(--green-border);color:var(--green)}
+.rag-prompt-btn.g:hover{background:var(--green);color:#fff}
+.rag-prompt-btn.a{background:var(--amber-bg);border-color:var(--amber-border);color:var(--amber)}
+.rag-prompt-btn.a:hover{background:var(--amber);color:#fff}
+.rag-prompt-btn.r{background:var(--red-bg);border-color:var(--red-border);color:var(--red)}
+.rag-prompt-btn.r:hover{background:var(--red);color:#fff}
+.rag-prompt-btn.skip{background:var(--surface2);border-color:var(--border);color:var(--muted)}
+.rag-prompt-btn.skip:hover{color:var(--text)}
+
+.complete-flash p.sub{font-family:'DM Mono',monospace;font-size:0.78rem;color:var(--muted)}
+.btn-dismiss{background:var(--accent);color:#fff;font-family:'Syne',sans-serif;font-weight:700;font-size:0.88rem;padding:0.7rem 1.8rem;border:none;border-radius:8px;cursor:pointer;margin-top:0.25rem}
+.btn-dismiss:hover{background:#9380ff}
+
+/* ════════════════════════════════
+   RAG TRACKER PAGE
+════════════════════════════════ */
+.tracker-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem;flex-wrap:wrap;gap:0.75rem}
+.tracker-header h2{font-size:1.5rem;font-weight:800;letter-spacing:-0.01em}
+.reset-all-btn{font-family:'DM Mono',monospace;font-size:0.62rem;color:var(--muted);background:none;border:1px solid var(--border);border-radius:4px;padding:0.3rem 0.7rem;cursor:pointer}
+.reset-all-btn:hover{border-color:var(--danger);color:var(--danger)}
+
+/* Overall progress */
+.overall-progress{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:1.2rem 1.4rem;margin-bottom:1.5rem}
+.overall-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:0.75rem;flex-wrap:wrap;gap:0.5rem}
+.overall-title{font-size:0.88rem;font-weight:700}
+.overall-counts{display:flex;gap:1rem}
+.oc{display:flex;flex-direction:column;align-items:center;gap:0.1rem}
+.oc-num{font-family:'DM Mono',monospace;font-size:1.1rem;font-weight:500}
+.oc-num.g{color:var(--green)}
+.oc-num.a{color:var(--amber)}
+.oc-num.r{color:var(--red)}
+.oc-num.ns{color:var(--muted)}
+.oc-lbl{font-family:'DM Mono',monospace;font-size:0.56rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--muted)}
+.progress-track{height:10px;background:var(--surface2);border-radius:6px;overflow:hidden;display:flex;gap:2px}
+.progress-seg{height:100%;border-radius:3px;transition:width 0.4s ease}
+.progress-seg.g{background:var(--green)}
+.progress-seg.a{background:var(--amber)}
+.progress-seg.r{background:var(--red)}
+
+/* Subject accordion cards */
+.subject-accordion{background:var(--surface);border:1px solid var(--border);border-radius:10px;margin-bottom:0.75rem;overflow:hidden;transition:border-color 0.15s}
+.subject-accordion:hover{border-color:var(--border)}
+.accordion-header{display:flex;align-items:center;padding:0.9rem 1.1rem;cursor:pointer;gap:0.75rem;user-select:none}
+.accordion-icon{font-size:1.1rem;flex-shrink:0}
+.accordion-name{font-size:0.9rem;font-weight:700;flex:1}
+.accordion-mini-bar{flex:1;max-width:120px;height:6px;background:var(--surface2);border-radius:4px;overflow:hidden;display:flex;gap:1px}
+.accordion-seg{height:100%;border-radius:2px}
+.accordion-seg.g{background:var(--green)}
+.accordion-seg.a{background:var(--amber)}
+.accordion-seg.r{background:var(--red)}
+.accordion-pct{font-family:'DM Mono',monospace;font-size:0.7rem;color:var(--muted);white-space:nowrap}
+.accordion-chevron{color:var(--muted);font-size:0.75rem;transition:transform 0.2s;flex-shrink:0}
+.accordion-header.open .accordion-chevron{transform:rotate(180deg)}
+
+.accordion-body{display:none;border-top:1px solid var(--border);padding:0.65rem}
+.accordion-body.open{display:block}
+
+/* Topics in tracker view */
+.tracker-section-heading{font-family:'DM Mono',monospace;font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);padding:0.25rem 0.4rem;margin:0.5rem 0 0.25rem;border-left:2px solid var(--border)}
+.tracker-topic-row{display:flex;align-items:center;gap:0.5rem;padding:0.38rem 0.5rem;border-radius:5px;border:1px solid transparent;transition:background 0.1s}
+.tracker-topic-row:hover{background:var(--surface2)}
+.tracker-topic-row.rag-green{background:var(--green-bg);border-color:var(--green-border)}
+.tracker-topic-row.rag-amber{background:var(--amber-bg);border-color:var(--amber-border)}
+.tracker-topic-row.rag-red{background:var(--red-bg);border-color:var(--red-border)}
+.tracker-topic-text{font-family:'DM Mono',monospace;font-size:0.69rem;color:var(--muted);flex:1;line-height:1.4}
+.tracker-topic-row.rag-green .tracker-topic-text,
+.tracker-topic-row.rag-amber .tracker-topic-text,
+.tracker-topic-row.rag-red .tracker-topic-text{color:var(--text)}
+.tracker-rag-btns{display:flex;gap:0.2rem;flex-shrink:0}
+.tracker-rag-btn{width:24px;height:24px;border-radius:5px;border:1.5px solid var(--border);background:transparent;cursor:pointer;font-size:0.65rem;display:flex;align-items:center;justify-content:center;transition:all 0.12s;color:var(--muted);font-weight:700}
+.tracker-rag-btn:hover{transform:scale(1.08)}
+.tracker-rag-btn.g{border-color:var(--green-border);color:var(--green)}
+.tracker-rag-btn.g.active{background:var(--green);border-color:var(--green);color:#fff}
+.tracker-rag-btn.a{border-color:var(--amber-border);color:var(--amber)}
+.tracker-rag-btn.a.active{background:var(--amber);border-color:var(--amber);color:#fff}
+.tracker-rag-btn.r{border-color:var(--red-border);color:var(--red)}
+.tracker-rag-btn.r.active{background:var(--red);border-color:var(--red);color:#fff}
+
+/* Filter bar */
+.filter-bar{display:flex;gap:0.4rem;margin-bottom:1.25rem;flex-wrap:wrap}
+.filter-btn{font-family:'DM Mono',monospace;font-size:0.65rem;padding:0.35rem 0.75rem;border-radius:5px;border:1.5px solid var(--border);background:none;color:var(--muted);cursor:pointer;transition:all 0.15s}
+.filter-btn:hover{color:var(--text)}
+.filter-btn.active-f{color:var(--text);border-color:var(--text)}
+.filter-btn.f-green.active-f{background:var(--green-bg);border-color:var(--green-border);color:var(--green)}
+.filter-btn.f-amber.active-f{background:var(--amber-bg);border-color:var(--amber-border);color:var(--amber)}
+.filter-btn.f-red.active-f{background:var(--red-bg);border-color:var(--red-border);color:var(--red)}
+</style>
+</head>
+<body>
+
+<!-- Completion overlay -->
+<div class="complete-flash" id="completionOverlay">
+  <div class="big-emoji">🎉</div>
+  <h2 id="completionTitle">Session Complete!</h2>
+  <div class="completed-topic-display" id="completedTopicEl" style="display:none"></div>
+  <div class="rag-prompt" id="ragPrompt" style="display:none">
+    <p>How well do you know this topic now?</p>
+    <div class="rag-prompt-btns">
+      <button class="rag-prompt-btn g" onclick="setRagFromPrompt('Green')">🟢 Got it</button>
+      <button class="rag-prompt-btn a" onclick="setRagFromPrompt('Amber')">🟡 Nearly</button>
+      <button class="rag-prompt-btn r" onclick="setRagFromPrompt('Red')">🔴 Struggling</button>
+      <button class="rag-prompt-btn skip" onclick="dismissComplete()">Skip</button>
+    </div>
+  </div>
+  <p class="sub" id="completionSubtitle"></p>
+  <button class="btn-dismiss" id="dismissBtn" onclick="dismissComplete()" style="display:none">Continue Revising</button>
+</div>
+
+<!-- Navigation -->
+<nav class="nav">
+  <button class="nav-tab active" onclick="showPage('timer',this)">⏱ Timer</button>
+  <button class="nav-tab" onclick="showPage('tracker',this)">📊 RAG Tracker</button>
+</nav>
+
+<!-- ══════════ TIMER PAGE ══════════ -->
+<div class="page active" id="page-timer">
+  <header>
+    <div class="badge">📚 GCSE Revision</div>
+    <h1>Study <span>Timer</span></h1>
+    <p class="subtitle">select a subject · pick a topic · start the clock</p>
+  </header>
+
+  <p class="section-label">01 — Select Subject</p>
+  <div class="subjects-grid" id="subjectsGrid"></div>
+
+  <div class="topics-panel" id="topicsPanel">
+    <div class="topics-header">
+      <div class="topics-header-left">
+        <span class="topics-subject-name" id="topicsSubjectName"></span>
+        <span class="topic-count-badge" id="topicCountBadge"></span>
+      </div>
+      <div class="rag-legend">
+        <div class="rag-legend-item"><div class="rag-dot green"></div>Green</div>
+        <div class="rag-legend-item"><div class="rag-dot amber"></div>Amber</div>
+        <div class="rag-legend-item"><div class="rag-dot red"></div>Red</div>
+      </div>
+      <span class="topics-hint">click to focus · G/A/R to rate</span>
+    </div>
+    <div class="topics-body" id="topicsBody"></div>
+  </div>
+
+  <div class="selected-topic-bar" id="selectedTopicBar">
+    <span class="stb-label">Focusing on</span>
+    <span class="stb-text" id="selectedTopicText"></span>
+    <button class="stb-clear" onclick="clearTopic()">✕</button>
+  </div>
+
+  <p class="section-label">02 — Set Duration</p>
+  <div class="duration-row" id="durationRow"></div>
+  <div class="custom-row">
+    <label>Custom (mins)</label>
+    <input type="number" id="customMins" min="1" max="180" placeholder="—" oninput="setCustomDuration(this.value)">
+  </div>
+
+  <div class="stats-bar">
+    <div class="stat"><span class="stat-val" id="statTotal">0m</span><span class="stat-key">Today</span></div>
+    <div class="stat-divider"></div>
+    <div class="stat"><span class="stat-val" id="statSessions">0</span><span class="stat-key">Sessions</span></div>
+    <div class="stat-divider"></div>
+    <div class="stat"><span class="stat-val" id="statGreen" style="color:var(--green)">0</span><span class="stat-key">🟢 Green</span></div>
+    <div class="stat-divider"></div>
+    <div class="stat"><span class="stat-val" id="statAmber" style="color:var(--amber)">0</span><span class="stat-key">🟡 Amber</span></div>
+    <div class="stat-divider"></div>
+    <div class="stat"><span class="stat-val" id="statRed" style="color:var(--red)">0</span><span class="stat-key">🔴 Red</span></div>
+  </div>
+
+  <div class="timer-card" id="timerCard">
+    <div class="current-subject" id="currentSubjectLabel">SELECT A SUBJECT TO BEGIN</div>
+    <div class="current-topic-display" id="currentTopicDisplay"></div>
+    <div class="ring-wrap">
+      <svg class="ring-svg" viewBox="0 0 190 190">
+        <circle class="ring-bg" cx="95" cy="95" r="85"/>
+        <circle class="ring-prog" id="ringProg" cx="95" cy="95" r="85"/>
+      </svg>
+      <div class="time-display">
+        <div class="time-digits" id="timeDisplay">25:00</div>
+        <div class="time-label" id="timeLabel">READY</div>
+      </div>
+    </div>
+    <div class="controls">
+      <button class="ctrl-btn btn-start" id="startBtn" onclick="startPause()">START</button>
+      <button class="ctrl-btn btn-reset" onclick="resetTimer()">RESET</button>
+    </div>
+  </div>
+
+  <div class="log-section">
+    <div class="log-header">
+      <p class="section-label" style="margin-bottom:0">03 — Session Log</p>
+      <button class="clear-btn" onclick="clearLog()">clear all</button>
+    </div>
+    <div class="log-list" id="logList">
+      <div style="font-family:'DM Mono',monospace;font-size:0.7rem;color:var(--muted);text-align:center;padding:1rem">No sessions yet.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ TRACKER PAGE ══════════ -->
+<div class="page" id="page-tracker">
+  <div class="tracker-header">
+    <h2>📊 RAG Tracker</h2>
+    <button class="reset-all-btn" onclick="confirmResetAll()">Reset all RAG</button>
+  </div>
+
+  <!-- Overall progress -->
+  <div class="overall-progress">
+    <div class="overall-row">
+      <span class="overall-title">Overall Progress</span>
+      <div class="overall-counts">
+        <div class="oc"><span class="oc-num g" id="totalGreen">0</span><span class="oc-lbl">Green</span></div>
+        <div class="oc"><span class="oc-num a" id="totalAmber">0</span><span class="oc-lbl">Amber</span></div>
+        <div class="oc"><span class="oc-num r" id="totalRed">0</span><span class="oc-lbl">Red</span></div>
+        <div class="oc"><span class="oc-num ns" id="totalNS">0</span><span class="oc-lbl">Not Started</span></div>
+      </div>
+    </div>
+    <div class="progress-track" id="overallBar"></div>
+  </div>
+
+  <!-- Filter -->
+  <div class="filter-bar">
+    <span class="section-label" style="margin-bottom:0;align-self:center">Show:</span>
+    <button class="filter-btn active-f" data-filter="all" onclick="setFilter('all',this)">All</button>
+    <button class="filter-btn f-red" data-filter="Red" onclick="setFilter('Red',this)">🔴 Red only</button>
+    <button class="filter-btn f-amber" data-filter="Amber" onclick="setFilter('Amber',this)">🟡 Amber only</button>
+    <button class="filter-btn f-green" data-filter="Green" onclick="setFilter('Green',this)">🟢 Green only</button>
+    <button class="filter-btn" data-filter="Not Started" onclick="setFilter('Not Started',this)">⬜ Not Started</button>
+  </div>
+
+  <div id="trackerAccordions"></div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/js/all.min.js" crossorigin="anonymous"></script>
+<script>
+// ════════════════════════════════════════
+// ⚙️  SUPABASE CONFIG — fill these in!
+// ════════════════════════════════════════
+const SUPABASE_URL  = 'PASTE_YOUR_SUPABASE_URL_HERE';
+const SUPABASE_KEY  = 'PASTE_YOUR_SUPABASE_ANON_KEY_HERE';
+const USER_ID       = 'owner'; // Change to 'viewer' for a read-only copy
+
+// ════════════════════════════════════════
+// SUPABASE CLIENT (no npm needed)
+// ════════════════════════════════════════
+const sb = {
+  async get(table, id) {
+    const r = await fetch(`${SUPABASE_URL}/rest/v1/${table}?id=eq.${encodeURIComponent(id)}&select=*`, {
+      headers: { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}` }
+    });
+    const rows = await r.json();
+    return rows[0] || null;
+  },
+  async upsert(table, row) {
+    await fetch(`${SUPABASE_URL}/rest/v1/${table}`, {
+      method: 'POST',
+      headers: {
+        apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}`,
+        'Content-Type': 'application/json', Prefer: 'resolution=merge-duplicates'
+      },
+      body: JSON.stringify(row)
+    });
+  }
+};
+
+// ════════════════════════════════════════
+// SETUP CHECK — shows guide if not configured
+// ════════════════════════════════════════
+const IS_CONFIGURED = SUPABASE_URL !== 'PASTE_YOUR_SUPABASE_URL_HERE';
+const IS_VIEWER     = USER_ID === 'viewer';
+
+if (!IS_CONFIGURED) {
+  document.body.innerHTML = `
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Syne',sans-serif;background:#0d0f14;color:#e8eaf0;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:2rem}
+    .setup-card{max-width:620px;width:100%;background:#14171f;border:1px solid #252a38;border-radius:14px;padding:2.5rem}
+    h1{font-size:1.6rem;font-weight:800;margin-bottom:0.4rem}
+    h1 span{color:#7c6af7}
+    .sub{font-family:'DM Mono',monospace;font-size:0.75rem;color:#5a6080;margin-bottom:2rem}
+    .step{display:flex;gap:1rem;margin-bottom:1.5rem;align-items:flex-start}
+    .step-num{background:#7c6af7;color:#fff;font-family:'DM Mono',monospace;font-size:0.75rem;font-weight:700;width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px}
+    .step-content h3{font-size:0.92rem;font-weight:700;margin-bottom:0.3rem}
+    .step-content p{font-family:'DM Mono',monospace;font-size:0.7rem;color:#5a6080;line-height:1.6}
+    .step-content a{color:#7c6af7;text-decoration:none}
+    .step-content a:hover{text-decoration:underline}
+    code{background:#1c2030;border:1px solid #252a38;border-radius:5px;padding:0.08rem 0.4rem;font-family:'DM Mono',monospace;font-size:0.72rem;color:#4ecca3}
+    pre{background:#1c2030;border:1px solid #252a38;border-radius:8px;padding:1rem;font-family:'DM Mono',monospace;font-size:0.7rem;color:#4ecca3;overflow-x:auto;margin-top:0.5rem;line-height:1.7;white-space:pre}
+    .divider{height:1px;background:#252a38;margin:1.5rem 0}
+    .badge{display:inline-block;font-family:'DM Mono',monospace;font-size:0.62rem;letter-spacing:0.12em;text-transform:uppercase;color:#7c6af7;border:1px solid rgba(124,106,247,0.35);padding:0.25rem 0.7rem;border-radius:2px;margin-bottom:1rem}
+    .tip{background:rgba(78,204,163,0.08);border:1px solid rgba(78,204,163,0.25);border-radius:7px;padding:0.75rem 1rem;font-family:'DM Mono',monospace;font-size:0.68rem;color:#4ecca3;margin-top:1rem;line-height:1.6}
+  </style>
+  <div class="setup-card">
+    <div class="badge">📚 GCSE Revision Timer</div>
+    <h1>Supabase <span>Setup Guide</span></h1>
+    <p class="sub">Follow these 4 steps — takes about 3 minutes total.</p>
+
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-content">
+        <h3>Create a free Supabase account</h3>
+        <p>Go to <a href="https://supabase.com" target="_blank">supabase.com</a> → click <strong>Start your project</strong> → sign up with GitHub or email. Then create a new project (any name, any region, set a DB password).</p>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-content">
+        <h3>Create the database table</h3>
+        <p>In your Supabase project, go to <strong>SQL Editor</strong> (left sidebar) and run this:</p>
+        <pre>create table revision_data (
+  id   text primary key,
+  rag  jsonb not null default '{}',
+  log  jsonb not null default '[]'
+);
+
+-- Allow anyone with the anon key to read/write:
+alter table revision_data enable row level security;
+create policy "allow_all" on revision_data
+  for all using (true) with check (true);</pre>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-content">
+        <h3>Copy your project credentials</h3>
+        <p>In Supabase go to <strong>Project Settings → API</strong>. You need:<br><br>
+        • <strong>Project URL</strong> — looks like <code>https://xxxx.supabase.co</code><br>
+        • <strong>anon / public key</strong> — the long <code>eyJ...</code> string</p>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">4</div>
+      <div class="step-content">
+        <h3>Paste them into this file</h3>
+        <p>Open <code>GCSE_Revision_Timer_Supabase.html</code> in a text editor and find these two lines near the top of the <code>&lt;script&gt;</code> block:</p>
+        <pre>const SUPABASE_URL = 'PASTE_YOUR_SUPABASE_URL_HERE';
+const SUPABASE_KEY = 'PASTE_YOUR_SUPABASE_ANON_KEY_HERE';</pre>
+        <p>Replace the placeholder text with your real values. Save the file and open it in your browser.</p>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="step">
+      <div class="step-num" style="background:#4ecca3">👁</div>
+      <div class="step-content">
+        <h3>Creating a viewer (read-only) copy</h3>
+        <p>Once the app is working, make a second copy of the file and change one line:</p>
+        <pre>const USER_ID = 'viewer'; // was 'owner'</pre>
+        <p>Share that copy with anyone you want to give read-only access. They'll see all your RAG progress but cannot change anything.</p>
+      </div>
+    </div>
+
+    <div class="tip">✓ Your data will sync across all devices automatically once configured.<br>✓ The free Supabase tier gives you 500MB storage and 2GB bandwidth — more than enough.</div>
+  </div>`;
+}
+
+// ════════════════════════════════════════
+// DATA
+// ════════════════════════════════════════
+// ════════════════════════════════════════
+// DATA
+// ════════════════════════════════════════
+const SUBJECTS = [
+  {name:'English Language',icon:'📖'},{name:'English Literature',icon:'📚'},
+  {name:'Biology',icon:'🧬'},{name:'Chemistry',icon:'⚗️'},{name:'Physics',icon:'⚡'},
+  {name:'Geography',icon:'🌍'},{name:'French',icon:'🇫🇷'},{name:'Drama',icon:'🎭'},
+  {name:'Maths',icon:'📐'},{name:'History',icon:'🏛️'}
+];
+
+const TOPICS = {"English Language":{"Paper 1 – Explorations in Creative Reading & Writing":["Q1 – List 4 things: identify explicit details (4 marks)","Q2 – Language analysis: methods, effect, terminology (8 marks)","Q3 – Structural features: shifts, focus, sequence (8 marks)","Q4 – Critical evaluation: agree/disagree with statement (20 marks)","Q5 – Creative writing: descriptive or narrative (40 marks)"],"Paper 2 – Writers Viewpoints & Perspectives":["Q1 – True/False statements (4 marks)","Q2 – Summary of differences between two texts (8 marks)","Q3 – Language analysis of one text (12 marks)","Q4 – Compare writers' perspectives across both texts (16 marks)","Q5 – Non-fiction / transactional writing (40 marks)"],"Key Skills":["Inference: reading between the lines","Language analysis: identifying and explaining writer methods","Structural analysis: form, order, shifts in focus","Critical evaluation: forming and sustaining a viewpoint","Creative writing: planning, drafting and crafting","Non-fiction writing: matching form, tone and purpose to audience"]},"English Literature":{"Paper 1 – Macbeth (Shakespeare)":["Key themes: ambition, guilt, power, appearance vs reality","Key themes: fate vs free will, masculinity, the supernatural","Characters: Macbeth – ambition, moral decline, self-doubt","Characters: Lady Macbeth – manipulation, guilt, breakdown","Characters: The Witches – fate, deception, supernatural power","Characters: Banquo, Duncan, Macduff – contrast and foil roles","Key quotes memorised: Act 1 (ambition, prophecy)","Key quotes memorised: Act 2 (murder, guilt)","Key quotes memorised: Acts 3–5 (paranoia, downfall)","Extract-based question + whole-text essay technique (30 marks)","Context: Jacobean era, divine right of kings, witchcraft"],"Paper 1 – A Christmas Carol (Dickens)":["Key themes: redemption and transformation","Key themes: poverty and social responsibility","Key themes: greed, generosity and the Christmas spirit","Characters: Scrooge – change from miser to generous benefactor","Characters: Tiny Tim, Bob Cratchit – symbols of poverty","Characters: The Three Spirits – agents of change","Characters: Fred, Belle – contrast to Scrooge","Key quotes memorised: Stave 1 (Scrooge established)","Key quotes memorised: Stave 2–3 (past and present)","Key quotes memorised: Stave 4–5 (transformation)","Extract-based question + whole-text essay technique (30 marks)","Context: Victorian England, industrialisation, the poor laws"],"Paper 2 – An Inspector Calls (Priestley)":["Key themes: social responsibility and collective guilt","Key themes: class, privilege and hypocrisy","Key themes: gender, age and generational divide","Key themes: capitalism vs socialism (Priestley's message)","Characters: Inspector Goole – catalyst, socialist mouthpiece","Characters: Mr & Mrs Birling – capitalist, complacency, denial","Characters: Sheila & Eric – guilt, change, moral awakening","Characters: Eva Smith – symbol of the exploited working class","Key quotes memorised: Act 1 (Birling's speeches, Sheila)","Key quotes memorised: Act 2 (Mrs Birling, Gerald)","Key quotes memorised: Act 3 (Inspector's speech, ending)","Essay from memory – no extract given (30 marks)","Context: 1912 setting, 1945 first performance, post-war message"],"Paper 2 – Worlds and Lives Poetry":["Annotate and analyse all set poems in the anthology","Identify key methods: imagery, structure, tone, voice, form","Link context to meaning for each poem","Comparison skills: find similarities and differences across poems","Responding to a named poem + comparison with another anthology poem","Write comparative essays with embedded quotations (30 marks)"],"Paper 2 – Unseen Poetry":["Section C: analyse one unseen poem (24 marks total)","Identify language methods: metaphor, simile, personification, imagery","Identify structural methods: form, stanza, punctuation, enjambment","Comment on tone, voice and attitude of the speaker","Compare two unseen poems: similarities and differences","Timing: ~45 minutes across both unseen tasks"]},"Biology":{"Paper 1 – Cell Biology & Organisation":["Cell structure: prokaryotic vs eukaryotic cells","Cell organelles: nucleus, mitochondria, ribosomes, cell wall","Cell division: mitosis and the cell cycle","Cell division: meiosis and genetic variation","Stem cells: embryonic, adult, therapeutic cloning","Transport: diffusion, factors affecting rate","Transport: osmosis, practical investigation","Transport: active transport vs diffusion","Organisation: digestive system, enzymes","Organisation: heart structure and function","Organisation: lungs, gas exchange","Organisation: blood components and function","Organisation: health and disease, lifestyle factors","Microscopy: magnification, resolution, scale bars"],"Paper 1 – Infection, Response & Bioenergetics":["Pathogens: bacteria, viruses, fungi, protists","Communicable disease: transmission and spread","Human immune system: white blood cells, antibodies","Vaccination: how vaccines work, herd immunity","Antibiotics and drug development","Monoclonal antibodies: uses and ethical issues","Photosynthesis: word and symbol equation","Photosynthesis: limiting factors – light, CO₂, temperature","Photosynthesis: experimental investigations","Respiration: aerobic respiration equation","Respiration: anaerobic respiration, fermentation","Respiration: ATP and energy transfer","Exercise: changes in heart rate, breathing rate, oxygen debt"],"Paper 2 – Homeostasis & Inheritance":["Homeostasis: definition and importance","Nervous system: neurones, synapses, reflex arcs","Brain structure and function","Eye structure: focusing, accommodation","Hormonal coordination: endocrine glands","Hormones: insulin, glucagon and blood glucose control","Diabetes: Type 1 and Type 2 – causes and treatment","Menstrual cycle: FSH, LH, oestrogen, progesterone","Contraception: hormonal and non-hormonal methods","Plant hormones: auxins, gibberellins, ethene","DNA structure: double helix, base pairing","Inheritance: dominant, recessive, alleles","Punnett squares: monohybrid and dihybrid crosses","Genetic disorders: cystic fibrosis, polydactyly","Sex determination: XX and XY chromosomes"],"Paper 2 – Variation, Evolution & Ecology":["Variation: genetic and environmental causes","Mutation: causes and effects","Natural selection: survival of the fittest","Evolution: evidence from fossils, antibiotic resistance","Speciation: how new species arise","Classification: kingdoms, binomial nomenclature","Ecosystems: biotic and abiotic factors","Food chains and food webs","Biodiversity: importance and threats","Human impact: deforestation, global warming, pollution","Maintaining biodiversity: conservation methods","Required practicals: osmosis, microscopy, food tests"],"Higher Tier Only Topics":["Kidney: nephrons, ultrafiltration and selective reabsorption (Higher)","ADH: role in osmoregulation and urine concentration (Higher)","Photosynthesis: limiting factor graph analysis and rate calculations (Higher)","Respiration: detailed ATP production, link reactions (Higher)","Trophic levels: energy transfer efficiency between levels (Higher)","Genetic engineering: technique, GM organisms, ethical issues (Higher)","Cloning: tissue culture, embryo transplants, adult cell cloning (Higher)","Negative feedback: detailed mechanisms for temperature, blood glucose (Higher)","Plant disease: identifying deficiency symptoms, pathogen detection (Higher)","Decomposition: factors affecting decay rates, practical (Higher)"]},"Chemistry":{"Paper 1 – Atomic Structure & Bonding":["Atomic structure: protons, neutrons, electrons","Atomic number, mass number, isotopes","Electronic configuration: shells and sub-shells","Development of the atomic model (Dalton to Bohr)","Ionic bonding: transfer of electrons, lattice structures","Covalent bonding: sharing electrons, simple molecules","Giant covalent structures: diamond, graphite, graphene","Metallic bonding: delocalised electrons, properties","Properties: relating structure to properties","Nanoparticles: properties and uses"],"Paper 1 – Quantitative, Extraction & Chemical Changes":["Moles: Avogadro's number, molar mass","Concentration: mol/dm³ calculations","Empirical and molecular formula","Percentage yield and atom economy","Reactivity series of metals","Extraction of metals: reduction and electrolysis","Electrolysis: products at electrodes, half equations","Acids and bases: pH scale, neutralisation","Acid reactions: with metals, carbonates, bases","Making salts: precipitation, neutralisation"],"Paper 1 – Energy Changes":["Exothermic and endothermic reactions","Energy profile diagrams: activation energy","Bond energies: calculating energy change","Cells and fuel cells: chemical energy to electrical"],"Paper 2 – Rate, Equilibrium & Organic":["Rate of reaction: collision theory","Factors affecting rate: temperature, concentration, surface area, catalyst","Measuring rate: gas collection, colour change, precipitation","Reversible reactions and equilibrium (Le Chatelier's Principle)","The Haber process: conditions and reasons","Crude oil: fractional distillation","Alkanes: properties, combustion","Alkenes: double bond, addition reactions","Addition polymerisation: plastic formation","Alcohols: fermentation, properties, uses","Carboxylic acids: properties and reactions"],"Paper 2 – Analysis, Atmosphere & Resources":["Chromatography: Rf values, interpreting results","Flame tests: identifying metal ions","Gas tests: H₂, O₂, CO₂, Cl₂, NH₃","Titration technique and calculations","History of Earth's atmosphere","Greenhouse effect: CO₂, methane, global warming","Carbon footprint: reducing emissions","Water treatment: potable water, sewage","Life cycle assessment (LCA)","Finite and renewable resources","Half equations: oxidation and reduction at electrodes (Higher)","Strong and weak acids: degree of ionisation, pH comparisons (Higher)","Titration: calculations using moles and concentrations (Higher)","Equilibrium: effect of pressure, concentration and temperature (Higher)","Bond energies: calculating ΔH from bond breaking/making (Higher)","Fuel cells: hydrogen fuel cell, overall reaction (Higher)","Transition metals: properties, catalysts, coloured compounds (Higher)","Organic chemistry: condensation polymerisation, nylon, polyester (Higher)","Organic chemistry: addition reactions of alkenes (bromine water test) (Higher)","Required practicals: titration, temperature change (Higher specifics)"]},"Physics":{"Paper 1 – Energy":["Energy stores: kinetic, thermal, gravitational PE, elastic PE, chemical","Energy transfers: mechanical, electrical, heating, radiation","Conservation of energy","Efficiency: useful vs wasted energy, calculating efficiency","Power: P = E/t and P = W/t (watts)","Specific heat capacity: E = mcΔT","Reducing unwanted energy transfers: insulation, lubrication","Energy resources: renewable vs non-renewable","National grid: step-up and step-down transformers"],"Paper 1 – Electricity":["Standard circuit symbols and circuit diagrams","Current, potential difference and resistance: V = IR","Ohmic conductors, filament lamps, diodes","Series circuits: current, pd, resistance rules","Parallel circuits: current, pd, resistance rules","Mains electricity: AC vs DC, frequency, voltage","Domestic uses: plugs, fuses, earthing","Electrical power: P = VI and P = I²R","Energy: E = QV, E = Pt","The National Grid: why high voltage?"],"Paper 1 – Particle Model & Atomic Structure":["Density: ρ = m/V","States of matter: solid, liquid, gas – particle arrangement","Changes of state: melting, boiling, condensing","Specific heat capacity and specific latent heat","Pressure in gases: P₁V₁ = P₂V₂ (Higher)","Atomic structure: nucleus, protons, neutrons, electrons","Isotopes and radioactive decay","Alpha, beta and gamma radiation: properties and uses","Half-life: definition and calculations","Nuclear fission and fusion","Background radiation and contamination"],"Paper 2 – Forces":["Scalar vs vector quantities","Speed and velocity: v = d/t","Acceleration: a = (v–u)/t and v² = u² + 2as","Distance–time graphs and velocity–time graphs","Newton's First Law: inertia and balanced forces","Newton's Second Law: F = ma","Newton's Third Law: action–reaction pairs","Weight: W = mg","Stopping distances: thinking + braking distance","Momentum: p = mv and conservation of momentum","Pressure: P = F/A and fluid pressure","Moments and levers"],"Paper 2 – Waves, Magnetism & Space":["Wave properties: amplitude, wavelength, frequency, speed","Wave equation: v = fλ","Transverse vs longitudinal waves","The electromagnetic spectrum: all 7 types, uses and hazards","Reflection, refraction and total internal reflection","Sound waves: echo, ultrasound uses","Magnets: poles, field lines, attraction and repulsion","Electromagnets: coils, uses","The motor effect: F = BIL","Electromagnetic induction: generators and alternators","Transformers: Vp/Vs = np/ns","Our Solar System and the Universe","Life cycle of stars","Red-shift and evidence for the Big Bang","Pressure in gases: p₁V₁ = p₂V₂ at constant temperature (Higher)","Electric fields: concept of field lines, force on charges (Higher)","Magnetic flux density: F = BIL calculations (Higher)","Induced EMF: Faraday's law qualitative understanding (Higher)","Transformer calculations: efficiency and power (Higher)","Nuclear equations: alpha/beta decay symbol equations (Higher)","Circular motion: centripetal force concept (Higher)","Gravitational field strength vs distance from planet (Higher)","Orbital speed: relationship to radius and period (Higher)","Required practicals: IV characteristics, specific heat capacity (Higher specifics)"]},"Geography":{"Paper 1 – Natural Hazards":["Tectonic plates: plate boundaries, types of movement","Earthquakes: causes, effects, responses (LIC vs HIC)","Volcanoes: causes, effects, responses","Tropical storms: formation, structure, distribution","Tropical storms: effects, responses, climate change link","Climate change: natural and human causes","Climate change: effects on people and environment","Climate change: mitigation and adaptation strategies","Case studies: specific earthquake/volcano/storm examples"],"Paper 1 – The Living World & UK Landscapes":["Ecosystems: components, food chains, nutrient cycles","Tropical rainforests: climate, structure, biodiversity","Rainforests: deforestation causes and consequences","Rainforests: sustainable management strategies","Hot deserts: climate, soil, plant/animal adaptations","Hot deserts: opportunities, challenges, desertification","UK coasts OR rivers: processes (erosion, deposition, transportation)","UK coasts OR rivers: landforms formed by these processes","UK coasts OR rivers: management strategies","OS map skills: grid references, contours, scale"],"Paper 2 – Urban Issues & Economic World":["Urbanisation: causes, trends in LICs/NEEs vs HICs","LIC/NEE city case study: growth, opportunities, challenges","Urban issues in UK city case study","Sustainable urban development strategies","Development gap: measuring development (HDI, GDP)","Nigeria case study: economy, environment, society","Changing UK economy: de-industrialisation, growth of services","Resource management: food, water, energy (overview)","One resource in detail: food, water or energy"],"Paper 3 – Geographical Applications":["Issue evaluation: analysing pre-release resources","Issue evaluation: forming and justifying a viewpoint","Fieldwork: physical geography investigation","Fieldwork: human geography investigation","Fieldwork: data collection methods and presentation","Fieldwork: analysis, conclusions and evaluation","Graphical skills: pie charts, bar graphs, scatter graphs","Statistical skills: mean, median, mode, range, Spearman's rank"]},"French":{"Paper 1 – Listening":["Questions 1–5: multiple choice and short answers in English","Questions 6–10: responding in French to target language prompts","Understanding different accents and speeds","Listening for gist and for detail","Numbers, dates, times and statistics in spoken French","Theme 1: Identity and Culture vocab (family, relationships, social media)","Theme 2: Local/National/Global vocab (environment, travel)","Theme 3: Current/Future Study and Employment vocab"],"Paper 2 – Reading":["Vocabulary recognition across all four themes","Translation from French into English (accuracy)","Identifying writer opinion, attitude and purpose","True/False/Not mentioned questions","Gap-fill exercises using context clues","High-frequency vocab list: top 500 words","False cognates and tricky vocabulary"],"Paper 3 – Speaking":["Role play: responding to cues, asking questions","Photo card: describe, give opinions, answer follow-up questions","General conversation: Theme 1 topics fluently","General conversation: Theme 2 topics fluently","General conversation: Theme 3 topics fluently","Use of all three tenses: past, present, future","Opinion phrases: je pense que, à mon avis, je crois…","Extended answers: justifying and developing responses"],"Paper 4 – Writing":["Message writing: short, structured French paragraphs","Structured writing question: 40 words+","Translation from English into French (accuracy)","Essay (Higher): 150 words, all three tenses, complex structures","Verb conjugations: regular -er, -ir, -re verbs","Irregular verbs: avoir, être, aller, faire, pouvoir, vouloir, devoir","Reflexive verbs and negatives","Subjunctive (Higher) and conditional tense"]},"Drama":{"Component 1 – Devising Drama (40%)":["Respond to a stimulus to create an original piece","Collaborate: contribute ideas, resolve conflicts constructively","Develop characters and dramatic narrative","Rehearse, refine and polish the piece","Portfolio: document intentions, process and reflections","Portfolio: explain how drama techniques were used","Portfolio: evaluate your own contribution and skills","Performance: deliver piece to an audience"],"Component 2 – Performance from Text (20%)":["Choose two extracts from contrasting plays","Perform one extract as a performer","Perform/design one extract as designer or performer","Use voice: projection, pitch, pace, pause, tone","Use physicality: gesture, movement, posture, facial expression","Understand the playwright's intentions"],"Component 3 – Theatre Makers in Practice (40%) – Written Exam":["Section A: Analyse and evaluate live theatre you have seen","Section A: Use theatre terminology accurately","Section B: Set text – interpret as a designer (lighting, sound, costume etc)","Section C: Set text – interpret as a director","Section C: Give detailed staging decisions with justification","Staging types: proscenium arch, thrust, in-the-round, traverse","Practitioners: Stanislavski (naturalism, emotional memory)","Practitioners: Brecht (Epic Theatre, alienation effect, direct address)","Drama terminology: proxemics, levels, blocking, subtext, status","Drama terminology: style, genre, climax, denouement, exposition"]},"Maths":{"Paper 1 – Non-Calculator":["Arithmetic: BIDMAS, negative numbers, fractions, decimals","Percentages: increase/decrease, reverse percentage, compound interest","Standard form: converting, calculating","Surds: simplifying, rationalising the denominator (Higher)","Bounds and truncation (Higher)","Expanding single and double brackets","Factorising: common factor, quadratics","Solving linear equations and inequalities","Simultaneous equations: elimination and substitution","nth term: linear and quadratic sequences"],"Papers 2 & 3 – Calculator":["Straight-line graphs: y = mx + c, gradient and intercept","Quadratic graphs: plotting and interpreting","Graph transformations: f(x + a), f(x) + a, af(x), f(ax)","Ratio and proportion: simplifying, sharing in a ratio","Direct and inverse proportion","Speed, distance, time; density, mass, volume","Area: triangle, parallelogram, trapezium, circle","Volume: cuboid, cylinder, cone, sphere","Pythagoras' theorem","Trigonometry: sin, cos, tan and inverse functions","Circle theorems (Higher)","Vectors (Higher)","Probability: theoretical, experimental, tree diagrams","Venn diagrams and set notation","Cumulative frequency, box plots, histograms","Scatter graphs: correlation, line of best fit","Mean from grouped frequency tables"],"Higher Tier Only Topics":["Quadratic formula: solving using x = (-b ± √(b²–4ac)) / 2a (Higher)","Completing the square: turning points, solving quadratics (Higher)","Algebraic fractions: simplifying, adding, solving equations (Higher)","Functions: f(x) notation, composite and inverse functions (Higher)","Proof: algebraic proof, showing statements are true/false (Higher)","Iteration: finding approximate roots using iterative formula (Higher)","Sine rule and cosine rule: non-right-angled triangles (Higher)","Area of triangle: ½ab sin C (Higher)","3D trigonometry and Pythagoras (Higher)","Equation of a circle: x² + y² = r² and intersections (Higher)","Gradient of a curve: tangents and rates of change (Higher)","Conditional probability: using two-way tables and Venn diagrams (Higher)","Sampling methods: random, systematic, stratified (Higher)"]},"History":{"Paper 1 – Medicine in Britain c.1250–present":["Medieval medicine: four humours, Galen, Church influence","Medieval treatments: herbal remedies, bloodletting, prayer","Medieval hospitals: monasteries, care not cure","Renaissance: Vesalius and anatomy, Harvey and blood circulation","Industrial period: Pasteur's germ theory, Koch and bacteria","Industrial period: vaccination, anaesthetics, antiseptics","Modern medicine: NHS, DNA discovery, clinical trials","Key individuals: Jenner, Nightingale, Fleming (penicillin)","Change and continuity: what changed and what stayed the same?","Factors driving change: chance, government, war, science, individuals"],"Paper 1 – British Sector of the Western Front 1914–18":["Conditions in the trenches: structure, daily life, dangers","Injuries: bullet wounds, shell shock, gas, trench foot","The Royal Army Medical Corps (RAMC): organisation","Casualty chain: collecting post → dressing station → CCS → base hospital","Surgery: advances in techniques, blood transfusion development","Transport of wounded: stretcher bearers, ambulances, trains","Key individual: Birt Acres, Thomas Splint, Harold Gillies (plastic surgery)","Source analysis: utility and reliability of historical sources"],"Paper 2 – Superpower Relations & the Cold War 1941–1991":["Origins: Yalta and Potsdam conferences, tensions over Germany","Iron Curtain: Truman Doctrine and Marshall Plan","Berlin Blockade 1948–49 and Berlin Wall 1961","Korean War 1950–53: proxy conflict","Cuban Missile Crisis 1962: causes, events, resolution","Détente: SALT I, SALT II, Helsinki Accords","Soviet invasion of Afghanistan 1979","End of Cold War: Reagan, Gorbachev, fall of Berlin Wall 1989","Source and interpretation skills: explain and compare"],"Paper 2 – Early Elizabethan England 1558–1588":["Elizabeth I's accession: problems she inherited","The Religious Settlement 1559: Acts of Supremacy and Uniformity","Threats to the settlement: Puritans and Catholics","Mary, Queen of Scots: arrival in England, threat to Elizabeth","Catholic plots: Ridolfi, Throckmorton, Babington","Relations with Spain: trade, religion, politics","The Spanish Armada 1588: causes, events and outcome","Elizabethan society: education, poverty, exploration (Drake, Raleigh)","Source skills: narrative accounts, causation essays"],"Paper 3 – The USA 1954–1975":["Civil Rights background: segregation, Jim Crow laws","Key events: Montgomery Bus Boycott 1955–56","Key events: Little Rock 1957, Sit-ins 1960, Freedom Rides 1961","Key events: Birmingham Campaign 1963, March on Washington 1963","Civil Rights Act 1964 and Voting Rights Act 1965","Malcolm X and Black Power movement","Vietnam War: causes – domino theory, US involvement","Vietnam War: guerrilla tactics, Tet Offensive 1968","Opposition to Vietnam: Kent State 1970, My Lai Massacre","Nixon: Vietnamisation, US withdrawal","Source and interpretation skills"]}};
+
+const DURATIONS = [10,15,20,25,30,45,60];
+const CIRCUMFERENCE = 534.07;
+
+// ════════════════════════════════════════
+
+// ════════════════════════════════════════
+// STATE  (persisted to Supabase)
+// ════════════════════════════════════════
+
+// In-memory RAG store — loaded from Supabase on init
+let ragStore = {};
+
+function getRag(subject, topic) {
+  return ragStore[subject + '||' + topic] || 'Not Started';
+}
+
+function setRag(subject, topic, status) {
+  const key = subject + '||' + topic;
+  const current = ragStore[key];
+  if (current === status) {
+    delete ragStore[key];
+  } else {
+    ragStore[key] = status;
+  }
+  refreshAllRagUI();
+  scheduleSave();
+}
+
+// Debounced save — batches rapid RAG clicks into one write
+let saveDebounce = null;
+function scheduleSave() {
+  clearTimeout(saveDebounce);
+  showSaveIndicator('saving');
+  saveDebounce = setTimeout(persistData, 700);
+}
+
+async function persistData() {
+  if (!IS_CONFIGURED || IS_VIEWER) return;
+  try {
+    await sb.upsert('revision_data', {
+      id: 'owner',
+      rag: ragStore,
+      log: sessionLog
+    });
+    showSaveIndicator('saved');
+  } catch(e) {
+    showSaveIndicator('error');
+    console.error('Supabase save error:', e);
+  }
+}
+
+// Save indicator UI
+function showSaveIndicator(state) {
+  let el = document.getElementById('saveIndicator');
+  if (!el) {
+    el = document.createElement('div');
+    el.id = 'saveIndicator';
+    el.style.cssText = 'position:fixed;bottom:1rem;right:1rem;z-index:999;font-family:"DM Mono",monospace;font-size:0.65rem;padding:0.4rem 0.8rem;border-radius:5px;transition:opacity 0.3s;pointer-events:none';
+    document.body.appendChild(el);
+  }
+  clearTimeout(el._fadeTimer);
+  el.style.opacity = '1';
+  if (state === 'saving') {
+    el.style.background = 'rgba(124,106,247,0.12)';
+    el.style.border = '1px solid rgba(124,106,247,0.3)';
+    el.style.color = '#7c6af7';
+    el.textContent = '☁ Saving…';
+  } else if (state === 'saved') {
+    el.style.background = 'rgba(78,204,163,0.12)';
+    el.style.border = '1px solid rgba(78,204,163,0.3)';
+    el.style.color = '#4ecca3';
+    el.textContent = '✓ Saved';
+    el._fadeTimer = setTimeout(() => { el.style.opacity = '0'; }, 2000);
+  } else {
+    el.style.background = 'rgba(231,76,60,0.12)';
+    el.style.border = '1px solid rgba(231,76,60,0.3)';
+    el.style.color = '#f76a6a';
+    el.textContent = '✗ Save failed — check console';
+    el._fadeTimer = setTimeout(() => { el.style.opacity = '0'; }, 4000);
+  }
+}
+
+// ── Viewer mode banner ──
+if (IS_VIEWER) {
+  const banner = document.createElement('div');
+  banner.style.cssText = 'width:100%;background:rgba(247,163,74,0.1);border-bottom:1px solid rgba(247,163,74,0.3);padding:0.5rem 1.5rem;font-family:"DM Mono",monospace;font-size:0.68rem;color:#f7a34a;text-align:center;position:sticky;top:0;z-index:49';
+  banner.textContent = '👁  View-only mode — you can see all progress but cannot make changes';
+  document.body.insertBefore(banner, document.body.firstChild);
+
+  // Disable all interactive elements after load
+  window.addEventListener('load', () => {
+    document.querySelectorAll('.rag-btn,.tracker-rag-btn,.ctrl-btn,.dur-btn,.clear-btn,.reset-all-btn,.stb-clear,.filter-btn,#customMins,.rag-prompt-btn').forEach(el => {
+      el.style.pointerEvents = 'none';
+      el.style.opacity = '0.5';
+    });
+  });
+}
+
+let selectedSubject = null;
+let selectedTopic = null;
+let selectedMinutes = 25;
+let totalSeconds = 1500;
+let remainingSeconds = 1500;
+let timerInterval = null;
+let isRunning = false;
+let sessionLog = [];
+let activeFilter = 'all';
+
+// NAVIGATION
+// ════════════════════════════════════════
+function showPage(id, btn) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('page-' + id).classList.add('active');
+  btn.classList.add('active');
+  if (id === 'tracker') renderTrackerPage();
+}
+
+// ════════════════════════════════════════
+// BUILD TIMER PAGE
+// ════════════════════════════════════════
+const grid = document.getElementById('subjectsGrid');
+SUBJECTS.forEach(s => {
+  const btn = document.createElement('button');
+  btn.className = 'subject-btn';
+  btn.id = 'subjectbtn-' + s.name.replace(/\s+/g,'_');
+  btn.innerHTML = `<span class="icon">${s.icon}</span>${s.name}<div class="subject-rag-pip" id="pip-${s.name.replace(/\s+/g,'_')}"></div>`;
+  btn.onclick = () => selectSubject(s.name, btn);
+  grid.appendChild(btn);
+});
+
+const durRow = document.getElementById('durationRow');
+DURATIONS.forEach(m => {
+  const btn = document.createElement('button');
+  btn.className = 'dur-btn' + (m===25?' active':'');
+  btn.textContent = m+'m';
+  btn.onclick = () => selectDuration(m, btn);
+  durRow.appendChild(btn);
+});
+
+function selectSubject(name, btn) {
+  if (isRunning) return;
+  selectedSubject = name;
+  selectedTopic = null;
+  document.querySelectorAll('.subject-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('currentSubjectLabel').textContent = name.toUpperCase();
+  document.getElementById('currentTopicDisplay').textContent = '';
+  document.getElementById('selectedTopicBar').classList.remove('visible');
+  renderTopicsPanel(name);
+}
+
+function renderTopicsPanel(subjectName) {
+  const panel = document.getElementById('topicsPanel');
+  const body = document.getElementById('topicsBody');
+  const sections = TOPICS[subjectName];
+  if (!sections) { panel.classList.remove('visible'); return; }
+  document.getElementById('topicsSubjectName').textContent = subjectName;
+  const total = Object.values(sections).reduce((s,t)=>s+t.length,0);
+  document.getElementById('topicCountBadge').textContent = total + ' topics';
+  body.innerHTML = '';
+  Object.entries(sections).forEach(([section, topics]) => {
+    const group = document.createElement('div');
+    group.className = 'section-group';
+    const heading = document.createElement('div');
+    heading.className = 'section-heading';
+    heading.textContent = section;
+    group.appendChild(heading);
+    const wrap = document.createElement('div');
+    wrap.className = 'topic-items';
+    topics.forEach(topic => {
+      const isHigher = topic.includes('(Higher)');
+      const rag = getRag(subjectName, topic);
+      const item = document.createElement('div');
+      item.className = 'topic-item' + (rag !== 'Not Started' ? ' rag-' + rag.toLowerCase() : '');
+      item.dataset.subject = subjectName;
+      item.dataset.topic = topic;
+      item.innerHTML = `
+        <div class="topic-select-check">✓</div>
+        <span class="topic-text">${isHigher ? topic.replace(' (Higher)','') : topic}</span>
+        ${isHigher ? '<span class="higher-tag">H</span>' : ''}
+        <div class="rag-btns">
+          <button class="rag-btn g${rag==='Green'?' active':''}" title="Green – confident" onclick="event.stopPropagation();timerSetRag('${subjectName}','${topic.replace(/'/g,"\\'")}','Green',this)">G</button>
+          <button class="rag-btn a${rag==='Amber'?' active':''}" title="Amber – nearly there" onclick="event.stopPropagation();timerSetRag('${subjectName}','${topic.replace(/'/g,"\\'")}','Amber',this)">A</button>
+          <button class="rag-btn r${rag==='Red'?' active':''}" title="Red – struggling" onclick="event.stopPropagation();timerSetRag('${subjectName}','${topic.replace(/'/g,"\\'")}','Red',this)">R</button>
+        </div>`;
+      item.addEventListener('click', (e) => {
+        if (e.target.closest('.rag-btns')) return;
+        selectTopic(topic, item);
+      });
+      wrap.appendChild(item);
+    });
+    group.appendChild(wrap);
+    body.appendChild(group);
+  });
+  panel.classList.add('visible');
+}
+
+function timerSetRag(subject, topic, status, btn) {
+  const currentRag = getRag(subject, topic);
+  const newRag = currentRag === status ? 'Not Started' : status;
+  setRag(subject, topic, newRag);
+  // Update item styling
+  const item = btn.closest('.topic-item');
+  item.classList.remove('rag-green','rag-amber','rag-red');
+  if (newRag !== 'Not Started') item.classList.add('rag-' + newRag.toLowerCase());
+  // Update buttons
+  item.querySelectorAll('.rag-btn').forEach(b => b.classList.remove('active'));
+  if (newRag !== 'Not Started') btn.classList.add('active');
+  updateSubjectPip(subject);
+  updateTimerStats();
+}
+
+function selectTopic(topic, itemEl) {
+  if (isRunning) return;
+  if (selectedTopic === topic) {
+    selectedTopic = null;
+    document.querySelectorAll('.topic-item').forEach(i => i.classList.remove('selected'));
+    document.getElementById('selectedTopicBar').classList.remove('visible');
+    document.getElementById('currentTopicDisplay').textContent = '';
+    return;
+  }
+  selectedTopic = topic;
+  document.querySelectorAll('.topic-item').forEach(i => i.classList.remove('selected'));
+  itemEl.classList.add('selected');
+  const clean = topic.replace(' (Higher)','');
+  document.getElementById('selectedTopicText').textContent = clean;
+  document.getElementById('selectedTopicBar').classList.add('visible');
+  document.getElementById('currentTopicDisplay').textContent = clean;
+}
+
+function clearTopic() {
+  selectedTopic = null;
+  document.querySelectorAll('.topic-item').forEach(i => i.classList.remove('selected'));
+  document.getElementById('selectedTopicBar').classList.remove('visible');
+  document.getElementById('currentTopicDisplay').textContent = '';
+}
+
+function selectDuration(mins, btn) {
+  if (isRunning) return;
+  selectedMinutes = mins; totalSeconds = mins*60; remainingSeconds = totalSeconds;
+  document.querySelectorAll('.dur-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('customMins').value = '';
+  updateDisplay(); updateRing(1);
+}
+
+function setCustomDuration(val) {
+  const mins = parseInt(val);
+  if (!mins||mins<1||isRunning) return;
+  selectedMinutes = mins; totalSeconds = mins*60; remainingSeconds = totalSeconds;
+  document.querySelectorAll('.dur-btn').forEach(b => b.classList.remove('active'));
+  updateDisplay(); updateRing(1);
+}
+
+// ════════════════════════════════════════
+// TIMER ENGINE
+// ════════════════════════════════════════
+function fmt(secs) {
+  return String(Math.floor(secs/60)).padStart(2,'0') + ':' + String(secs%60).padStart(2,'0');
+}
+function updateDisplay() { document.getElementById('timeDisplay').textContent = fmt(remainingSeconds); }
+function updateRing(f) {
+  const ring = document.getElementById('ringProg');
+  ring.style.strokeDashoffset = CIRCUMFERENCE * (1 - f);
+  ring.classList.remove('warn','danger');
+  if (f<=0.1) ring.classList.add('danger');
+  else if (f<=0.25) ring.classList.add('warn');
+}
+
+function startPause() {
+  if (!selectedSubject) {
+    const lbl = document.getElementById('currentSubjectLabel');
+    lbl.style.color = 'var(--danger)';
+    lbl.textContent = '⚠ SELECT A SUBJECT FIRST';
+    setTimeout(() => { lbl.style.color=''; lbl.textContent='SELECT A SUBJECT TO BEGIN'; }, 1800);
+    return;
+  }
+  if (isRunning) {
+    clearInterval(timerInterval); isRunning = false;
+    document.getElementById('startBtn').textContent = 'RESUME';
+    document.getElementById('timerCard').classList.remove('running');
+    document.getElementById('timeLabel').textContent = 'PAUSED';
+  } else {
+    isRunning = true;
+    document.getElementById('startBtn').textContent = 'PAUSE';
+    document.getElementById('timerCard').classList.add('running');
+    document.getElementById('timeLabel').textContent = 'STUDYING';
+    timerInterval = setInterval(() => {
+      remainingSeconds--;
+      updateDisplay(); updateRing(remainingSeconds/totalSeconds);
+      document.title = `${fmt(remainingSeconds)} — ${selectedSubject}`;
+      if (remainingSeconds <= 0) { clearInterval(timerInterval); isRunning=false; onComplete(); }
+    }, 1000);
+  }
+}
+
+function resetTimer() {
+  clearInterval(timerInterval); isRunning=false;
+  remainingSeconds=totalSeconds;
+  updateDisplay(); updateRing(1);
+  document.getElementById('startBtn').textContent='START';
+  document.getElementById('timerCard').classList.remove('running');
+  document.getElementById('timeLabel').textContent='READY';
+  document.title='GCSE Revision Timer';
+}
+
+function onComplete() {
+  document.getElementById('timerCard').classList.remove('running');
+  document.getElementById('timeLabel').textContent='DONE ✓';
+  document.getElementById('startBtn').textContent='START';
+  document.title='✓ Done! — ' + selectedSubject;
+
+  // Log
+  sessionLog.unshift({ subject:selectedSubject, topic:selectedTopic, minutes:selectedMinutes,
+    time: new Date().toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'}) });
+  renderLog(); updateTimerStats();
+
+  // Show overlay
+  document.getElementById('completionTitle').textContent = `${selectedSubject} — Done! 🎓`;
+  const topEl = document.getElementById('completedTopicEl');
+  const ragPrompt = document.getElementById('ragPrompt');
+  const dismissBtn = document.getElementById('dismissBtn');
+  const subEl = document.getElementById('completionSubtitle');
+
+  if (selectedTopic) {
+    const clean = selectedTopic.replace(' (Higher)','') + (selectedTopic.includes('(Higher)')?' [Higher]':'');
+    topEl.textContent = clean; topEl.style.display='block';
+    ragPrompt.style.display='block';
+    dismissBtn.style.display='none';
+    subEl.textContent = `${selectedMinutes} mins of focused revision. How well do you know it?`;
+  } else {
+    topEl.style.display='none';
+    ragPrompt.style.display='none';
+    dismissBtn.style.display='inline-block';
+    subEl.textContent = `${selectedMinutes} minute${selectedMinutes!==1?'s':''} of revision. Great work — take a short break!`;
+  }
+  document.getElementById('completionOverlay').classList.add('show');
+  remainingSeconds=totalSeconds; updateRing(1);
+}
+
+function setRagFromPrompt(status) {
+  if (selectedTopic && selectedSubject) {
+    setRag(selectedSubject, selectedTopic, status);
+    // Update topic panel if visible
+    document.querySelectorAll('.topic-item').forEach(item => {
+      if (item.dataset.topic === selectedTopic && item.dataset.subject === selectedSubject) {
+        item.classList.remove('rag-green','rag-amber','rag-red');
+        item.classList.add('rag-'+status.toLowerCase());
+        item.querySelectorAll('.rag-btn').forEach(b => {
+          b.classList.remove('active');
+          if ((b.classList.contains('g')&&status==='Green')||(b.classList.contains('a')&&status==='Amber')||(b.classList.contains('r')&&status==='Red')) b.classList.add('active');
+        });
+      }
+    });
+    updateSubjectPip(selectedSubject);
+    updateTimerStats();
+  }
+  dismissComplete();
+}
+
+function dismissComplete() {
+  document.getElementById('completionOverlay').classList.remove('show');
+  updateDisplay(); document.title='GCSE Revision Timer';
+}
+
+// ════════════════════════════════════════
+// STATS & PIPS
+// ════════════════════════════════════════
+function getSubjectRagCounts(subjectName) {
+  const sections = TOPICS[subjectName];
+  let g=0,a=0,r=0,ns=0;
+  Object.values(sections).flat().forEach(t => {
+    const rag = getRag(subjectName, t);
+    if (rag==='Green') g++;
+    else if (rag==='Amber') a++;
+    else if (rag==='Red') r++;
+    else ns++;
+  });
+  return {g,a,r,ns};
+}
+
+function updateSubjectPip(subjectName) {
+  const pipId = 'pip-' + subjectName.replace(/\s+/g,'_');
+  const pip = document.getElementById(pipId);
+  if (!pip) return;
+  const {g,a,r,ns} = getSubjectRagCounts(subjectName);
+  const total = g+a+r+ns;
+  pip.style.display = 'block';
+  if (g===total) pip.style.background='var(--green)';
+  else if (ns===total) pip.style.background='transparent';
+  else if (r > 0) pip.style.background='var(--red)';
+  else if (a > 0) pip.style.background='var(--amber)';
+  else pip.style.background='var(--green)';
+}
+
+function updateTimerStats() {
+  const totalMins = sessionLog.reduce((s,e)=>s+e.minutes,0);
+  document.getElementById('statTotal').textContent = totalMins>=60?`${Math.floor(totalMins/60)}h ${totalMins%60}m`:`${totalMins}m`;
+  document.getElementById('statSessions').textContent = sessionLog.length;
+
+  let tg=0,ta=0,tr=0;
+  SUBJECTS.forEach(s => {
+    const {g,a,r} = getSubjectRagCounts(s.name);
+    tg+=g; ta+=a; tr+=r;
+  });
+  document.getElementById('statGreen').textContent = tg;
+  document.getElementById('statAmber').textContent = ta;
+  document.getElementById('statRed').textContent = tr;
+
+  SUBJECTS.forEach(s => updateSubjectPip(s.name));
+}
+
+// ════════════════════════════════════════
+// SESSION LOG
+// ════════════════════════════════════════
+function renderLog() {
+  const list = document.getElementById('logList');
+  if (!sessionLog.length) {
+    list.innerHTML='<div style="font-family:\'DM Mono\',monospace;font-size:0.7rem;color:var(--muted);text-align:center;padding:1rem">No sessions yet.</div>';
+    return;
+  }
+  list.innerHTML = sessionLog.map(e => `
+    <div class="log-item">
+      <div class="log-dot"></div>
+      <div class="log-info">
+        <div class="log-subject">${e.subject}</div>
+        ${e.topic?`<div class="log-topic-text">${e.topic.replace(' (Higher)','')+(e.topic.includes('(Higher)')?` <span style="color:var(--higher);font-size:0.6rem">[H]</span>`:'')}</div>`:''}
+      </div>
+      <div class="log-right">
+        <span class="log-duration">${e.minutes}m</span>
+        <span class="log-time">${e.time}</span>
+      </div>
+    </div>`).join('');
+}
+
+function clearLog() { sessionLog=[]; renderLog(); updateTimerStats(); }
+
+// ════════════════════════════════════════
+// RAG TRACKER PAGE
+// ════════════════════════════════════════
+function setFilter(f, btn) {
+  activeFilter = f;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active-f'));
+  btn.classList.add('active-f');
+  renderTrackerPage();
+}
+
+function renderTrackerPage() {
+  // Overall stats
+  let tg=0,ta=0,tr=0,tns=0;
+  SUBJECTS.forEach(s => {
+    const c=getSubjectRagCounts(s.name);
+    tg+=c.g; ta+=c.a; tr+=c.r; tns+=c.ns;
+  });
+  const total = tg+ta+tr+tns;
+  document.getElementById('totalGreen').textContent=tg;
+  document.getElementById('totalAmber').textContent=ta;
+  document.getElementById('totalRed').textContent=tr;
+  document.getElementById('totalNS').textContent=tns;
+
+  const bar = document.getElementById('overallBar');
+  const pct = v => total>0 ? (v/total*100).toFixed(1)+'%' : '0%';
+  bar.innerHTML = `
+    <div class="progress-seg g" style="width:${pct(tg)}"></div>
+    <div class="progress-seg a" style="width:${pct(ta)}"></div>
+    <div class="progress-seg r" style="width:${pct(tr)}"></div>`;
+
+  // Accordions
+  const container = document.getElementById('trackerAccordions');
+  container.innerHTML = '';
+
+  SUBJECTS.forEach(s => {
+    const sections = TOPICS[s.name];
+    const {g,a,r,ns} = getSubjectRagCounts(s.name);
+    const subTotal = g+a+r+ns;
+
+    // Filter: check if any topics in this subject match the filter
+    const allTopics = Object.values(sections).flat();
+    const matchingTopics = activeFilter==='all' ? allTopics : allTopics.filter(t => getRag(s.name,t)===activeFilter);
+    if (activeFilter!=='all' && matchingTopics.length===0) return;
+
+    const pct2 = v => subTotal>0?(v/subTotal*100).toFixed(1)+'%':'0%';
+    const completePct = subTotal>0 ? Math.round(g/subTotal*100) : 0;
+
+    const acc = document.createElement('div');
+    acc.className = 'subject-accordion';
+
+    const header = document.createElement('div');
+    header.className = 'accordion-header';
+    header.innerHTML = `
+      <span class="accordion-icon">${s.icon}</span>
+      <span class="accordion-name">${s.name}</span>
+      <div class="accordion-mini-bar">
+        <div class="accordion-seg g" style="width:${pct2(g)}"></div>
+        <div class="accordion-seg a" style="width:${pct2(a)}"></div>
+        <div class="accordion-seg r" style="width:${pct2(r)}"></div>
+      </div>
+      <span class="accordion-pct">${completePct}% green</span>
+      <span class="accordion-chevron">▼</span>`;
+    header.onclick = () => {
+      header.classList.toggle('open');
+      body.classList.toggle('open');
+    };
+
+    const body = document.createElement('div');
+    body.className = 'accordion-body';
+
+    Object.entries(sections).forEach(([section, topics]) => {
+      const filteredTopics = activeFilter==='all' ? topics : topics.filter(t => getRag(s.name,t)===activeFilter);
+      if (filteredTopics.length===0) return;
+
+      const sh = document.createElement('div');
+      sh.className = 'tracker-section-heading';
+      sh.textContent = section;
+      body.appendChild(sh);
+
+      filteredTopics.forEach(topic => {
+        const isHigher = topic.includes('(Higher)');
+        const rag = getRag(s.name, topic);
+        const row = document.createElement('div');
+        row.className = 'tracker-topic-row' + (rag!=='Not Started'?' rag-'+rag.toLowerCase():'');
+        row.dataset.subject=s.name; row.dataset.topic=topic;
+        row.innerHTML = `
+          <span class="tracker-topic-text">${isHigher?topic.replace(' (Higher)',''):topic}${isHigher?' <span style="font-size:0.55rem;color:var(--higher)">[H]</span>':''}</span>
+          <div class="tracker-rag-btns">
+            <button class="tracker-rag-btn g${rag==='Green'?' active':''}" title="Green" onclick="trackerSetRag('${s.name}','${topic.replace(/'/g,"\\'")}','Green',this)">G</button>
+            <button class="tracker-rag-btn a${rag==='Amber'?' active':''}" title="Amber" onclick="trackerSetRag('${s.name}','${topic.replace(/'/g,"\\'")}','Amber',this)">A</button>
+            <button class="tracker-rag-btn r${rag==='Red'?' active':''}" title="Red" onclick="trackerSetRag('${s.name}','${topic.replace(/'/g,"\\'")}','Red',this)">R</button>
+          </div>`;
+        body.appendChild(row);
+      });
+    });
+
+    acc.appendChild(header);
+    acc.appendChild(body);
+    container.appendChild(acc);
+
+    // Auto-open if filter is active so user sees results immediately
+    if (activeFilter !== 'all') {
+      header.classList.add('open');
+      body.classList.add('open');
+    }
+  });
+}
+
+function trackerSetRag(subject, topic, status, btn) {
+  const current = getRag(subject, topic);
+  const newRag = current===status ? 'Not Started' : status;
+  setRag(subject, topic, newRag);
+  const row = btn.closest('.tracker-topic-row');
+  row.classList.remove('rag-green','rag-amber','rag-red');
+  if (newRag!=='Not Started') row.classList.add('rag-'+newRag.toLowerCase());
+  row.querySelectorAll('.tracker-rag-btn').forEach(b => b.classList.remove('active'));
+  if (newRag!=='Not Started') btn.classList.add('active');
+
+  // Also refresh timer panel if visible
+  if (selectedSubject === subject) {
+    document.querySelectorAll('.topic-item').forEach(item => {
+      if (item.dataset.topic===topic && item.dataset.subject===subject) {
+        item.classList.remove('rag-green','rag-amber','rag-red');
+        if (newRag!=='Not Started') item.classList.add('rag-'+newRag.toLowerCase());
+        item.querySelectorAll('.rag-btn').forEach(b => {
+          b.classList.remove('active');
+          if ((b.classList.contains('g')&&newRag==='Green')||(b.classList.contains('a')&&newRag==='Amber')||(b.classList.contains('r')&&newRag==='Red')) b.classList.add('active');
+        });
+      }
+    });
+  }
+
+  // Update the mini bar and percent live
+  const header = btn.closest('.subject-accordion').querySelector('.accordion-header');
+  const {g,a,r,ns} = getSubjectRagCounts(subject);
+  const st = g+a+r+ns;
+  const p2 = v => st>0?(v/st*100).toFixed(1)+'%':'0%';
+  const miniBar = header.querySelector('.accordion-mini-bar');
+  miniBar.querySelector('.accordion-seg.g').style.width=p2(g);
+  miniBar.querySelector('.accordion-seg.a').style.width=p2(a);
+  miniBar.querySelector('.accordion-seg.r').style.width=p2(r);
+  header.querySelector('.accordion-pct').textContent = (st>0?Math.round(g/st*100):0)+'% green';
+
+  // Update overall bar
+  let tg=0,ta=0,tr=0,tns=0;
+  SUBJECTS.forEach(s=>{const c=getSubjectRagCounts(s.name);tg+=c.g;ta+=c.a;tr+=c.r;tns+=c.ns;});
+  const tot=tg+ta+tr+tns;
+  document.getElementById('totalGreen').textContent=tg;
+  document.getElementById('totalAmber').textContent=ta;
+  document.getElementById('totalRed').textContent=tr;
+  document.getElementById('totalNS').textContent=tns;
+  const pct=v=>tot>0?(v/tot*100).toFixed(1)+'%':'0%';
+  const oBar=document.getElementById('overallBar');
+  oBar.querySelector('.progress-seg.g').style.width=pct(tg);
+  oBar.querySelector('.progress-seg.a').style.width=pct(ta);
+  oBar.querySelector('.progress-seg.r').style.width=pct(tr);
+
+  updateSubjectPip(subject);
+  updateTimerStats();
+}
+
+function refreshAllRagUI() {
+  // Called when RAG changes to keep pips + stats in sync
+  updateTimerStats();
+}
+
+function confirmResetAll() {
+  if (confirm('Reset all RAG statuses back to Not Started? This cannot be undone.')) {
+      ragStore = {};
+    scheduleSave();
+      Object.values(TOPICS[s.name]).flat().forEach(t => {
+        
+      });
+    });
+    renderTrackerPage();
+    updateTimerStats();
+    if (selectedSubject) renderTopicsPanel(selectedSubject);
+  }
+}
+
+// ════════════════════════════════════════
+// INIT — load from Supabase then boot UI
+// ════════════════════════════════════════
+async function init() {
+  updateDisplay();
+  updateRing(1);
+
+  if (!IS_CONFIGURED) return; // setup guide already shown
+
+  // Show loading state
+  const loadEl = document.createElement('div');
+  loadEl.id = 'loadingOverlay';
+  loadEl.style.cssText = 'position:fixed;inset:0;background:#0d0f14;z-index:999;display:flex;align-items:center;justify-content:center;font-family:"DM Mono",monospace;font-size:0.8rem;color:#5a6080;flex-direction:column;gap:0.5rem';
+  loadEl.innerHTML = '<div style="font-size:1.5rem">☁</div><div>Loading your revision data…</div>';
+  document.body.appendChild(loadEl);
+
+  try {
+    const row = await sb.get('revision_data', 'owner');
+    if (row) {
+      ragStore = row.rag || {};
+      sessionLog = row.log || [];
+    }
+  } catch(e) {
+    console.warn('Could not load from Supabase:', e);
+  }
+
+  loadEl.remove();
+  updateTimerStats();
+  // Rebuild subject pips now that RAG data is loaded
+  SUBJECTS.forEach(s => updateSubjectPip(s.name));
+
+  // Auto-save session log on page close too
+  if (!IS_VIEWER) {
+    window.addEventListener('beforeunload', () => persistData());
+  }
+}
+
+// Patch clearLog to also persist
+const _origClearLog = clearLog;
+clearLog = function() {
+  sessionLog = [];
+  renderLog();
+  updateTimerStats();
+  scheduleSave();
+};
+
+// Patch onComplete to also persist session log
+const _origOnComplete = onComplete;
+onComplete = function() {
+  _origOnComplete();
+  scheduleSave();
+};
+
+init();
+</script>
+
+</body>
+</html>
