@@ -16,6 +16,18 @@
   --red:#e74c3c;--red-bg:rgba(231,76,60,0.12);--red-border:rgba(231,76,60,0.35);
   --ns:#5a6080;--ns-bg:rgba(90,96,128,0.1);--ns-border:rgba(90,96,128,0.25);
 }
+body.light-mode{
+  --bg:#f4f5f7;--surface:#ffffff;--surface2:#eef0f4;--border:#dde0e8;
+  --text:#1a1d27;--muted:#8890a8;--accent:#6a58e8;--accent2:#2eaa85;
+  --warn:#d4820a;--danger:#d94040;--higher:#b58a00;
+  --green:#1f9152;--green-bg:rgba(31,145,82,0.1);--green-border:rgba(31,145,82,0.3);
+  --amber:#c96a00;--amber-bg:rgba(201,106,0,0.1);--amber-border:rgba(201,106,0,0.3);
+  --red:#c0392b;--red-bg:rgba(192,57,43,0.1);--red-border:rgba(192,57,43,0.3);
+  --ns:#8890a8;--ns-bg:rgba(136,144,168,0.1);--ns-border:rgba(136,144,168,0.25);
+}
+body.light-mode::before{background:radial-gradient(ellipse,rgba(106,88,232,0.07) 0%,transparent 70%)}
+.theme-toggle{margin-left:auto;margin-right:0.75rem;background:none;border:1px solid var(--border);border-radius:6px;color:var(--muted);cursor:pointer;font-size:0.85rem;width:32px;height:32px;display:flex;align-items:center;justify-content:center;transition:all 0.15s;flex-shrink:0;align-self:center}
+.theme-toggle:hover{border-color:var(--accent);color:var(--accent)}
 body{font-family:'Syne',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:0 0 4rem;overflow-x:hidden}
 body::before{content:'';position:fixed;top:-20%;left:50%;transform:translateX(-50%);width:800px;height:500px;background:radial-gradient(ellipse,rgba(124,106,247,0.1) 0%,transparent 70%);pointer-events:none;z-index:0}
 
@@ -294,6 +306,7 @@ h1 span{color:var(--accent)}
 <nav class="nav">
   <button class="nav-tab active" onclick="showPage('timer',this)">⏱ Timer</button>
   <button class="nav-tab" onclick="showPage('tracker',this)">📊 RAG Tracker</button>
+  <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()" title="Toggle light/dark mode">🌙</button>
 </nav>
 
 <!-- ══════════ TIMER PAGE ══════════ -->
@@ -1228,6 +1241,26 @@ if (IS_CONFIGURED) {
     scheduleSave();
   };
 }
+
+// ════════════════════════════════════════
+// THEME TOGGLE
+// ════════════════════════════════════════
+function toggleTheme() {
+  const isLight = document.body.classList.toggle('light-mode');
+  document.getElementById('themeToggle').textContent = isLight ? '☀️' : '🌙';
+  localStorage.setItem('gcse_theme', isLight ? 'light' : 'dark');
+}
+// Restore saved theme preference
+(function() {
+  if (localStorage.getItem('gcse_theme') === 'light') {
+    document.body.classList.add('light-mode');
+    // Button will be updated once DOM is ready
+    document.addEventListener('DOMContentLoaded', () => {
+      const btn = document.getElementById('themeToggle');
+      if (btn) btn.textContent = '☀️';
+    });
+  }
+})();
 
 init();
 </script>
