@@ -1287,12 +1287,11 @@ function showAcOverlay(view) {
     card.innerHTML = `
       <div class="ac-badge">📚 GCSE Revision</div>
       <h2>Set a Password</h2>
-      <p>Protect your revision data with an owner password.<br>Share a viewer copy with others — they can see but not edit.</p>
+      <p>Create a password to protect your revision data.<br>Anyone without it will only be able to view — not edit.</p>
       <input class="ac-input" id="acPw1" type="password" placeholder="Choose a password" autocomplete="new-password">
       <input class="ac-input" id="acPw2" type="password" placeholder="Confirm password" autocomplete="new-password">
       <div class="ac-error" id="acErr"></div>
-      <button class="ac-btn primary" onclick="doSetup()">Set Password & Open</button>
-      <button class="ac-btn secondary" onclick="skipPw()">Skip — no password</button>`;
+      <button class="ac-btn primary" onclick="doSetup()">Set Password & Open</button>`;
     document.getElementById('acPw1').addEventListener('keydown', e => { if(e.key==='Enter') document.getElementById('acPw2').focus(); });
     document.getElementById('acPw2').addEventListener('keydown', e => { if(e.key==='Enter') doSetup(); });
     setTimeout(() => document.getElementById('acPw1').focus(), 50);
@@ -1301,22 +1300,14 @@ function showAcOverlay(view) {
     card.innerHTML = `
       <div class="ac-badge">📚 GCSE Revision</div>
       <h2>Owner Sign In</h2>
-      <p>Enter your password to edit this revision tracker.</p>
+      <p>Enter your password to edit this revision tracker.<br><span style="color:var(--accent2)">No password? You can still view in read-only mode.</span></p>
       <input class="ac-input" id="acPwLogin" type="password" placeholder="Password" autocomplete="current-password">
       <div class="ac-error" id="acErr"></div>
-      <button class="ac-btn primary" onclick="doLogin()">Sign In</button>
-      <div class="ac-divider"></div>
-      <button class="ac-link" onclick="showForgot()">Forgot password? Reset everything</button>`;
+      <button class="ac-btn primary" onclick="doLogin()">Sign In as Owner</button>
+      <button class="ac-btn secondary" onclick="hideAcOverlay();activateViewer()">Browse as Viewer (read-only)</button>`;
     document.getElementById('acPwLogin').addEventListener('keydown', e => { if(e.key==='Enter') doLogin(); });
     setTimeout(() => document.getElementById('acPwLogin').focus(), 50);
 
-  } else if (view === 'forgot') {
-    card.innerHTML = `
-      <div class="ac-badge" style="color:var(--danger);border-color:rgba(231,76,60,0.35)">⚠ Reset Password</div>
-      <h2>Reset Password</h2>
-      <p>This will clear your local password so you can set a new one.<br><strong style="color:var(--accent2)">Your revision progress in Supabase is not affected.</strong></p>
-      <button class="ac-btn primary" style="background:var(--danger)" onclick="doReset()">Reset Password</button>
-      <button class="ac-btn secondary" onclick="showAcOverlay('login')">Cancel</button>`;
   }
 }
 
@@ -1337,17 +1328,10 @@ function doSetup() {
   activateOwner();
 }
 
-function skipPw() {
-  localStorage.setItem(AC_PW_KEY, 'NONE');
-  sessionStorage.setItem(AC_SESSION, 'ok');
-  hideAcOverlay();
-  activateOwner();
-}
-
 function doLogin() {
   const pw     = document.getElementById('acPwLogin').value;
   const stored = localStorage.getItem(AC_PW_KEY);
-  if (stored === 'NONE' || hashPw(pw) === stored) {
+  if (hashPw(pw) === stored) {
     sessionStorage.setItem(AC_SESSION, 'ok');
     hideAcOverlay();
     activateOwner();
@@ -1355,15 +1339,6 @@ function doLogin() {
     document.getElementById('acErr').textContent = 'Incorrect password.';
     document.getElementById('acPwLogin').select();
   }
-}
-
-function showForgot() { showAcOverlay('forgot'); }
-
-function doReset() {
-  // Only clears the local password — your Supabase revision data is NOT affected
-  localStorage.removeItem(AC_PW_KEY);
-  sessionStorage.removeItem(AC_SESSION);
-  location.reload();
 }
 
 function ownerLogout() {
@@ -1395,12 +1370,11 @@ function initAccessControl() {
     return;
   }
   // Owner file — check password state
-  const stored = localStorage.getItem(AC_PW_KEY);
-  if (!stored) {
-    // First ever open — prompt to set password
+  if (!hasPw()) {
+    // First ever open — prompt to set a password
     showAcOverlay('setup');
-  } else if (stored === 'NONE' || checkSession()) {
-    // No password set, or already authenticated this session
+  } else if (checkSession()) {
+    // Already authenticated this browser session
     activateOwner();
   } else {
     // Has password, needs to log in
