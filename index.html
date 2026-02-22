@@ -573,6 +573,15 @@ const SUPABASE_KEY = 'PASTE_YOUR_SUPABASE_ANON_KEY_HERE';</pre>
       </div>
     </div>
 
+    <div class="step">
+      <div class="step-num">5</div>
+      <div class="step-content">
+        <h3>Create your owner login account</h3>
+        <p>In Supabase go to <strong>Authentication → Users → Add user → Create new user</strong>.<br><br>
+        Enter any email and a strong password — these are the credentials you'll use to sign in as owner. Keep them safe.</p>
+      </div>
+    </div>
+
     <div class="divider"></div>
 
     <div class="step">
@@ -581,11 +590,11 @@ const SUPABASE_KEY = 'PASTE_YOUR_SUPABASE_ANON_KEY_HERE';</pre>
         <h3>Creating a viewer (read-only) copy</h3>
         <p>Once the app is working, make a second copy of the file and change one line:</p>
         <pre>const USER_ID = 'viewer'; // was 'owner'</pre>
-        <p>Share that copy with anyone you want to give read-only access. They'll see all your RAG progress but cannot change anything.</p>
+        <p>Share that copy with anyone. They'll see your live progress but cannot sign in or make changes.</p>
       </div>
     </div>
 
-    <div class="tip">✓ Your data will sync across all devices automatically once configured.<br>✓ The free Supabase tier gives you 500MB storage and 2GB bandwidth — more than enough.</div>
+    <div class="tip">✓ Login is handled by Supabase Auth — no passwords stored in the browser.<br>✓ Your data syncs across all devices automatically.<br>✓ The free Supabase tier is more than enough.</div>
   </div>`;
 }
 
@@ -1214,7 +1223,7 @@ function confirmResetAll() {
 async function init() {
   if (!IS_CONFIGURED) return; // setup guide already shown — nothing to boot
 
-  initAccessControl();
+  await initAccessControl();
   updateRing(1);
 
   // Show loading state
@@ -1267,47 +1276,58 @@ if (IS_CONFIGURED) {
 // ════════════════════════════════════════
 // ACCESS CONTROL
 // ════════════════════════════════════════
-const AC_PW_KEY  = 'gcse_owner_pw';
-const AC_SESSION = 'gcse_owner_session';
+// ════════════════════════════════════════
+// ACCESS CONTROL — Supabase Auth
+// ════════════════════════════════════════
 
-function hashPw(pw) {
-  let h = 0;
-  for (let i = 0; i < pw.length; i++) h = (Math.imul(31, h) + pw.charCodeAt(i)) | 0;
-  return 'H' + Math.abs(h).toString(36) + pw.length.toString(36);
-}
-function hasPw()       { return !!localStorage.getItem(AC_PW_KEY); }
-function checkSession(){ return sessionStorage.getItem(AC_SESSION) === 'ok'; }
+// Supabase auth API helpers
+const sbAuth = {
+  async signIn(email, password) {
+    const r = await fetch(`${SUPABASE_URL}/auth/v1/token?grant_type=password`, {
+      method: 'POST',
+      headers: { apikey: SUPABASE_KEY, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, password })
+    });
+    return r.json();
+  },
+  async signOut(token) {
+    await fetch(`${SUPABASE_URL}/auth/v1/logout`, {
+      method: 'POST',
+      headers: { apikey: SUPABASE_KEY, Authorization: `Bearer ${token}` }
+    });
+  },
+  async getUser(token) {
+    const r = await fetch(`${SUPABASE_URL}/auth/v1/user`, {
+      headers: { apikey: SUPABASE_KEY, Authorization: `Bearer ${token}` }
+    });
+    return r.ok ? r.json() : null;
+  }
+};
+
+const SB_TOKEN_KEY = 'gcse_sb_token';
+
+function getSavedToken() { return sessionStorage.getItem(SB_TOKEN_KEY); }
+function saveToken(t)    { sessionStorage.setItem(SB_TOKEN_KEY, t); }
+function clearToken()    { sessionStorage.removeItem(SB_TOKEN_KEY); }
 
 function showAcOverlay(view) {
   const overlay = document.getElementById('acOverlay');
   const card    = document.getElementById('acCard');
   overlay.style.display = 'flex';
 
-  if (view === 'setup') {
-    card.innerHTML = `
-      <div class="ac-badge">📚 GCSE Revision</div>
-      <h2>Set a Password</h2>
-      <p>Create a password to protect your revision data.<br>Anyone without it will only be able to view — not edit.</p>
-      <input class="ac-input" id="acPw1" type="password" placeholder="Choose a password" autocomplete="new-password">
-      <input class="ac-input" id="acPw2" type="password" placeholder="Confirm password" autocomplete="new-password">
-      <div class="ac-error" id="acErr"></div>
-      <button class="ac-btn primary" onclick="doSetup()">Set Password & Open</button>`;
-    document.getElementById('acPw1').addEventListener('keydown', e => { if(e.key==='Enter') document.getElementById('acPw2').focus(); });
-    document.getElementById('acPw2').addEventListener('keydown', e => { if(e.key==='Enter') doSetup(); });
-    setTimeout(() => document.getElementById('acPw1').focus(), 50);
-
-  } else if (view === 'login') {
+  if (view === 'login') {
     card.innerHTML = `
       <div class="ac-badge">📚 GCSE Revision</div>
       <h2>Owner Sign In</h2>
-      <p>Enter your password to edit this revision tracker.<br><span style="color:var(--accent2)">No password? You can still view in read-only mode.</span></p>
-      <input class="ac-input" id="acPwLogin" type="password" placeholder="Password" autocomplete="current-password">
+      <p>Sign in with your Supabase account to edit.<br><span style="color:var(--accent2)">No account? Browse in read-only mode.</span></p>
+      <input class="ac-input" id="acEmail" type="email" placeholder="Email" autocomplete="email">
+      <input class="ac-input" id="acPassword" type="password" placeholder="Password" autocomplete="current-password">
       <div class="ac-error" id="acErr"></div>
-      <button class="ac-btn primary" onclick="doLogin()">Sign In as Owner</button>
+      <button class="ac-btn primary" id="acSignInBtn" onclick="doLogin()">Sign In as Owner</button>
       <button class="ac-btn secondary" onclick="hideAcOverlay();activateViewer()">Browse as Viewer (read-only)</button>`;
-    document.getElementById('acPwLogin').addEventListener('keydown', e => { if(e.key==='Enter') doLogin(); });
-    setTimeout(() => document.getElementById('acPwLogin').focus(), 50);
-
+    document.getElementById('acEmail').addEventListener('keydown', e => { if(e.key==='Enter') document.getElementById('acPassword').focus(); });
+    document.getElementById('acPassword').addEventListener('keydown', e => { if(e.key==='Enter') doLogin(); });
+    setTimeout(() => document.getElementById('acEmail').focus(), 50);
   }
 }
 
@@ -1315,71 +1335,73 @@ function hideAcOverlay() {
   document.getElementById('acOverlay').style.display = 'none';
 }
 
-function doSetup() {
-  const p1 = document.getElementById('acPw1').value.trim();
-  const p2 = document.getElementById('acPw2').value.trim();
-  const err = document.getElementById('acErr');
-  if (!p1)         { err.textContent = 'Please enter a password.'; return; }
-  if (p1.length<4) { err.textContent = 'Password must be at least 4 characters.'; return; }
-  if (p1 !== p2)   { err.textContent = 'Passwords do not match.'; return; }
-  localStorage.setItem(AC_PW_KEY, hashPw(p1));
-  sessionStorage.setItem(AC_SESSION, 'ok');
-  hideAcOverlay();
-  activateOwner();
-}
+async function doLogin() {
+  const email    = document.getElementById('acEmail').value.trim();
+  const password = document.getElementById('acPassword').value;
+  const err      = document.getElementById('acErr');
+  const btn      = document.getElementById('acSignInBtn');
 
-function doLogin() {
-  const pw     = document.getElementById('acPwLogin').value;
-  const stored = localStorage.getItem(AC_PW_KEY);
-  if (hashPw(pw) === stored) {
-    sessionStorage.setItem(AC_SESSION, 'ok');
+  if (!email || !password) { err.textContent = 'Please enter your email and password.'; return; }
+
+  btn.textContent = 'Signing in…';
+  btn.disabled = true;
+  err.textContent = '';
+
+  const data = await sbAuth.signIn(email, password);
+
+  if (data.access_token) {
+    saveToken(data.access_token);
     hideAcOverlay();
     activateOwner();
   } else {
-    document.getElementById('acErr').textContent = 'Incorrect password.';
-    document.getElementById('acPwLogin').select();
+    err.textContent = data.error_description || data.msg || 'Incorrect email or password.';
+    btn.textContent = 'Sign In as Owner';
+    btn.disabled = false;
   }
 }
 
-function ownerLogout() {
-  sessionStorage.removeItem(AC_SESSION);
+async function ownerLogout() {
+  const token = getSavedToken();
+  if (token) await sbAuth.signOut(token);
+  clearToken();
   location.reload();
 }
 
 function activateOwner() {
-  document.getElementById('ownerBar').style.display   = 'flex';
+  document.getElementById('ownerBar').style.display    = 'flex';
   document.getElementById('viewerBanner').style.display = 'none';
 }
 
 function activateViewer() {
   document.getElementById('viewerBanner').style.display = 'block';
   document.getElementById('ownerBar').style.display     = 'none';
-  // Disable all edit controls
-  window.addEventListener('load', () => {
-    document.querySelectorAll('.rag-btn,.tracker-rag-btn,.ctrl-btn,.dur-btn,.clear-btn,.reset-all-btn,.stb-clear,.filter-btn,#customMins,.rag-prompt-btn').forEach(el => {
-      el.style.pointerEvents = 'none';
-      el.style.opacity = '0.5';
-    });
+  document.querySelectorAll('.rag-btn,.tracker-rag-btn,.ctrl-btn,.dur-btn,.clear-btn,.reset-all-btn,.stb-clear,.filter-btn,#customMins,.rag-prompt-btn').forEach(el => {
+    el.style.pointerEvents = 'none';
+    el.style.opacity = '0.5';
   });
 }
 
-function initAccessControl() {
-  // Viewer file — skip login, load read-only
+async function initAccessControl() {
+  // Viewer file — skip login entirely
   if (IS_VIEWER) {
     activateViewer();
     return;
   }
-  // Owner file — check password state
-  if (!hasPw()) {
-    // First ever open — prompt to set a password
-    showAcOverlay('setup');
-  } else if (checkSession()) {
-    // Already authenticated this browser session
-    activateOwner();
-  } else {
-    // Has password, needs to log in
-    showAcOverlay('login');
+
+  // Check for existing session token
+  const token = getSavedToken();
+  if (token) {
+    const user = await sbAuth.getUser(token);
+    if (user && user.id) {
+      activateOwner();
+      return;
+    } else {
+      clearToken(); // token expired
+    }
   }
+
+  // No valid session — show login
+  showAcOverlay('login');
 }
 
 // ════════════════════════════════════════
