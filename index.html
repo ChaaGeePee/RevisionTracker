@@ -417,8 +417,8 @@ h1 span{color:var(--accent)}
 // ════════════════════════════════════════
 // ⚙️  SUPABASE CONFIG — fill these in!
 // ════════════════════════════════════════
-const SUPABASE_URL  = 'https://hpflilrxmsrpqynmenmk.supabase.co';
-const SUPABASE_KEY  = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhwZmxpbHJ4bXNycHF5bm1lbm1rIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzA4MTIzNTQsImV4cCI6MjA4NjM4ODM1NH0.Yt_NyIO2xQLYTq274KzYbon_NsTR4A_rV8L2_-CoKBY';
+const SUPABASE_URL  = 'PASTE_YOUR_SUPABASE_URL_HERE';
+const SUPABASE_KEY  = 'PASTE_YOUR_SUPABASE_ANON_KEY_HERE';
 const USER_ID       = 'owner'; // Change to 'viewer' for a read-only copy
 
 // ════════════════════════════════════════
@@ -675,6 +675,7 @@ function showPage(id, btn) {
 // ════════════════════════════════════════
 // BUILD TIMER PAGE
 // ════════════════════════════════════════
+if (IS_CONFIGURED) {
 const grid = document.getElementById('subjectsGrid');
 SUBJECTS.forEach(s => {
   const btn = document.createElement('button');
@@ -693,6 +694,7 @@ DURATIONS.forEach(m => {
   btn.onclick = () => selectDuration(m, btn);
   durRow.appendChild(btn);
 });
+} // end IS_CONFIGURED
 
 function selectSubject(name, btn) {
   if (isRunning) return;
@@ -815,9 +817,10 @@ function setCustomDuration(val) {
 function fmt(secs) {
   return String(Math.floor(secs/60)).padStart(2,'0') + ':' + String(secs%60).padStart(2,'0');
 }
-function updateDisplay() { document.getElementById('timeDisplay').textContent = fmt(remainingSeconds); }
+function updateDisplay() { const el=document.getElementById('timeDisplay'); if(el) el.textContent=fmt(remainingSeconds); }
 function updateRing(f) {
   const ring = document.getElementById('ringProg');
+  if (!ring) return;
   ring.style.strokeDashoffset = CIRCUMFERENCE * (1 - f);
   ring.classList.remove('warn','danger');
   if (f<=0.1) ring.classList.add('danger');
@@ -951,6 +954,8 @@ function updateSubjectPip(subjectName) {
 }
 
 function updateTimerStats() {
+  const statTotal = document.getElementById('statTotal');
+  if (!statTotal) return; // DOM not ready (setup guide shown)
   const totalMins = sessionLog.reduce((s,e)=>s+e.minutes,0);
   document.getElementById('statTotal').textContent = totalMins>=60?`${Math.floor(totalMins/60)}h ${totalMins%60}m`:`${totalMins}m`;
   document.getElementById('statSessions').textContent = sessionLog.length;
@@ -1176,10 +1181,10 @@ function confirmResetAll() {
 // INIT — load from Supabase then boot UI
 // ════════════════════════════════════════
 async function init() {
+  if (!IS_CONFIGURED) return; // setup guide already shown — nothing to boot
+
   updateDisplay();
   updateRing(1);
-
-  if (!IS_CONFIGURED) return; // setup guide already shown
 
   // Show loading state
   const loadEl = document.createElement('div');
@@ -1200,30 +1205,33 @@ async function init() {
 
   loadEl.remove();
   updateTimerStats();
+  renderLog();
   // Rebuild subject pips now that RAG data is loaded
   SUBJECTS.forEach(s => updateSubjectPip(s.name));
 
-  // Auto-save session log on page close too
+  // Auto-save on page close
   if (!IS_VIEWER) {
     window.addEventListener('beforeunload', () => persistData());
   }
 }
 
-// Patch clearLog to also persist
-const _origClearLog = clearLog;
-clearLog = function() {
-  sessionLog = [];
-  renderLog();
-  updateTimerStats();
-  scheduleSave();
-};
+if (IS_CONFIGURED) {
+  // Patch clearLog to also persist
+  const _origClearLog = clearLog;
+  clearLog = function() {
+    sessionLog = [];
+    renderLog();
+    updateTimerStats();
+    scheduleSave();
+  };
 
-// Patch onComplete to also persist session log
-const _origOnComplete = onComplete;
-onComplete = function() {
-  _origOnComplete();
-  scheduleSave();
-};
+  // Patch onComplete to also persist session log
+  const _origOnComplete = onComplete;
+  onComplete = function() {
+    _origOnComplete();
+    scheduleSave();
+  };
+}
 
 init();
 </script>
