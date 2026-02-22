@@ -28,6 +28,27 @@ body.light-mode{
 body.light-mode::before{background:radial-gradient(ellipse,rgba(106,88,232,0.07) 0%,transparent 70%)}
 .theme-toggle{margin-left:auto;margin-right:0.75rem;background:none;border:1px solid var(--border);border-radius:6px;color:var(--muted);cursor:pointer;font-size:0.85rem;width:32px;height:32px;display:flex;align-items:center;justify-content:center;transition:all 0.15s;flex-shrink:0;align-self:center}
 .theme-toggle:hover{border-color:var(--accent);color:var(--accent)}
+/* ── ACCESS CONTROL ── */
+.ac-overlay{position:fixed;inset:0;background:rgba(13,15,20,0.97);z-index:200;display:flex;align-items:center;justify-content:center;padding:1.5rem;backdrop-filter:blur(12px)}
+.ac-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:2rem 2.2rem;max-width:360px;width:100%;text-align:center}
+.ac-badge{display:inline-block;font-family:'DM Mono',monospace;font-size:0.62rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--accent);border:1px solid rgba(124,106,247,0.35);padding:0.25rem 0.7rem;border-radius:2px;margin-bottom:1rem}
+.ac-card h2{font-size:1.3rem;font-weight:800;margin-bottom:0.4rem}
+.ac-card p{font-family:'DM Mono',monospace;font-size:0.7rem;color:var(--muted);margin-bottom:1.4rem;line-height:1.6}
+.ac-input{width:100%;background:var(--surface2);border:1px solid var(--border);color:var(--text);font-family:'DM Mono',monospace;font-size:0.9rem;padding:0.65rem 1rem;border-radius:7px;outline:none;transition:border-color 0.15s;margin-bottom:0.6rem;box-sizing:border-box}
+.ac-input:focus{border-color:var(--accent)}
+.ac-btn{width:100%;font-family:'Syne',sans-serif;font-size:0.85rem;font-weight:700;padding:0.7rem;border-radius:8px;border:none;cursor:pointer;transition:all 0.15s;margin-bottom:0.45rem}
+.ac-btn.primary{background:var(--accent);color:#fff}
+.ac-btn.primary:hover{background:#9380ff}
+.ac-btn.secondary{background:transparent;border:1px solid var(--border);color:var(--muted)}
+.ac-btn.secondary:hover{border-color:var(--accent);color:var(--text)}
+.ac-error{font-family:'DM Mono',monospace;font-size:0.68rem;color:var(--danger);min-height:1.1em;margin-bottom:0.4rem}
+.ac-link{font-family:'DM Mono',monospace;font-size:0.63rem;color:var(--muted);background:none;border:none;cursor:pointer;text-decoration:underline;text-underline-offset:3px;padding:0}
+.ac-link:hover{color:var(--danger)}
+.ac-divider{height:1px;background:var(--border);margin:1rem 0}
+.viewer-banner{width:100%;background:rgba(247,163,74,0.1);border-bottom:1px solid rgba(247,163,74,0.3);padding:0.45rem 1.2rem;font-family:'DM Mono',monospace;font-size:0.67rem;color:var(--warn);text-align:center;position:sticky;top:0;z-index:49}
+.owner-bar{width:100%;background:var(--surface2);border-bottom:1px solid var(--border);padding:0.4rem 1.2rem;display:flex;align-items:center;justify-content:flex-end;gap:1rem;font-family:'DM Mono',monospace;font-size:0.63rem;color:var(--muted);position:sticky;top:0;z-index:49}
+.owner-bar button{background:none;border:none;font-family:'DM Mono',monospace;font-size:0.63rem;color:var(--muted);cursor:pointer;text-decoration:underline;text-underline-offset:3px;padding:0}
+.owner-bar button:hover{color:var(--danger)}
 body{font-family:'Syne',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:0 0 4rem;overflow-x:hidden}
 body::before{content:'';position:fixed;top:-20%;left:50%;transform:translateX(-50%);width:800px;height:500px;background:radial-gradient(ellipse,rgba(124,106,247,0.1) 0%,transparent 70%);pointer-events:none;z-index:0}
 
@@ -303,6 +324,22 @@ h1 span{color:var(--accent)}
 </div>
 
 <!-- Navigation -->
+<!-- Access control overlay -->
+<div class="ac-overlay" id="acOverlay" style="display:none">
+  <div class="ac-card" id="acCard"></div>
+</div>
+
+<!-- Viewer banner (read-only mode) -->
+<div class="viewer-banner" id="viewerBanner" style="display:none">
+  👁 View-only mode — you can see all progress but cannot make changes
+</div>
+
+<!-- Owner bar (shown when logged in) -->
+<div class="owner-bar" id="ownerBar" style="display:none">
+  <span>🔒 Owner mode</span>
+  <button onclick="ownerLogout()">Sign out</button>
+</div>
+
 <nav class="nav">
   <button class="nav-tab active" onclick="showPage('timer',this)">⏱ Timer</button>
   <button class="nav-tab" onclick="showPage('tracker',this)">📊 RAG Tracker</button>
@@ -650,21 +687,6 @@ function showSaveIndicator(state) {
 }
 
 // ── Viewer mode banner ──
-if (IS_VIEWER) {
-  const banner = document.createElement('div');
-  banner.style.cssText = 'width:100%;background:rgba(247,163,74,0.1);border-bottom:1px solid rgba(247,163,74,0.3);padding:0.5rem 1.5rem;font-family:"DM Mono",monospace;font-size:0.68rem;color:#f7a34a;text-align:center;position:sticky;top:0;z-index:49';
-  banner.textContent = '👁  View-only mode — you can see all progress but cannot make changes';
-  document.body.insertBefore(banner, document.body.firstChild);
-
-  // Disable all interactive elements after load
-  window.addEventListener('load', () => {
-    document.querySelectorAll('.rag-btn,.tracker-rag-btn,.ctrl-btn,.dur-btn,.clear-btn,.reset-all-btn,.stb-clear,.filter-btn,#customMins,.rag-prompt-btn').forEach(el => {
-      el.style.pointerEvents = 'none';
-      el.style.opacity = '0.5';
-    });
-  });
-}
-
 let selectedSubject = null;
 let selectedTopic = null;
 let selectedMinutes = 25;
@@ -1192,7 +1214,7 @@ function confirmResetAll() {
 async function init() {
   if (!IS_CONFIGURED) return; // setup guide already shown — nothing to boot
 
-  updateDisplay();
+  initAccessControl();
   updateRing(1);
 
   // Show loading state
@@ -1240,6 +1262,150 @@ if (IS_CONFIGURED) {
     _origOnComplete();
     scheduleSave();
   };
+}
+
+// ════════════════════════════════════════
+// ACCESS CONTROL
+// ════════════════════════════════════════
+const AC_PW_KEY  = 'gcse_owner_pw';
+const AC_SESSION = 'gcse_owner_session';
+
+function hashPw(pw) {
+  let h = 0;
+  for (let i = 0; i < pw.length; i++) h = (Math.imul(31, h) + pw.charCodeAt(i)) | 0;
+  return 'H' + Math.abs(h).toString(36) + pw.length.toString(36);
+}
+function hasPw()       { return !!localStorage.getItem(AC_PW_KEY); }
+function checkSession(){ return sessionStorage.getItem(AC_SESSION) === 'ok'; }
+
+function showAcOverlay(view) {
+  const overlay = document.getElementById('acOverlay');
+  const card    = document.getElementById('acCard');
+  overlay.style.display = 'flex';
+
+  if (view === 'setup') {
+    card.innerHTML = `
+      <div class="ac-badge">📚 GCSE Revision</div>
+      <h2>Set a Password</h2>
+      <p>Protect your revision data with an owner password.<br>Share a viewer copy with others — they can see but not edit.</p>
+      <input class="ac-input" id="acPw1" type="password" placeholder="Choose a password" autocomplete="new-password">
+      <input class="ac-input" id="acPw2" type="password" placeholder="Confirm password" autocomplete="new-password">
+      <div class="ac-error" id="acErr"></div>
+      <button class="ac-btn primary" onclick="doSetup()">Set Password & Open</button>
+      <button class="ac-btn secondary" onclick="skipPw()">Skip — no password</button>`;
+    document.getElementById('acPw1').addEventListener('keydown', e => { if(e.key==='Enter') document.getElementById('acPw2').focus(); });
+    document.getElementById('acPw2').addEventListener('keydown', e => { if(e.key==='Enter') doSetup(); });
+    setTimeout(() => document.getElementById('acPw1').focus(), 50);
+
+  } else if (view === 'login') {
+    card.innerHTML = `
+      <div class="ac-badge">📚 GCSE Revision</div>
+      <h2>Owner Sign In</h2>
+      <p>Enter your password to edit this revision tracker.</p>
+      <input class="ac-input" id="acPwLogin" type="password" placeholder="Password" autocomplete="current-password">
+      <div class="ac-error" id="acErr"></div>
+      <button class="ac-btn primary" onclick="doLogin()">Sign In</button>
+      <div class="ac-divider"></div>
+      <button class="ac-link" onclick="showForgot()">Forgot password? Reset everything</button>`;
+    document.getElementById('acPwLogin').addEventListener('keydown', e => { if(e.key==='Enter') doLogin(); });
+    setTimeout(() => document.getElementById('acPwLogin').focus(), 50);
+
+  } else if (view === 'forgot') {
+    card.innerHTML = `
+      <div class="ac-badge" style="color:var(--danger);border-color:rgba(231,76,60,0.35)">⚠ Reset Password</div>
+      <h2>Reset Password</h2>
+      <p>This will clear your local password so you can set a new one.<br><strong style="color:var(--accent2)">Your revision progress in Supabase is not affected.</strong></p>
+      <button class="ac-btn primary" style="background:var(--danger)" onclick="doReset()">Reset Password</button>
+      <button class="ac-btn secondary" onclick="showAcOverlay('login')">Cancel</button>`;
+  }
+}
+
+function hideAcOverlay() {
+  document.getElementById('acOverlay').style.display = 'none';
+}
+
+function doSetup() {
+  const p1 = document.getElementById('acPw1').value.trim();
+  const p2 = document.getElementById('acPw2').value.trim();
+  const err = document.getElementById('acErr');
+  if (!p1)         { err.textContent = 'Please enter a password.'; return; }
+  if (p1.length<4) { err.textContent = 'Password must be at least 4 characters.'; return; }
+  if (p1 !== p2)   { err.textContent = 'Passwords do not match.'; return; }
+  localStorage.setItem(AC_PW_KEY, hashPw(p1));
+  sessionStorage.setItem(AC_SESSION, 'ok');
+  hideAcOverlay();
+  activateOwner();
+}
+
+function skipPw() {
+  localStorage.setItem(AC_PW_KEY, 'NONE');
+  sessionStorage.setItem(AC_SESSION, 'ok');
+  hideAcOverlay();
+  activateOwner();
+}
+
+function doLogin() {
+  const pw     = document.getElementById('acPwLogin').value;
+  const stored = localStorage.getItem(AC_PW_KEY);
+  if (stored === 'NONE' || hashPw(pw) === stored) {
+    sessionStorage.setItem(AC_SESSION, 'ok');
+    hideAcOverlay();
+    activateOwner();
+  } else {
+    document.getElementById('acErr').textContent = 'Incorrect password.';
+    document.getElementById('acPwLogin').select();
+  }
+}
+
+function showForgot() { showAcOverlay('forgot'); }
+
+function doReset() {
+  // Only clears the local password — your Supabase revision data is NOT affected
+  localStorage.removeItem(AC_PW_KEY);
+  sessionStorage.removeItem(AC_SESSION);
+  location.reload();
+}
+
+function ownerLogout() {
+  sessionStorage.removeItem(AC_SESSION);
+  location.reload();
+}
+
+function activateOwner() {
+  document.getElementById('ownerBar').style.display   = 'flex';
+  document.getElementById('viewerBanner').style.display = 'none';
+}
+
+function activateViewer() {
+  document.getElementById('viewerBanner').style.display = 'block';
+  document.getElementById('ownerBar').style.display     = 'none';
+  // Disable all edit controls
+  window.addEventListener('load', () => {
+    document.querySelectorAll('.rag-btn,.tracker-rag-btn,.ctrl-btn,.dur-btn,.clear-btn,.reset-all-btn,.stb-clear,.filter-btn,#customMins,.rag-prompt-btn').forEach(el => {
+      el.style.pointerEvents = 'none';
+      el.style.opacity = '0.5';
+    });
+  });
+}
+
+function initAccessControl() {
+  // Viewer file — skip login, load read-only
+  if (IS_VIEWER) {
+    activateViewer();
+    return;
+  }
+  // Owner file — check password state
+  const stored = localStorage.getItem(AC_PW_KEY);
+  if (!stored) {
+    // First ever open — prompt to set password
+    showAcOverlay('setup');
+  } else if (stored === 'NONE' || checkSession()) {
+    // No password set, or already authenticated this session
+    activateOwner();
+  } else {
+    // Has password, needs to log in
+    showAcOverlay('login');
+  }
 }
 
 // ════════════════════════════════════════
