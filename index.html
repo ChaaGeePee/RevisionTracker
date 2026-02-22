@@ -1165,12 +1165,8 @@ function refreshAllRagUI() {
 
 function confirmResetAll() {
   if (confirm('Reset all RAG statuses back to Not Started? This cannot be undone.')) {
-      ragStore = {};
+    ragStore = {};
     scheduleSave();
-      Object.values(TOPICS[s.name]).flat().forEach(t => {
-        
-      });
-    });
     renderTrackerPage();
     updateTimerStats();
     if (selectedSubject) renderTopicsPanel(selectedSubject);
