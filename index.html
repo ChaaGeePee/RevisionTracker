@@ -336,7 +336,7 @@ h1 span{color:var(--accent)}
 
 <!-- Owner bar (shown when logged in) -->
 <div class="owner-bar" id="ownerBar" style="display:none">
-  <span>🔒 Owner mode</span>
+  <span>🔒 Owner mode — <span id="ownerEmail" style="color:var(--accent2)"></span></span>
   <button onclick="ownerLogout()">Sign out</button>
 </div>
 
@@ -475,22 +475,38 @@ const USER_ID       = 'owner'; // Change to 'viewer' for a read-only copy
 // SUPABASE CLIENT (no npm needed)
 // ════════════════════════════════════════
 const sb = {
+  // Always use the auth token for writes; fall back to anon key for reads
+  _authHeader() {
+    const token = getSavedToken();
+    return token ? `Bearer ${token}` : `Bearer ${SUPABASE_KEY}`;
+  },
   async get(table, id) {
     const r = await fetch(`${SUPABASE_URL}/rest/v1/${table}?id=eq.${encodeURIComponent(id)}&select=*`, {
-      headers: { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}` }
+      headers: { apikey: SUPABASE_KEY, Authorization: this._authHeader() }
     });
     const rows = await r.json();
     return rows[0] || null;
   },
   async upsert(table, row) {
-    await fetch(`${SUPABASE_URL}/rest/v1/${table}`, {
+    const token = getSavedToken();
+    if (!token) {
+      console.warn('Save blocked — not authenticated.');
+      return;
+    }
+    const r = await fetch(`${SUPABASE_URL}/rest/v1/${table}`, {
       method: 'POST',
       headers: {
-        apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}`,
+        apikey: SUPABASE_KEY, Authorization: `Bearer ${token}`,
         'Content-Type': 'application/json', Prefer: 'resolution=merge-duplicates'
       },
       body: JSON.stringify(row)
     });
+    if (!r.ok) {
+      const err = await r.json().catch(() => ({}));
+      // Token may have expired — clear it and prompt re-login
+      if (r.status === 401) { clearToken(); showAcOverlay('login'); }
+      throw new Error(err.message || r.statusText);
+    }
   }
 };
 
@@ -651,6 +667,10 @@ function scheduleSave() {
 
 async function persistData() {
   if (!IS_CONFIGURED || IS_VIEWER) return;
+  if (!getSavedToken()) {
+    showSaveIndicator('noauth');
+    return;
+  }
   try {
     await sb.upsert('revision_data', {
       id: 'owner',
@@ -686,6 +706,12 @@ function showSaveIndicator(state) {
     el.style.color = '#4ecca3';
     el.textContent = '✓ Saved';
     el._fadeTimer = setTimeout(() => { el.style.opacity = '0'; }, 2000);
+  } else if (state === 'noauth') {
+    el.style.background = 'rgba(247,163,74,0.12)';
+    el.style.border = '1px solid rgba(247,163,74,0.3)';
+    el.style.color = '#f7a34a';
+    el.textContent = '⚠ Not saved — sign in first';
+    el._fadeTimer = setTimeout(() => { el.style.opacity = '0'; }, 4000);
   } else {
     el.style.background = 'rgba(231,76,60,0.12)';
     el.style.border = '1px solid rgba(231,76,60,0.3)';
@@ -1370,6 +1396,15 @@ async function ownerLogout() {
 function activateOwner() {
   document.getElementById('ownerBar').style.display    = 'flex';
   document.getElementById('viewerBanner').style.display = 'none';
+  // Decode email from JWT payload (no extra network call needed)
+  try {
+    const token = getSavedToken();
+    if (token) {
+      const payload = JSON.parse(atob(token.split('.')[1]));
+      const email = payload.email || payload.user_metadata?.email || '';
+      document.getElementById('ownerEmail').textContent = email;
+    }
+  } catch(e) { /* non-critical */ }
 }
 
 function activateViewer() {
