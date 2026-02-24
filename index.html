@@ -4,123 +4,242 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>GCSE Revision Timer</title>
-<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
+/* ═══════════════════════════════════════════
+   GCSE REVISION HUB
+   Inspired by Save My Exams & BBC Bitesize
+   Clean · Student-friendly · High contrast
+═══════════════════════════════════════════ */
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-:root{
-  --bg:#0d0f14;--surface:#14171f;--surface2:#1c2030;--border:#252a38;
-  --text:#e8eaf0;--muted:#5a6080;--accent:#7c6af7;--accent2:#4ecca3;
-  --warn:#f7a34a;--danger:#f76a6a;--higher:#f7c948;
-  --green:#27ae60;--green-bg:rgba(39,174,96,0.12);--green-border:rgba(39,174,96,0.35);
-  --amber:#e67e22;--amber-bg:rgba(230,126,34,0.12);--amber-border:rgba(230,126,34,0.35);
-  --red:#e74c3c;--red-bg:rgba(231,76,60,0.12);--red-border:rgba(231,76,60,0.35);
-  --ns:#5a6080;--ns-bg:rgba(90,96,128,0.1);--ns-border:rgba(90,96,128,0.25);
+
+:root {
+  --bg: #f4f6fb;
+  --surface: #ffffff;
+  --surface2: #edf0f7;
+  --border: #dde3f0;
+  --border-strong: #c5cde0;
+  --text: #111827;
+  --text2: #374151;
+  --muted: #5c6a7e;
+  --faint: #9aa3b0;
+
+  --accent: #1d4ed8;
+  --accent-bg: #eff6ff;
+  --accent-border: #bfdbfe;
+  --accent-hover: #1e40af;
+
+  --teal: #0d9488;
+  --teal-bg: #f0fdfa;
+  --teal-border: #99f6e4;
+
+  --warn: #b45309;
+  --warn-bg: #fffbeb;
+  --warn-border: #fcd34d;
+  --danger: #b91c1c;
+  --danger-bg: #fef2f2;
+  --higher: #6d28d9;
+
+  /* RAG */
+  --green: #15803d; --green-bg: #f0fdf4; --green-border: #86efac;
+  --amber: #b45309; --amber-bg: #fffbeb; --amber-border: #fcd34d;
+  --red:   #b91c1c; --red-bg:   #fef2f2; --red-border:   #fca5a5;
+  --ns: #64748b;    --ns-bg: #f8fafc;    --ns-border: #e2e8f0;
+
+  /* Subject colours — Save My Exams-inspired palette */
+  --sub-english:   #7c3aed; --sub-english-bg:   #f5f3ff; --sub-english-bd: #ddd6fe;
+  --sub-maths:     #1d4ed8; --sub-maths-bg:     #eff6ff; --sub-maths-bd:   #bfdbfe;
+  --sub-biology:   #15803d; --sub-biology-bg:   #f0fdf4; --sub-biology-bd: #86efac;
+  --sub-chemistry: #c2410c; --sub-chemistry-bg: #fff7ed; --sub-chemistry-bd:#fed7aa;
+  --sub-physics:   #0369a1; --sub-physics-bg:   #f0f9ff; --sub-physics-bd: #bae6fd;
+  --sub-geography: #0d9488; --sub-geography-bg: #f0fdfa; --sub-geography-bd:#99f6e4;
+  --sub-history:   #92400e; --sub-history-bg:   #fffbeb; --sub-history-bd: #fde68a;
+  --sub-french:    #be185d; --sub-french-bg:    #fdf2f8; --sub-french-bd:  #fbcfe8;
+  --sub-drama:     #5b21b6; --sub-drama-bg:     #f5f3ff; --sub-drama-bd:   #ddd6fe;
+
+  --font: 'Nunito', system-ui, sans-serif;
+  --mono: 'JetBrains Mono', monospace;
+  --r: 10px;
+  --r-sm: 6px;
+  --r-pill: 100px;
+  --sh: 0 1px 4px rgba(0,0,0,0.07), 0 0 0 1px rgba(0,0,0,0.04);
+  --sh-md: 0 4px 16px rgba(0,0,0,0.09);
 }
-body.light-mode{
-  --bg:#f4f5f7;--surface:#ffffff;--surface2:#eef0f4;--border:#dde0e8;
-  --text:#1a1d27;--muted:#8890a8;--accent:#6a58e8;--accent2:#2eaa85;
-  --warn:#d4820a;--danger:#d94040;--higher:#b58a00;
-  --green:#1f9152;--green-bg:rgba(31,145,82,0.1);--green-border:rgba(31,145,82,0.3);
-  --amber:#c96a00;--amber-bg:rgba(201,106,0,0.1);--amber-border:rgba(201,106,0,0.3);
-  --red:#c0392b;--red-bg:rgba(192,57,43,0.1);--red-border:rgba(192,57,43,0.3);
-  --ns:#8890a8;--ns-bg:rgba(136,144,168,0.1);--ns-border:rgba(136,144,168,0.25);
+
+/* ── DARK MODE ── */
+body.dark-mode {
+  --bg: #0d1117; --surface: #161b27; --surface2: #1e2535;
+  --border: #2a3347; --border-strong: #374160;
+  --text: #f0f4ff; --text2: #c8d3ea; --muted: #8899b8; --faint: #4d5d7a;
+  --accent: #4f8ef7; --accent-bg: rgba(79,142,247,0.1); --accent-border: rgba(79,142,247,0.35);
+  --accent-hover: #6fa3ff;
+  --teal: #2dd4bf; --teal-bg: rgba(45,212,191,0.08); --teal-border: rgba(45,212,191,0.3);
+  --warn: #f59e0b; --warn-bg: rgba(245,158,11,0.1); --warn-border: rgba(245,158,11,0.35);
+  --danger: #f87171; --danger-bg: rgba(248,113,113,0.1);
+  --higher: #c084fc;
+  --green: #34d399; --green-bg: rgba(52,211,153,0.1);  --green-border: rgba(52,211,153,0.35);
+  --amber: #fbbf24; --amber-bg: rgba(251,191,36,0.1);  --amber-border: rgba(251,191,36,0.35);
+  --red:   #f87171; --red-bg:   rgba(248,113,113,0.1); --red-border:   rgba(248,113,113,0.35);
+  --ns: #6b7280;    --ns-bg: rgba(107,114,128,0.1);    --ns-border: rgba(107,114,128,0.3);
+  --sub-english:   #a78bfa; --sub-english-bg:   rgba(167,139,250,0.1); --sub-english-bd: rgba(167,139,250,0.35);
+  --sub-maths:     #60a5fa; --sub-maths-bg:     rgba(96,165,250,0.1);  --sub-maths-bd:   rgba(96,165,250,0.35);
+  --sub-biology:   #34d399; --sub-biology-bg:   rgba(52,211,153,0.08); --sub-biology-bd: rgba(52,211,153,0.35);
+  --sub-chemistry: #fb923c; --sub-chemistry-bg: rgba(251,146,60,0.08); --sub-chemistry-bd:rgba(251,146,60,0.35);
+  --sub-physics:   #38bdf8; --sub-physics-bg:   rgba(56,189,248,0.08); --sub-physics-bd: rgba(56,189,248,0.35);
+  --sub-geography: #2dd4bf; --sub-geography-bg: rgba(45,212,191,0.08); --sub-geography-bd:rgba(45,212,191,0.35);
+  --sub-history:   #fbbf24; --sub-history-bg:   rgba(251,191,36,0.08); --sub-history-bd: rgba(251,191,36,0.35);
+  --sub-french:    #f472b6; --sub-french-bg:    rgba(244,114,182,0.08); --sub-french-bd:  rgba(244,114,182,0.35);
+  --sub-drama:     #c084fc; --sub-drama-bg:     rgba(192,132,252,0.08); --sub-drama-bd:   rgba(192,132,252,0.35);
 }
-body.light-mode::before{background:radial-gradient(ellipse,rgba(106,88,232,0.07) 0%,transparent 70%)}
-.theme-toggle{margin-left:auto;margin-right:0.75rem;background:none;border:1px solid var(--border);border-radius:6px;color:var(--muted);cursor:pointer;font-size:0.85rem;width:32px;height:32px;display:flex;align-items:center;justify-content:center;transition:all 0.15s;flex-shrink:0;align-self:center}
-.theme-toggle:hover{border-color:var(--accent);color:var(--accent)}
+
+html { font-size: 16px; }
+body {
+  font-family: var(--font);
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  overflow-x: hidden;
+  line-height: 1.5;
+}
+
 /* ── ACCESS CONTROL ── */
-.ac-overlay{position:fixed;inset:0;background:rgba(13,15,20,0.97);z-index:200;display:flex;align-items:center;justify-content:center;padding:1.5rem;backdrop-filter:blur(12px)}
-.ac-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:2rem 2.2rem;max-width:360px;width:100%;text-align:center}
-.ac-badge{display:inline-block;font-family:'DM Mono',monospace;font-size:0.62rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--accent);border:1px solid rgba(124,106,247,0.35);padding:0.25rem 0.7rem;border-radius:2px;margin-bottom:1rem}
-.ac-card h2{font-size:1.3rem;font-weight:800;margin-bottom:0.4rem}
-.ac-card p{font-family:'DM Mono',monospace;font-size:0.7rem;color:var(--muted);margin-bottom:1.4rem;line-height:1.6}
-.ac-input{width:100%;background:var(--surface2);border:1px solid var(--border);color:var(--text);font-family:'DM Mono',monospace;font-size:0.9rem;padding:0.65rem 1rem;border-radius:7px;outline:none;transition:border-color 0.15s;margin-bottom:0.6rem;box-sizing:border-box}
+.ac-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:200;display:flex;align-items:center;justify-content:center;padding:1.5rem;backdrop-filter:blur(6px)}
+.ac-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:2.5rem 2.2rem;max-width:380px;width:100%;text-align:center;box-shadow:var(--sh-md)}
+.ac-badge{display:inline-flex;align-items:center;gap:0.4rem;background:var(--accent-bg);color:var(--accent);border:1px solid var(--accent-border);font-size:0.75rem;font-weight:800;letter-spacing:0.08em;text-transform:uppercase;padding:0.3rem 0.85rem;border-radius:var(--r-pill);margin-bottom:1.2rem}
+.ac-card h2{font-size:1.5rem;font-weight:900;margin-bottom:0.5rem;color:var(--text)}
+.ac-card p{font-size:0.95rem;color:var(--muted);margin-bottom:1.5rem;line-height:1.65}
+.ac-input{width:100%;background:var(--surface2);border:2px solid var(--border);color:var(--text);font-family:var(--font);font-size:1rem;padding:0.75rem 1rem;border-radius:var(--r-sm);outline:none;transition:border-color 0.15s;margin-bottom:0.6rem}
 .ac-input:focus{border-color:var(--accent)}
-.ac-btn{width:100%;font-family:'Syne',sans-serif;font-size:0.85rem;font-weight:700;padding:0.7rem;border-radius:8px;border:none;cursor:pointer;transition:all 0.15s;margin-bottom:0.45rem}
+.ac-btn{width:100%;font-family:var(--font);font-size:1rem;font-weight:800;padding:0.8rem;border-radius:var(--r-sm);border:none;cursor:pointer;transition:all 0.15s;margin-bottom:0.5rem}
 .ac-btn.primary{background:var(--accent);color:#fff}
-.ac-btn.primary:hover{background:#9380ff}
-.ac-btn.secondary{background:transparent;border:1px solid var(--border);color:var(--muted)}
+.ac-btn.primary:hover{background:var(--accent-hover);transform:translateY(-1px)}
+.ac-btn.secondary{background:var(--surface2);border:2px solid var(--border);color:var(--muted)}
 .ac-btn.secondary:hover{border-color:var(--accent);color:var(--text)}
-.ac-error{font-family:'DM Mono',monospace;font-size:0.68rem;color:var(--danger);min-height:1.1em;margin-bottom:0.4rem}
-.ac-link{font-family:'DM Mono',monospace;font-size:0.63rem;color:var(--muted);background:none;border:none;cursor:pointer;text-decoration:underline;text-underline-offset:3px;padding:0}
+.ac-error{font-size:0.85rem;color:var(--danger);min-height:1.2em;margin-bottom:0.4rem}
+.ac-link{font-size:0.85rem;color:var(--muted);background:none;border:none;cursor:pointer;text-decoration:underline;text-underline-offset:3px;padding:0}
 .ac-link:hover{color:var(--danger)}
-.ac-divider{height:1px;background:var(--border);margin:1rem 0}
-.viewer-banner{width:100%;background:rgba(247,163,74,0.1);border-bottom:1px solid rgba(247,163,74,0.3);padding:0.45rem 1.2rem;font-family:'DM Mono',monospace;font-size:0.67rem;color:var(--warn);text-align:center;position:sticky;top:0;z-index:49}
-.owner-bar{width:100%;background:var(--surface2);border-bottom:1px solid var(--border);padding:0.4rem 1.2rem;display:flex;align-items:center;justify-content:flex-end;gap:1rem;font-family:'DM Mono',monospace;font-size:0.63rem;color:var(--muted);position:sticky;top:0;z-index:49}
-.owner-bar button{background:none;border:none;font-family:'DM Mono',monospace;font-size:0.63rem;color:var(--muted);cursor:pointer;text-decoration:underline;text-underline-offset:3px;padding:0}
+.ac-divider{height:1px;background:var(--border);margin:1.1rem 0}
+
+.viewer-banner{width:100%;background:var(--warn-bg);border-bottom:2px solid var(--warn-border);padding:0.55rem 1.2rem;font-size:0.875rem;font-weight:700;color:var(--warn);text-align:center;position:sticky;top:0;z-index:49}
+.owner-bar{width:100%;background:var(--surface2);border-bottom:1px solid var(--border);padding:0.45rem 1.5rem;display:flex;align-items:center;justify-content:flex-end;gap:1rem;font-size:0.82rem;font-weight:600;color:var(--muted);position:sticky;top:0;z-index:49}
+.owner-bar button{background:none;border:none;font-family:var(--font);font-size:0.82rem;font-weight:600;color:var(--muted);cursor:pointer;text-decoration:underline;text-underline-offset:3px;padding:0}
 .owner-bar button:hover{color:var(--danger)}
-body{font-family:'Syne',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:0 0 4rem;overflow-x:hidden}
-body::before{content:'';position:fixed;top:-20%;left:50%;transform:translateX(-50%);width:800px;height:500px;background:radial-gradient(ellipse,rgba(124,106,247,0.1) 0%,transparent 70%);pointer-events:none;z-index:0}
 
-/* ── NAV TABS ── */
-.nav{width:100%;background:var(--surface);border-bottom:1px solid var(--border);display:flex;justify-content:center;gap:0;position:sticky;top:0;z-index:50}
-.nav-tab{font-family:'DM Mono',monospace;font-size:0.72rem;letter-spacing:0.08em;text-transform:uppercase;padding:1rem 2rem;background:none;border:none;color:var(--muted);cursor:pointer;transition:all 0.15s;border-bottom:2px solid transparent;margin-bottom:-1px}
-.nav-tab:hover{color:var(--text)}
+/* ── NAVBAR ── */
+.nav{
+  width:100%;background:var(--surface);
+  border-bottom:2px solid var(--border);
+  display:flex;align-items:stretch;justify-content:center;
+  position:sticky;top:0;z-index:50;
+  box-shadow:0 2px 8px rgba(0,0,0,0.06);
+}
+.nav-tab{
+  font-family:var(--font);font-size:0.9rem;font-weight:800;
+  padding:1rem 1.6rem;background:none;border:none;
+  color:var(--muted);cursor:pointer;transition:all 0.15s;
+  border-bottom:3px solid transparent;margin-bottom:-2px;
+  white-space:nowrap;letter-spacing:0.01em;
+}
+.nav-tab:hover{color:var(--text);background:var(--surface2)}
 .nav-tab.active{color:var(--accent);border-bottom-color:var(--accent)}
+.theme-toggle{
+  margin-left:auto;margin-right:1rem;align-self:center;
+  background:var(--surface2);border:2px solid var(--border);
+  border-radius:var(--r-sm);color:var(--muted);
+  cursor:pointer;font-size:0.95rem;width:38px;height:38px;
+  display:flex;align-items:center;justify-content:center;
+  transition:all 0.15s;flex-shrink:0;
+}
+.theme-toggle:hover{border-color:var(--accent);color:var(--accent)}
 
-.page{display:none;width:100%;max-width:780px;padding:2rem 1rem;position:relative;z-index:1}
+.page{display:none;width:100%;max-width:840px;padding:2rem 1.25rem 5rem;position:relative}
 .page.active{display:block}
 
 /* ── SHARED ── */
-.section-label{font-family:'DM Mono',monospace;font-size:0.62rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted);margin-bottom:0.75rem}
-.card{background:var(--surface);border:1px solid var(--border);border-radius:10px;overflow:hidden}
+.section-label{font-size:0.72rem;font-weight:900;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted);margin-bottom:0.85rem;display:flex;align-items:center;gap:0.5rem}
+.section-label::after{content:'';flex:1;height:1px;background:var(--border)}
 
-/* ── TIMER PAGE ── */
-header{text-align:center;margin-bottom:2rem}
-.badge{display:inline-block;font-family:'DM Mono',monospace;font-size:0.62rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--accent);border:1px solid rgba(124,106,247,0.35);padding:0.28rem 0.75rem;border-radius:2px;margin-bottom:0.85rem}
-h1{font-size:clamp(1.8rem,5vw,2.5rem);font-weight:800;letter-spacing:-0.02em;line-height:1.1;margin-bottom:0.3rem}
-h1 span{color:var(--accent)}
-.subtitle{font-family:'DM Mono',monospace;font-size:0.75rem;color:var(--muted)}
+/* ── PAGE HEADER ── */
+.page-hero{
+  background:linear-gradient(135deg, var(--accent) 0%, #3b6fd4 100%);
+  border-radius:14px;padding:2rem 2rem 1.75rem;margin-bottom:2rem;
+  color:#fff;position:relative;overflow:hidden;
+}
+.page-hero::before{content:'';position:absolute;top:-30%;right:-10%;width:300px;height:300px;background:rgba(255,255,255,0.07);border-radius:50%}
+.page-hero::after{content:'';position:absolute;bottom:-40%;left:-5%;width:250px;height:250px;background:rgba(255,255,255,0.05);border-radius:50%}
+.page-hero-label{font-size:0.75rem;font-weight:900;letter-spacing:0.12em;text-transform:uppercase;opacity:0.8;margin-bottom:0.6rem}
+.page-hero h1{font-size:clamp(1.7rem,4.5vw,2.4rem);font-weight:900;letter-spacing:-0.03em;line-height:1.1;margin-bottom:0.4rem;position:relative}
+.page-hero p{font-size:1rem;opacity:0.85;position:relative}
 
-.subjects-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(128px,1fr));gap:0.45rem;margin-bottom:1.75rem}
-.subject-btn{background:var(--surface);border:1px solid var(--border);color:var(--muted);font-family:'Syne',sans-serif;font-size:0.76rem;font-weight:600;padding:0.6rem 0.7rem;border-radius:6px;cursor:pointer;transition:all 0.15s;display:flex;align-items:center;gap:0.45rem;text-align:left;line-height:1.3;position:relative}
-.subject-btn .icon{font-size:0.95rem;flex-shrink:0}
-.subject-btn:hover{border-color:var(--accent);color:var(--text);background:var(--surface2)}
-.subject-btn.active{background:rgba(124,106,247,0.12);border-color:var(--accent);color:var(--text)}
-.subject-rag-pip{position:absolute;top:6px;right:6px;width:7px;height:7px;border-radius:50%}
+/* ── SUBJECT GRID ── */
+.subjects-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(148px,1fr));gap:0.6rem;margin-bottom:2rem}
+.subject-btn{
+  background:var(--surface);border:2px solid var(--border);
+  color:var(--text2);font-family:var(--font);
+  font-size:0.9rem;font-weight:700;
+  padding:0.85rem 0.9rem;border-radius:var(--r);
+  cursor:pointer;transition:all 0.18s;
+  display:flex;align-items:center;gap:0.55rem;
+  text-align:left;line-height:1.3;position:relative;
+  box-shadow:var(--sh);
+}
+.subject-btn .icon{font-size:1.1rem;flex-shrink:0}
+.subject-btn:hover{transform:translateY(-2px);box-shadow:var(--sh-md)}
+.subject-rag-pip{position:absolute;top:8px;right:8px;width:9px;height:9px;border-radius:50%;border:2px solid var(--surface)}
+
+/* Subject-specific active colours */
+.subject-btn:hover,.subject-btn.active{border-color:currentColor}
+.subject-btn[data-subj="English Language"]:hover,.subject-btn[data-subj="English Language"].active{background:var(--sub-english-bg);color:var(--sub-english);border-color:var(--sub-english-bd)}
+.subject-btn[data-subj="English Literature"]:hover,.subject-btn[data-subj="English Literature"].active{background:var(--sub-english-bg);color:var(--sub-english);border-color:var(--sub-english-bd)}
+.subject-btn[data-subj="Maths"]:hover,.subject-btn[data-subj="Maths"].active{background:var(--sub-maths-bg);color:var(--sub-maths);border-color:var(--sub-maths-bd)}
+.subject-btn[data-subj="Biology"]:hover,.subject-btn[data-subj="Biology"].active{background:var(--sub-biology-bg);color:var(--sub-biology);border-color:var(--sub-biology-bd)}
+.subject-btn[data-subj="Chemistry"]:hover,.subject-btn[data-subj="Chemistry"].active{background:var(--sub-chemistry-bg);color:var(--sub-chemistry);border-color:var(--sub-chemistry-bd)}
+.subject-btn[data-subj="Physics"]:hover,.subject-btn[data-subj="Physics"].active{background:var(--sub-physics-bg);color:var(--sub-physics);border-color:var(--sub-physics-bd)}
+.subject-btn[data-subj="Geography"]:hover,.subject-btn[data-subj="Geography"].active{background:var(--sub-geography-bg);color:var(--sub-geography);border-color:var(--sub-geography-bd)}
+.subject-btn[data-subj="History"]:hover,.subject-btn[data-subj="History"].active{background:var(--sub-history-bg);color:var(--sub-history);border-color:var(--sub-history-bd)}
+.subject-btn[data-subj="French"]:hover,.subject-btn[data-subj="French"].active{background:var(--sub-french-bg);color:var(--sub-french);border-color:var(--sub-french-bd)}
+.subject-btn[data-subj="Drama"]:hover,.subject-btn[data-subj="Drama"].active{background:var(--sub-drama-bg);color:var(--sub-drama);border-color:var(--sub-drama-bd)}
 
 /* ── TOPICS PANEL ── */
-.topics-panel{background:var(--surface);border:1px solid var(--border);border-radius:10px;margin-bottom:1.75rem;overflow:hidden;display:none}
+.topics-panel{background:var(--surface);border:2px solid var(--border);border-radius:var(--r);margin-bottom:2rem;overflow:hidden;display:none;box-shadow:var(--sh-md)}
 .topics-panel.visible{display:block;animation:slideDown 0.22s ease}
-@keyframes slideDown{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:translateY(0)}}
-.topics-header{display:flex;align-items:center;justify-content:space-between;padding:0.8rem 1rem;border-bottom:1px solid var(--border);background:var(--surface2);flex-wrap:wrap;gap:0.5rem}
-.topics-header-left{display:flex;align-items:center;gap:0.6rem}
-.topics-subject-name{font-size:0.88rem;font-weight:700}
-.topic-count-badge{font-family:'DM Mono',monospace;font-size:0.62rem;background:rgba(124,106,247,0.15);color:var(--accent);border:1px solid rgba(124,106,247,0.3);padding:0.12rem 0.5rem;border-radius:20px}
-.topics-hint{font-family:'DM Mono',monospace;font-size:0.6rem;color:var(--muted)}
-
-/* ── RAG LEGEND in header ── */
-.rag-legend{display:flex;align-items:center;gap:0.6rem}
-.rag-legend-item{display:flex;align-items:center;gap:0.25rem;font-family:'DM Mono',monospace;font-size:0.58rem;color:var(--muted)}
-.rag-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+@keyframes slideDown{from{opacity:0;transform:translateY(-10px)}to{opacity:1;transform:translateY(0)}}
+.topics-header{display:flex;align-items:center;justify-content:space-between;padding:0.9rem 1.2rem;border-bottom:1px solid var(--border);background:var(--surface2);flex-wrap:wrap;gap:0.6rem}
+.topics-header-left{display:flex;align-items:center;gap:0.75rem}
+.topics-subject-name{font-size:1.05rem;font-weight:800;color:var(--text)}
+.topic-count-badge{font-size:0.75rem;font-weight:800;background:var(--accent-bg);color:var(--accent);border:1px solid var(--accent-border);padding:0.18rem 0.65rem;border-radius:var(--r-pill)}
+.topics-hint{font-size:0.82rem;font-weight:600;color:var(--muted)}
+.rag-legend{display:flex;align-items:center;gap:0.85rem}
+.rag-legend-item{display:flex;align-items:center;gap:0.3rem;font-size:0.8rem;font-weight:700;color:var(--muted)}
+.rag-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0}
 .rag-dot.green{background:var(--green)}
 .rag-dot.amber{background:var(--amber)}
 .rag-dot.red{background:var(--red)}
-.rag-dot.ns{background:var(--ns);border:1px solid var(--border)}
-
-.topics-body{padding:0.7rem;max-height:360px;overflow-y:auto}
-.topics-body::-webkit-scrollbar{width:4px}
-.topics-body::-webkit-scrollbar-thumb{background:var(--border);border-radius:4px}
-.section-group{margin-bottom:0.8rem}
+.rag-dot.ns{background:var(--border-strong)}
+.topics-body{padding:0.85rem;max-height:380px;overflow-y:auto}
+.topics-body::-webkit-scrollbar{width:5px}
+.topics-body::-webkit-scrollbar-thumb{background:var(--border-strong);border-radius:4px}
+.section-group{margin-bottom:1rem}
 .section-group:last-child{margin-bottom:0}
-.section-heading{font-family:'DM Mono',monospace;font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);padding:0.28rem 0.5rem;margin-bottom:0.25rem;border-left:2px solid var(--border)}
-.topic-items{display:flex;flex-direction:column;gap:0.2rem}
-
-/* Each topic row */
-.topic-item{display:flex;align-items:center;gap:0.5rem;padding:0.42rem 0.6rem;border-radius:5px;border:1px solid transparent;transition:background 0.1s;cursor:pointer}
+.section-heading{
+  font-size:0.72rem;font-weight:900;letter-spacing:0.1em;text-transform:uppercase;
+  color:var(--muted);padding:0.3rem 0.7rem;margin-bottom:0.4rem;
+  background:var(--surface2);border-radius:4px;border-left:3px solid var(--border-strong);
+}
+.topic-items{display:flex;flex-direction:column;gap:0.3rem}
+.topic-item{display:flex;align-items:center;gap:0.65rem;padding:0.6rem 0.7rem;border-radius:var(--r-sm);border:2px solid transparent;transition:all 0.12s;cursor:pointer}
 .topic-item:hover{background:var(--surface2);border-color:var(--border)}
-.topic-item.selected{background:rgba(124,106,247,0.08);border-color:rgba(124,106,247,0.25)}
-
-.topic-select-check{width:15px;height:15px;border-radius:3px;border:1.5px solid var(--border);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:0.6rem;transition:all 0.12s}
+.topic-item.selected{background:var(--accent-bg);border-color:var(--accent-border)}
+.topic-select-check{width:18px;height:18px;border-radius:4px;border:2px solid var(--border-strong);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:0.65rem;transition:all 0.12s}
 .topic-item.selected .topic-select-check{background:var(--accent);border-color:var(--accent);color:#fff}
-
-.topic-text{font-family:'DM Mono',monospace;font-size:0.7rem;color:var(--muted);line-height:1.4;flex:1}
+.topic-text{font-size:0.925rem;font-weight:600;color:var(--text2);line-height:1.4;flex:1}
 .topic-item.selected .topic-text{color:var(--text)}
-.higher-tag{font-size:0.52rem;background:rgba(247,201,72,0.12);color:var(--higher);border:1px solid rgba(247,201,72,0.28);padding:0.08rem 0.3rem;border-radius:3px;white-space:nowrap;flex-shrink:0}
-
-/* RAG toggle buttons on each topic row */
-.rag-btns{display:flex;gap:0.2rem;flex-shrink:0;margin-left:0.25rem}
-.rag-btn{width:22px;height:22px;border-radius:4px;border:1.5px solid var(--border);background:transparent;cursor:pointer;font-size:0.6rem;display:flex;align-items:center;justify-content:center;transition:all 0.12s;color:var(--muted);font-weight:700}
+.higher-tag{font-size:0.7rem;font-weight:800;background:rgba(109,40,217,0.1);color:var(--higher);border:1px solid rgba(109,40,217,0.25);padding:0.1rem 0.45rem;border-radius:4px;white-space:nowrap;flex-shrink:0}
+.rag-btns{display:flex;gap:0.25rem;flex-shrink:0;margin-left:0.35rem}
+.rag-btn{width:28px;height:28px;border-radius:6px;border:2px solid var(--border);background:transparent;cursor:pointer;font-size:0.65rem;display:flex;align-items:center;justify-content:center;transition:all 0.12s;color:var(--muted);font-weight:900}
 .rag-btn:hover{transform:scale(1.1)}
 .rag-btn.g{border-color:var(--green-border);color:var(--green)}
 .rag-btn.g.active{background:var(--green);border-color:var(--green);color:#fff}
@@ -128,93 +247,96 @@ h1 span{color:var(--accent)}
 .rag-btn.a.active{background:var(--amber);border-color:var(--amber);color:#fff}
 .rag-btn.r{border-color:var(--red-border);color:var(--red)}
 .rag-btn.r.active{background:var(--red);border-color:var(--red);color:#fff}
+.topic-item.rag-green{background:var(--green-bg)!important;border-color:var(--green-border)!important}
+.topic-item.rag-amber{background:var(--amber-bg)!important;border-color:var(--amber-border)!important}
+.topic-item.rag-red{background:var(--red-bg)!important;border-color:var(--red-border)!important}
+.topic-item.rag-green .topic-text,.topic-item.rag-amber .topic-text,.topic-item.rag-red .topic-text{color:var(--text);font-weight:700}
 
-/* topic row background tint when rated */
-.topic-item.rag-green{background:var(--green-bg) !important;border-color:var(--green-border) !important}
-.topic-item.rag-amber{background:var(--amber-bg) !important;border-color:var(--amber-border) !important}
-.topic-item.rag-red{background:var(--red-bg) !important;border-color:var(--red-border) !important}
-.topic-item.rag-green .topic-text,
-.topic-item.rag-amber .topic-text,
-.topic-item.rag-red .topic-text{color:var(--text)}
-
-/* Selected topic bar */
-.selected-topic-bar{background:rgba(124,106,247,0.08);border:1px solid rgba(124,106,247,0.2);border-radius:6px;padding:0.55rem 0.85rem;margin-bottom:1.75rem;display:none;align-items:center;gap:0.6rem}
+/* ── SELECTED TOPIC BAR ── */
+.selected-topic-bar{background:var(--accent-bg);border:2px solid var(--accent-border);border-radius:var(--r-sm);padding:0.7rem 1.1rem;margin-bottom:2rem;display:none;align-items:center;gap:0.75rem}
 .selected-topic-bar.visible{display:flex}
-.stb-label{font-family:'DM Mono',monospace;font-size:0.6rem;text-transform:uppercase;letter-spacing:0.1em;color:var(--accent);white-space:nowrap}
-.stb-text{font-family:'DM Mono',monospace;font-size:0.7rem;color:var(--text);flex:1}
-.stb-clear{background:none;border:none;color:var(--muted);cursor:pointer;font-size:0.85rem;line-height:1;padding:0}
+.stb-label{font-size:0.75rem;font-weight:900;text-transform:uppercase;letter-spacing:0.1em;color:var(--accent);white-space:nowrap}
+.stb-text{font-size:0.95rem;font-weight:700;color:var(--text);flex:1}
+.stb-clear{background:none;border:none;color:var(--muted);cursor:pointer;font-size:1rem;line-height:1;padding:0}
 .stb-clear:hover{color:var(--danger)}
 
-/* Duration */
-.duration-row{display:flex;gap:0.45rem;margin-bottom:1.75rem;flex-wrap:wrap}
-.dur-btn{flex:1;min-width:66px;background:var(--surface);border:1px solid var(--border);color:var(--muted);font-family:'DM Mono',monospace;font-size:0.78rem;padding:0.5rem;border-radius:6px;cursor:pointer;transition:all 0.15s;text-align:center}
-.dur-btn:hover{border-color:var(--accent2);color:var(--text)}
-.dur-btn.active{background:rgba(78,204,163,0.12);border-color:var(--accent2);color:var(--accent2)}
-.custom-row{display:flex;align-items:center;gap:0.75rem;margin-bottom:1.75rem}
-.custom-row label{font-family:'DM Mono',monospace;font-size:0.68rem;color:var(--muted);white-space:nowrap;text-transform:uppercase;letter-spacing:0.08em}
-.custom-row input{background:var(--surface);border:1px solid var(--border);color:var(--text);font-family:'DM Mono',monospace;font-size:0.88rem;padding:0.48rem 0.7rem;border-radius:6px;width:78px;text-align:center;outline:none;transition:border-color 0.15s}
+/* ── DURATION ── */
+.duration-row{display:flex;gap:0.5rem;margin-bottom:2rem;flex-wrap:wrap}
+.dur-btn{flex:1;min-width:72px;background:var(--surface);border:2px solid var(--border);color:var(--text2);font-family:var(--font);font-size:0.95rem;font-weight:700;padding:0.6rem;border-radius:var(--r-sm);cursor:pointer;transition:all 0.15s;text-align:center;box-shadow:var(--sh)}
+.dur-btn:hover{border-color:var(--teal);color:var(--teal)}
+.dur-btn.active{background:var(--teal-bg);border-color:var(--teal);color:var(--teal)}
+.custom-row{display:flex;align-items:center;gap:0.9rem;margin-bottom:2rem}
+.custom-row label{font-size:0.85rem;font-weight:900;color:var(--muted);white-space:nowrap;text-transform:uppercase;letter-spacing:0.07em}
+.custom-row input{background:var(--surface);border:2px solid var(--border);color:var(--text);font-family:var(--mono);font-size:1rem;padding:0.55rem 0.75rem;border-radius:var(--r-sm);width:86px;text-align:center;outline:none;transition:border-color 0.15s}
 .custom-row input:focus{border-color:var(--accent)}
 
-/* Stats bar */
-.stats-bar{display:flex;gap:0.85rem;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:0.8rem 1.1rem;margin-bottom:1.5rem;flex-wrap:wrap}
-.stat{display:flex;flex-direction:column;gap:0.12rem}
-.stat-val{font-family:'DM Mono',monospace;font-size:1.05rem;font-weight:500;color:var(--text)}
-.stat-key{font-family:'DM Mono',monospace;font-size:0.58rem;text-transform:uppercase;letter-spacing:0.1em;color:var(--muted)}
-.stat-divider{width:1px;background:var(--border);align-self:stretch}
+/* ── STATS BAR ── */
+.stats-bar{display:flex;gap:0;background:var(--surface);border:2px solid var(--border);border-radius:var(--r);margin-bottom:1.5rem;overflow:hidden;box-shadow:var(--sh)}
+.stat{display:flex;flex-direction:column;gap:0.12rem;padding:0.9rem 1.1rem;flex:1}
+.stat-val{font-family:var(--mono);font-size:1.15rem;font-weight:500;color:var(--text);line-height:1}
+.stat-key{font-size:0.72rem;font-weight:900;text-transform:uppercase;letter-spacing:0.09em;color:var(--muted);margin-top:0.18rem}
+.stat-divider{width:1px;background:var(--border);flex-shrink:0}
 
-/* Timer card */
-.timer-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:2.2rem 2rem;text-align:center;margin-bottom:1.5rem;position:relative;overflow:hidden}
-.timer-card::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 50% 0%,rgba(124,106,247,0.06) 0%,transparent 65%);pointer-events:none}
-.current-subject{font-family:'DM Mono',monospace;font-size:0.68rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--accent);margin-bottom:0.25rem;min-height:1.1em;transition:all 0.2s}
-.current-topic-display{font-family:'DM Mono',monospace;font-size:0.67rem;color:var(--muted);margin-bottom:1.1rem;min-height:0.9em;padding:0 1rem;line-height:1.4}
-.ring-wrap{position:relative;width:190px;height:190px;margin:0 auto 1.4rem}
+/* ── TIMER CARD ── */
+.timer-card{
+  background:var(--surface);border:2px solid var(--border);
+  border-radius:16px;padding:2.5rem 2rem 2rem;text-align:center;
+  margin-bottom:1.75rem;box-shadow:var(--sh-md);
+  position:relative;overflow:hidden;
+}
+.timer-card::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:4px;
+  background:linear-gradient(90deg,var(--accent),var(--teal));
+}
+.current-subject{font-size:0.8rem;font-weight:900;letter-spacing:0.12em;text-transform:uppercase;color:var(--accent);margin-bottom:0.3rem;min-height:1.2em;transition:all 0.2s}
+.current-topic-display{font-size:1rem;font-weight:600;color:var(--muted);margin-bottom:1.4rem;min-height:1em;padding:0 1.5rem;line-height:1.5}
+.ring-wrap{position:relative;width:200px;height:200px;margin:0 auto 1.6rem}
 .ring-svg{position:absolute;inset:0;transform:rotate(-90deg)}
-.ring-bg{fill:none;stroke:var(--surface2);stroke-width:6}
-.ring-prog{fill:none;stroke:var(--accent);stroke-width:6;stroke-linecap:round;stroke-dasharray:534.07;stroke-dashoffset:0;transition:stroke-dashoffset 1s linear,stroke 0.3s}
+.ring-bg{fill:none;stroke:var(--surface2);stroke-width:10}
+.ring-prog{fill:none;stroke:var(--accent);stroke-width:10;stroke-linecap:round;stroke-dasharray:565.49;stroke-dashoffset:0;transition:stroke-dashoffset 1s linear,stroke 0.3s}
 .ring-prog.warn{stroke:var(--warn)}
 .ring-prog.danger{stroke:var(--danger)}
 .time-display{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
-.time-digits{font-family:'DM Mono',monospace;font-size:2.6rem;font-weight:500;letter-spacing:-0.02em;line-height:1;color:var(--text)}
-.time-label{font-family:'DM Mono',monospace;font-size:0.58rem;letter-spacing:0.12em;color:var(--muted);text-transform:uppercase;margin-top:0.25rem}
-.controls{display:flex;gap:0.7rem;justify-content:center}
-.ctrl-btn{font-family:'Syne',sans-serif;font-size:0.83rem;font-weight:700;letter-spacing:0.05em;padding:0.7rem 1.8rem;border-radius:8px;border:none;cursor:pointer;transition:all 0.15s}
-.btn-start{background:var(--accent);color:#fff}
-.btn-start:hover{background:#9380ff;transform:translateY(-1px)}
-.btn-reset{background:transparent;border:1px solid var(--border);color:var(--muted)}
+.time-digits{font-family:var(--mono);font-size:2.9rem;font-weight:500;letter-spacing:-0.02em;line-height:1;color:var(--text)}
+.time-label{font-size:0.75rem;font-weight:900;letter-spacing:0.14em;color:var(--muted);text-transform:uppercase;margin-top:0.3rem}
+.controls{display:flex;gap:0.75rem;justify-content:center}
+.ctrl-btn{font-family:var(--font);font-size:1rem;font-weight:800;padding:0.8rem 2.4rem;border-radius:var(--r-sm);border:none;cursor:pointer;transition:all 0.15s}
+.btn-start{background:var(--accent);color:#fff;box-shadow:0 3px 10px rgba(29,78,216,0.35)}
+.btn-start:hover{background:var(--accent-hover);transform:translateY(-1px);box-shadow:0 5px 16px rgba(29,78,216,0.4)}
+.btn-reset{background:var(--surface2);border:2px solid var(--border);color:var(--muted)}
 .btn-reset:hover{border-color:var(--danger);color:var(--danger)}
-@keyframes pulse-ring{0%,100%{opacity:1}50%{opacity:0.7}}
+@keyframes pulse-ring{0%,100%{opacity:1}50%{opacity:0.75}}
 .timer-card.running .time-digits{animation:pulse-ring 2s ease-in-out infinite}
 
-/* Log */
-.log-section{margin-top:1.75rem}
-.log-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:0.7rem}
-.clear-btn{font-family:'DM Mono',monospace;font-size:0.62rem;color:var(--muted);background:none;border:none;cursor:pointer;text-decoration:underline;text-underline-offset:3px}
+/* ── SESSION LOG ── */
+.log-section{margin-top:2rem}
+.log-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:0.9rem}
+.clear-btn{font-size:0.85rem;font-weight:700;color:var(--muted);background:none;border:none;cursor:pointer;text-decoration:underline;text-underline-offset:3px;padding:0}
 .clear-btn:hover{color:var(--danger)}
-.log-list{display:flex;flex-direction:column;gap:0.35rem;max-height:240px;overflow-y:auto}
-.log-list::-webkit-scrollbar{width:4px}
-.log-list::-webkit-scrollbar-thumb{background:var(--border);border-radius:4px}
-.log-item{background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:0.5rem 0.8rem;display:flex;align-items:flex-start;gap:0.7rem;font-family:'DM Mono',monospace;font-size:0.72rem;animation:fadeIn 0.3s ease}
+.log-list{display:flex;flex-direction:column;gap:0.45rem;max-height:300px;overflow-y:auto}
+.log-list::-webkit-scrollbar{width:5px}
+.log-list::-webkit-scrollbar-thumb{background:var(--border-strong);border-radius:4px}
+.log-empty{font-size:0.9rem;font-weight:600;color:var(--muted);text-align:center;padding:1.25rem}
+.log-item{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-sm);padding:0.7rem 1rem;display:flex;align-items:flex-start;gap:0.85rem;animation:fadeIn 0.3s ease;box-shadow:var(--sh)}
 @keyframes fadeIn{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
-.log-dot{width:7px;height:7px;border-radius:50%;background:var(--accent2);flex-shrink:0;margin-top:4px}
+.log-dot{width:9px;height:9px;border-radius:50%;background:var(--teal);flex-shrink:0;margin-top:6px}
 .log-info{flex:1}
-.log-subject{color:var(--text);font-weight:500}
-.log-topic-text{color:var(--muted);font-size:0.65rem;margin-top:0.12rem}
-.log-right{display:flex;flex-direction:column;align-items:flex-end;gap:0.12rem}
-.log-duration{color:var(--accent2)}
-.log-time{color:var(--muted);font-size:0.65rem}
+.log-subject{font-size:0.95rem;font-weight:800;color:var(--text)}
+.log-topic-text{font-size:0.85rem;font-weight:600;color:var(--muted);margin-top:0.15rem}
+.log-right{display:flex;flex-direction:column;align-items:flex-end;gap:0.18rem}
+.log-duration{font-family:var(--mono);font-size:0.9rem;color:var(--teal);font-weight:500}
+.log-time{font-size:0.78rem;font-weight:600;color:var(--faint)}
 
-/* Completion overlay */
-.complete-flash{display:none;position:fixed;inset:0;background:rgba(13,15,20,0.92);z-index:100;align-items:center;justify-content:center;flex-direction:column;text-align:center;gap:0.9rem;backdrop-filter:blur(8px);padding:2rem}
+/* ── COMPLETION OVERLAY ── */
+.complete-flash{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.65);z-index:100;align-items:center;justify-content:center;flex-direction:column;text-align:center;gap:1rem;backdrop-filter:blur(10px);padding:2rem}
 .complete-flash.show{display:flex;animation:fadeIn 0.3s ease}
-.complete-flash .big-emoji{font-size:3.2rem}
-.complete-flash h2{font-size:1.9rem;font-weight:800}
-.completed-topic-display{font-family:'DM Mono',monospace;font-size:0.76rem;color:var(--accent2);background:rgba(78,204,163,0.08);border:1px solid rgba(78,204,163,0.2);border-radius:6px;padding:0.55rem 1.1rem;max-width:440px}
-
-/* ── RAG prompt in completion overlay ── */
-.rag-prompt{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:1rem 1.2rem;max-width:380px;width:100%}
-.rag-prompt p{font-family:'DM Mono',monospace;font-size:0.7rem;color:var(--muted);margin-bottom:0.65rem}
+.complete-flash .big-emoji{font-size:3.5rem}
+.complete-flash h2{font-size:2rem;font-weight:900;color:#fff}
+.completed-topic-display{font-size:0.95rem;font-weight:600;color:#fff;background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.25);border-radius:var(--r-sm);padding:0.65rem 1.3rem;max-width:440px}
+.rag-prompt{background:var(--surface);border:2px solid var(--border);border-radius:var(--r);padding:1.3rem 1.5rem;max-width:400px;width:100%;box-shadow:var(--sh-md)}
+.rag-prompt p{font-size:1rem;font-weight:800;color:var(--text);margin-bottom:0.8rem}
 .rag-prompt-btns{display:flex;gap:0.5rem;justify-content:center}
-.rag-prompt-btn{flex:1;padding:0.6rem 0.5rem;border-radius:7px;border:1.5px solid transparent;font-family:'Syne',sans-serif;font-weight:700;font-size:0.78rem;cursor:pointer;transition:all 0.15s}
+.rag-prompt-btn{flex:1;padding:0.75rem 0.5rem;border-radius:var(--r-sm);border:2px solid transparent;font-family:var(--font);font-weight:800;font-size:0.9rem;cursor:pointer;transition:all 0.15s}
 .rag-prompt-btn.g{background:var(--green-bg);border-color:var(--green-border);color:var(--green)}
 .rag-prompt-btn.g:hover{background:var(--green);color:#fff}
 .rag-prompt-btn.a{background:var(--amber-bg);border-color:var(--amber-border);color:var(--amber)}
@@ -223,69 +345,67 @@ h1 span{color:var(--accent)}
 .rag-prompt-btn.r:hover{background:var(--red);color:#fff}
 .rag-prompt-btn.skip{background:var(--surface2);border-color:var(--border);color:var(--muted)}
 .rag-prompt-btn.skip:hover{color:var(--text)}
+.complete-flash p.sub{font-size:0.9rem;font-weight:600;color:rgba(255,255,255,0.8)}
+.btn-dismiss{background:var(--accent);color:#fff;font-family:var(--font);font-weight:800;font-size:1rem;padding:0.85rem 2.4rem;border:none;border-radius:var(--r-sm);cursor:pointer;margin-top:0.25rem;box-shadow:0 3px 10px rgba(29,78,216,0.4)}
+.btn-dismiss:hover{background:var(--accent-hover)}
 
-.complete-flash p.sub{font-family:'DM Mono',monospace;font-size:0.78rem;color:var(--muted)}
-.btn-dismiss{background:var(--accent);color:#fff;font-family:'Syne',sans-serif;font-weight:700;font-size:0.88rem;padding:0.7rem 1.8rem;border:none;border-radius:8px;cursor:pointer;margin-top:0.25rem}
-.btn-dismiss:hover{background:#9380ff}
-
-/* ════════════════════════════════
+/* ══════════════════════════════
    RAG TRACKER PAGE
-════════════════════════════════ */
-.tracker-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem;flex-wrap:wrap;gap:0.75rem}
-.tracker-header h2{font-size:1.5rem;font-weight:800;letter-spacing:-0.01em}
-.reset-all-btn{font-family:'DM Mono',monospace;font-size:0.62rem;color:var(--muted);background:none;border:1px solid var(--border);border-radius:4px;padding:0.3rem 0.7rem;cursor:pointer}
+══════════════════════════════ */
+.tracker-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.75rem;flex-wrap:wrap;gap:0.75rem}
+.tracker-header h2{font-size:1.65rem;font-weight:900;letter-spacing:-0.02em}
+.reset-all-btn{font-size:0.85rem;font-weight:800;color:var(--muted);background:none;border:2px solid var(--border);border-radius:var(--r-sm);padding:0.45rem 1rem;cursor:pointer;transition:all 0.15s}
 .reset-all-btn:hover{border-color:var(--danger);color:var(--danger)}
 
-/* Overall progress */
-.overall-progress{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:1.2rem 1.4rem;margin-bottom:1.5rem}
-.overall-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:0.75rem;flex-wrap:wrap;gap:0.5rem}
-.overall-title{font-size:0.88rem;font-weight:700}
-.overall-counts{display:flex;gap:1rem}
-.oc{display:flex;flex-direction:column;align-items:center;gap:0.1rem}
-.oc-num{font-family:'DM Mono',monospace;font-size:1.1rem;font-weight:500}
+/* Progress card */
+.overall-progress{background:var(--surface);border:2px solid var(--border);border-radius:var(--r);padding:1.5rem 1.75rem;margin-bottom:1.75rem;box-shadow:var(--sh)}
+.overall-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.1rem;flex-wrap:wrap;gap:0.5rem}
+.overall-title{font-size:1.05rem;font-weight:900;color:var(--text)}
+.overall-counts{display:flex;gap:1.5rem}
+.oc{display:flex;flex-direction:column;align-items:center;gap:0.15rem}
+.oc-num{font-family:var(--mono);font-size:1.4rem;font-weight:500}
 .oc-num.g{color:var(--green)}
 .oc-num.a{color:var(--amber)}
 .oc-num.r{color:var(--red)}
 .oc-num.ns{color:var(--muted)}
-.oc-lbl{font-family:'DM Mono',monospace;font-size:0.56rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--muted)}
-.progress-track{height:10px;background:var(--surface2);border-radius:6px;overflow:hidden;display:flex;gap:2px}
-.progress-seg{height:100%;border-radius:3px;transition:width 0.4s ease}
+.oc-lbl{font-size:0.72rem;font-weight:900;text-transform:uppercase;letter-spacing:0.08em;color:var(--muted)}
+.progress-track{height:14px;background:var(--surface2);border-radius:var(--r-pill);overflow:hidden;display:flex;gap:2px}
+.progress-seg{height:100%;border-radius:var(--r-pill);transition:width 0.5s ease}
 .progress-seg.g{background:var(--green)}
 .progress-seg.a{background:var(--amber)}
 .progress-seg.r{background:var(--red)}
 
-/* Subject accordion cards */
-.subject-accordion{background:var(--surface);border:1px solid var(--border);border-radius:10px;margin-bottom:0.75rem;overflow:hidden;transition:border-color 0.15s}
-.subject-accordion:hover{border-color:var(--border)}
-.accordion-header{display:flex;align-items:center;padding:0.9rem 1.1rem;cursor:pointer;gap:0.75rem;user-select:none}
-.accordion-icon{font-size:1.1rem;flex-shrink:0}
-.accordion-name{font-size:0.9rem;font-weight:700;flex:1}
-.accordion-mini-bar{flex:1;max-width:120px;height:6px;background:var(--surface2);border-radius:4px;overflow:hidden;display:flex;gap:1px}
-.accordion-seg{height:100%;border-radius:2px}
+/* Accordions */
+.subject-accordion{background:var(--surface);border:2px solid var(--border);border-radius:var(--r);margin-bottom:0.75rem;overflow:hidden;transition:border-color 0.15s,box-shadow 0.15s;box-shadow:var(--sh)}
+.subject-accordion:hover{border-color:var(--border-strong);box-shadow:var(--sh-md)}
+.accordion-header{display:flex;align-items:center;padding:1.05rem 1.3rem;cursor:pointer;gap:0.9rem;user-select:none}
+.accordion-icon{font-size:1.25rem;flex-shrink:0}
+.accordion-name{font-size:1rem;font-weight:800;flex:1;color:var(--text)}
+.accordion-mini-bar{flex:1;max-width:120px;height:8px;background:var(--surface2);border-radius:var(--r-pill);overflow:hidden;display:flex;gap:1px}
+.accordion-seg{height:100%;border-radius:var(--r-pill)}
 .accordion-seg.g{background:var(--green)}
 .accordion-seg.a{background:var(--amber)}
 .accordion-seg.r{background:var(--red)}
-.accordion-pct{font-family:'DM Mono',monospace;font-size:0.7rem;color:var(--muted);white-space:nowrap}
-.accordion-chevron{color:var(--muted);font-size:0.75rem;transition:transform 0.2s;flex-shrink:0}
+.accordion-pct{font-size:0.85rem;font-weight:800;color:var(--muted);white-space:nowrap}
+.accordion-chevron{color:var(--muted);font-size:0.85rem;transition:transform 0.2s;flex-shrink:0}
 .accordion-header.open .accordion-chevron{transform:rotate(180deg)}
-
-.accordion-body{display:none;border-top:1px solid var(--border);padding:0.65rem}
+.accordion-body{display:none;border-top:1px solid var(--border);padding:0.8rem}
 .accordion-body.open{display:block}
-
-/* Topics in tracker view */
-.tracker-section-heading{font-family:'DM Mono',monospace;font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);padding:0.25rem 0.4rem;margin:0.5rem 0 0.25rem;border-left:2px solid var(--border)}
-.tracker-topic-row{display:flex;align-items:center;gap:0.5rem;padding:0.38rem 0.5rem;border-radius:5px;border:1px solid transparent;transition:background 0.1s}
-.tracker-topic-row:hover{background:var(--surface2)}
+.tracker-section-heading{
+  font-size:0.72rem;font-weight:900;letter-spacing:0.1em;text-transform:uppercase;
+  color:var(--muted);padding:0.3rem 0.7rem;margin:0.65rem 0 0.35rem;
+  background:var(--surface2);border-radius:4px;border-left:3px solid var(--border-strong);
+}
+.tracker-topic-row{display:flex;align-items:center;gap:0.6rem;padding:0.6rem 0.65rem;border-radius:var(--r-sm);border:2px solid transparent;transition:all 0.12s}
+.tracker-topic-row:hover{background:var(--surface2);border-color:var(--border)}
 .tracker-topic-row.rag-green{background:var(--green-bg);border-color:var(--green-border)}
 .tracker-topic-row.rag-amber{background:var(--amber-bg);border-color:var(--amber-border)}
 .tracker-topic-row.rag-red{background:var(--red-bg);border-color:var(--red-border)}
-.tracker-topic-text{font-family:'DM Mono',monospace;font-size:0.69rem;color:var(--muted);flex:1;line-height:1.4}
-.tracker-topic-row.rag-green .tracker-topic-text,
-.tracker-topic-row.rag-amber .tracker-topic-text,
-.tracker-topic-row.rag-red .tracker-topic-text{color:var(--text)}
-.tracker-rag-btns{display:flex;gap:0.2rem;flex-shrink:0}
-.tracker-rag-btn{width:24px;height:24px;border-radius:5px;border:1.5px solid var(--border);background:transparent;cursor:pointer;font-size:0.65rem;display:flex;align-items:center;justify-content:center;transition:all 0.12s;color:var(--muted);font-weight:700}
-.tracker-rag-btn:hover{transform:scale(1.08)}
+.tracker-topic-text{font-size:0.925rem;font-weight:600;color:var(--text2);flex:1;line-height:1.4}
+.tracker-topic-row.rag-green .tracker-topic-text,.tracker-topic-row.rag-amber .tracker-topic-text,.tracker-topic-row.rag-red .tracker-topic-text{color:var(--text);font-weight:700}
+.tracker-rag-btns{display:flex;gap:0.3rem;flex-shrink:0}
+.tracker-rag-btn{width:30px;height:30px;border-radius:6px;border:2px solid var(--border);background:transparent;cursor:pointer;font-size:0.7rem;display:flex;align-items:center;justify-content:center;transition:all 0.12s;color:var(--muted);font-weight:900}
+.tracker-rag-btn:hover{transform:scale(1.1)}
 .tracker-rag-btn.g{border-color:var(--green-border);color:var(--green)}
 .tracker-rag-btn.g.active{background:var(--green);border-color:var(--green);color:#fff}
 .tracker-rag-btn.a{border-color:var(--amber-border);color:var(--amber)}
@@ -293,14 +413,102 @@ h1 span{color:var(--accent)}
 .tracker-rag-btn.r{border-color:var(--red-border);color:var(--red)}
 .tracker-rag-btn.r.active{background:var(--red);border-color:var(--red);color:#fff}
 
-/* Filter bar */
-.filter-bar{display:flex;gap:0.4rem;margin-bottom:1.25rem;flex-wrap:wrap}
-.filter-btn{font-family:'DM Mono',monospace;font-size:0.65rem;padding:0.35rem 0.75rem;border-radius:5px;border:1.5px solid var(--border);background:none;color:var(--muted);cursor:pointer;transition:all 0.15s}
-.filter-btn:hover{color:var(--text)}
-.filter-btn.active-f{color:var(--text);border-color:var(--text)}
+/* Filter pills */
+.filter-bar{display:flex;gap:0.5rem;margin-bottom:1.5rem;flex-wrap:wrap;align-items:center}
+.filter-btn{font-size:0.875rem;font-weight:800;padding:0.45rem 1.1rem;border-radius:var(--r-pill);border:2px solid var(--border);background:none;color:var(--muted);cursor:pointer;transition:all 0.15s}
+.filter-btn:hover{border-color:var(--border-strong);color:var(--text)}
+.filter-btn.active-f{border-color:var(--text);color:var(--text);background:var(--surface2)}
 .filter-btn.f-green.active-f{background:var(--green-bg);border-color:var(--green-border);color:var(--green)}
 .filter-btn.f-amber.active-f{background:var(--amber-bg);border-color:var(--amber-border);color:var(--amber)}
 .filter-btn.f-red.active-f{background:var(--red-bg);border-color:var(--red-border);color:var(--red)}
+
+/* ══════════════════════════════
+   TIMETABLE PAGE
+══════════════════════════════ */
+.tt-intro{
+  font-size:0.975rem;font-weight:600;color:var(--text2);
+  background:var(--accent-bg);border:2px solid var(--accent-border);
+  border-radius:var(--r);padding:1.1rem 1.5rem;margin-bottom:1.75rem;line-height:1.75;
+}
+.tt-intro strong{color:var(--accent);font-weight:900}
+.tt-week{margin-bottom:2.5rem}
+.tt-week-title{font-size:1.3rem;font-weight:900;letter-spacing:-0.02em;margin-bottom:0.45rem;display:flex;align-items:center;gap:0.65rem}
+.tt-week-sub{font-size:0.875rem;font-weight:700;color:var(--muted);margin-bottom:1.2rem}
+.tt-day-group{margin-bottom:1.5rem}
+.tt-day-label{
+  font-size:0.8rem;font-weight:900;letter-spacing:0.12em;text-transform:uppercase;
+  color:var(--text2);margin-bottom:0.6rem;
+  display:flex;align-items:center;gap:0.6rem;
+}
+.tt-day-label::after{content:'';flex:1;height:2px;background:var(--border);border-radius:2px}
+.tt-row{display:grid;gap:0.6rem;grid-template-columns:repeat(auto-fill,minmax(215px,1fr))}
+.tt-slot{
+  background:var(--surface);border:2px solid var(--border);
+  border-radius:var(--r-sm);padding:0.9rem 1rem 0.9rem 1.3rem;
+  position:relative;overflow:hidden;box-shadow:var(--sh);
+  transition:transform 0.15s,box-shadow 0.15s;
+}
+.tt-slot:hover{transform:translateY(-2px);box-shadow:var(--sh-md)}
+.tt-slot::before{content:'';position:absolute;top:0;left:0;width:4px;height:100%}
+.tt-slot.math::before{background:var(--sub-maths)}
+.tt-slot.english::before{background:var(--sub-english)}
+.tt-slot.science::before{background:var(--sub-biology)}
+.tt-slot.humanities::before{background:var(--sub-history)}
+.tt-slot.lang::before{background:var(--sub-french)}
+.tt-slot.drama::before{background:var(--sub-drama)}
+.tt-slot.break-slot{background:var(--surface2);border-color:var(--border)}
+.tt-slot.break-slot::before{background:var(--border-strong)}
+.tt-time{font-family:var(--mono);font-size:0.72rem;color:var(--muted);margin-bottom:0.3rem}
+.tt-subject{font-size:1rem;font-weight:800;color:var(--text);margin-bottom:0.2rem}
+.tt-topic{font-size:0.86rem;font-weight:600;color:var(--text2);line-height:1.4}
+.tt-slot.break-slot .tt-subject{color:var(--muted)}
+
+.tt-sunday{background:var(--accent-bg);border:2px solid var(--accent-border);border-radius:var(--r);padding:1.2rem 1.4rem;margin-bottom:0.65rem}
+.tt-sunday-title{font-size:0.8rem;font-weight:900;letter-spacing:0.12em;text-transform:uppercase;color:var(--accent);margin-bottom:0.8rem}
+.tt-papers{display:grid;grid-template-columns:repeat(auto-fill,minmax(185px,1fr));gap:0.55rem}
+.tt-paper{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-sm);padding:0.75rem 0.95rem;box-shadow:var(--sh)}
+.tt-paper-time{font-family:var(--mono);font-size:0.72rem;color:var(--muted);margin-bottom:0.28rem}
+.tt-paper-name{font-size:0.95rem;font-weight:800;color:var(--text);margin-bottom:0.15rem}
+.tt-paper-detail{font-size:0.84rem;font-weight:600;color:var(--text2);line-height:1.45}
+.tt-note{font-size:0.85rem;font-weight:600;color:var(--muted);background:var(--warn-bg);border:1px solid var(--warn-border);border-radius:var(--r-sm);padding:0.65rem 1rem;margin-top:0.7rem;font-style:italic}
+
+.tt-checklist{background:var(--surface);border:2px solid var(--border);border-radius:var(--r);padding:1.3rem 1.5rem;margin-top:1.6rem;box-shadow:var(--sh)}
+.tt-checklist-title{font-size:0.78rem;font-weight:900;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted);margin-bottom:1rem;padding-bottom:0.7rem;border-bottom:1px solid var(--border)}
+.tt-check-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:0.4rem}
+.tt-check-item{display:flex;align-items:flex-start;gap:0.65rem;font-size:0.9rem;font-weight:600;color:var(--text2);line-height:1.55;padding:0.3rem 0.4rem;border-radius:4px;cursor:pointer;transition:background 0.1s}
+.tt-check-item:hover{background:var(--surface2)}
+.tt-check-item input[type=checkbox]{accent-color:var(--accent);width:16px;height:16px;margin-top:3px;flex-shrink:0;cursor:pointer}
+
+.tt-section-tabs{display:flex;gap:0.5rem;margin-bottom:1.6rem;flex-wrap:wrap}
+.tt-tab{font-size:0.875rem;font-weight:800;padding:0.5rem 1.1rem;border-radius:var(--r-pill);border:2px solid var(--border);background:none;color:var(--muted);cursor:pointer;transition:all 0.15s}
+.tt-tab:hover{color:var(--text);border-color:var(--border-strong)}
+.tt-tab.active{background:var(--accent);border-color:var(--accent);color:#fff}
+.tt-panel{display:none}
+.tt-panel.active{display:block}
+
+.tt-subjects-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:0.7rem;margin-bottom:1.75rem}
+.tt-subject-card{background:var(--surface);border:2px solid var(--border);border-radius:var(--r);padding:1.1rem 1.2rem;box-shadow:var(--sh)}
+.tt-subject-card h4{font-size:1rem;font-weight:900;color:var(--text);margin-bottom:0.55rem;padding-bottom:0.55rem;border-bottom:2px solid var(--border)}
+.tt-subject-card ul{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:0.35rem}
+.tt-subject-card li{font-size:0.875rem;font-weight:600;color:var(--text2);line-height:1.5;padding-left:1.1rem;position:relative}
+.tt-subject-card li::before{content:'→';position:absolute;left:0;color:var(--faint);font-size:0.78rem;top:0.1em}
+
+.tt-tips{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:0.85rem;margin-bottom:1.75rem}
+.tt-tip{background:var(--surface);border:2px solid var(--border);border-radius:var(--r);padding:1.2rem 1.3rem;box-shadow:var(--sh)}
+.tt-tip h4{font-size:1rem;font-weight:900;color:var(--teal);margin-bottom:0.45rem}
+.tt-tip p{font-size:0.9rem;font-weight:600;color:var(--text2);line-height:1.7}
+
+/* ── MOBILE ── */
+@media(max-width:600px){
+  .nav-tab{padding:0.85rem 0.9rem;font-size:0.8rem}
+  .page{padding:1.25rem 0.9rem 3rem}
+  .timer-card{padding:1.75rem 1.25rem 1.5rem}
+  .tt-row{grid-template-columns:1fr}
+  .subjects-grid{grid-template-columns:repeat(2,1fr)}
+  .page-hero{padding:1.5rem}
+  .stats-bar{flex-wrap:wrap}
+  .stat{min-width:45%}
+}
 </style>
 </head>
 <body>
@@ -343,18 +551,19 @@ h1 span{color:var(--accent)}
 <nav class="nav">
   <button class="nav-tab active" onclick="showPage('timer',this)">⏱ Timer</button>
   <button class="nav-tab" onclick="showPage('tracker',this)">📊 RAG Tracker</button>
+  <button class="nav-tab" onclick="showPage('timetable',this)">📅 Timetable</button>
   <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()" title="Toggle light/dark mode">🌙</button>
 </nav>
 
 <!-- ══════════ TIMER PAGE ══════════ -->
 <div class="page active" id="page-timer">
-  <header>
-    <div class="badge">📚 GCSE Revision</div>
-    <h1>Study <span>Timer</span></h1>
-    <p class="subtitle">select a subject · pick a topic · start the clock</p>
-  </header>
+  <div class="page-hero">
+    <div class="page-hero-label">📚 GCSE Revision Hub</div>
+    <h1>Study Timer</h1>
+    <p>Select a subject, pick a topic, and start the clock</p>
+  </div>
 
-  <p class="section-label">01 — Select Subject</p>
+  <p class="section-label">Select Subject</p>
   <div class="subjects-grid" id="subjectsGrid"></div>
 
   <div class="topics-panel" id="topicsPanel">
@@ -379,7 +588,7 @@ h1 span{color:var(--accent)}
     <button class="stb-clear" onclick="clearTopic()">✕</button>
   </div>
 
-  <p class="section-label">02 — Set Duration</p>
+  <p class="section-label">Set Duration</p>
   <div class="duration-row" id="durationRow"></div>
   <div class="custom-row">
     <label>Custom (mins)</label>
@@ -419,21 +628,23 @@ h1 span{color:var(--accent)}
 
   <div class="log-section">
     <div class="log-header">
-      <p class="section-label" style="margin-bottom:0">03 — Session Log</p>
+      <p class="section-label" style="margin-bottom:0">Session Log</p>
       <button class="clear-btn" onclick="clearLog()">clear all</button>
     </div>
     <div class="log-list" id="logList">
-      <div style="font-family:'DM Mono',monospace;font-size:0.7rem;color:var(--muted);text-align:center;padding:1rem">No sessions yet.</div>
+      <div class="log-empty">No sessions yet. Start a timer to begin tracking! 🎯</div>
     </div>
   </div>
 </div>
 
 <!-- ══════════ TRACKER PAGE ══════════ -->
 <div class="page" id="page-tracker">
-  <div class="tracker-header">
-    <h2>📊 RAG Tracker</h2>
-    <button class="reset-all-btn" onclick="confirmResetAll()">Reset all RAG</button>
+  <div class="page-hero" style="background:linear-gradient(135deg,#0d9488 0%,#0891b2 100%);margin-bottom:1.75rem">
+    <div class="page-hero-label">📊 Progress Tracking</div>
+    <h1>RAG Tracker</h1>
+    <p>Rate each topic Red · Amber · Green to track what you know</p>
   </div>
+  <button class="reset-all-btn" onclick="confirmResetAll()" style="margin-bottom:1.25rem">Reset all RAG ratings</button>
 
   <!-- Overall progress -->
   <div class="overall-progress">
@@ -460,6 +671,502 @@ h1 span{color:var(--accent)}
   </div>
 
   <div id="trackerAccordions"></div>
+</div>
+
+<!-- ══════════ TIMETABLE PAGE ══════════ -->
+<div class="page" id="page-timetable">
+  <div class="page-hero" style="background:linear-gradient(135deg,#7c3aed 0%,#5b21b6 100%);margin-bottom:1.75rem">
+    <div class="page-hero-label">📅 4-Week Plan</div>
+    <h1>Revision Timetable</h1>
+    <p>Weekdays 5–8 PM · Saturday 9 AM–4 PM · Sunday Practice Papers</p>
+  </div>
+
+  <div class="tt-intro">
+    <strong>Weekdays:</strong> 3 hours (5:00–8:00 PM) &nbsp;|&nbsp;
+    <strong>Saturday:</strong> 5 hours (9:00 AM–4:00 PM, including lunch) &nbsp;|&nbsp;
+    <strong>Sunday:</strong> Practice papers under exam conditions
+  </div>
+
+  <div class="tt-section-tabs">
+    <button class="tt-tab active" onclick="showTTPanel('week1',this)">Week 1 — Sciences &amp; English</button>
+    <button class="tt-tab" onclick="showTTPanel('week2',this)">Week 2 — Humanities &amp; Languages</button>
+    <button class="tt-tab" onclick="showTTPanel('week3',this)">Week 3 — Maths &amp; Mixed Review</button>
+    <button class="tt-tab" onclick="showTTPanel('week4',this)">Week 4 — Exam Technique</button>
+    <button class="tt-tab" onclick="showTTPanel('subjects',this)">Subject Criteria</button>
+    <button class="tt-tab" onclick="showTTPanel('tips',this)">Revision Tips</button>
+  </div>
+
+  <!-- WEEK 1 -->
+  <div class="tt-panel active" id="tt-week1">
+    <div class="tt-week">
+      <div class="tt-week-title">📗 Week 1 <span style="font-size:0.8rem;font-weight:400;color:var(--muted)">Sciences &amp; English Focus</span></div>
+      <div class="tt-week-sub">Weekday sessions · Mon–Fri · 5:00–8:00 PM</div>
+
+      <div class="tt-day-group">
+        <div class="tt-day-label">Monday</div>
+        <div class="tt-row">
+          <div class="tt-slot english"><div class="tt-time">5:00–6:00 PM</div><div class="tt-subject">English Language</div><div class="tt-topic">Paper 1 – Reading skills</div></div>
+          <div class="tt-slot science"><div class="tt-time">6:00–7:00 PM</div><div class="tt-subject">Biology</div><div class="tt-topic">Cell Biology &amp; Organisation</div></div>
+          <div class="tt-slot science"><div class="tt-time">7:00–8:00 PM</div><div class="tt-subject">Chemistry</div><div class="tt-topic">Atomic Structure &amp; Bonding</div></div>
+        </div>
+      </div>
+      <div class="tt-day-group">
+        <div class="tt-day-label">Tuesday</div>
+        <div class="tt-row">
+          <div class="tt-slot math"><div class="tt-time">5:00–6:00 PM</div><div class="tt-subject">Maths</div><div class="tt-topic">Number &amp; Algebra</div></div>
+          <div class="tt-slot english"><div class="tt-time">6:00–7:00 PM</div><div class="tt-subject">English Literature</div><div class="tt-topic">Macbeth – themes, characters &amp; key quotes</div></div>
+          <div class="tt-slot science"><div class="tt-time">7:00–8:00 PM</div><div class="tt-subject">Physics</div><div class="tt-topic">Energy &amp; Electricity</div></div>
+        </div>
+      </div>
+      <div class="tt-day-group">
+        <div class="tt-day-label">Wednesday</div>
+        <div class="tt-row">
+          <div class="tt-slot science"><div class="tt-time">5:00–6:00 PM</div><div class="tt-subject">Biology</div><div class="tt-topic">Infection, Response &amp; Bioenergetics</div></div>
+          <div class="tt-slot lang"><div class="tt-time">6:00–7:00 PM</div><div class="tt-subject">French</div><div class="tt-topic">Vocabulary – Identity &amp; Culture</div></div>
+          <div class="tt-slot science"><div class="tt-time">7:00–8:00 PM</div><div class="tt-subject">Chemistry</div><div class="tt-topic">Quantitative Chemistry &amp; Extraction</div></div>
+        </div>
+      </div>
+      <div class="tt-day-group">
+        <div class="tt-day-label">Thursday</div>
+        <div class="tt-row">
+          <div class="tt-slot english"><div class="tt-time">5:00–6:00 PM</div><div class="tt-subject">English Language</div><div class="tt-topic">Paper 2 – Reading &amp; Writing</div></div>
+          <div class="tt-slot science"><div class="tt-time">6:00–7:00 PM</div><div class="tt-subject">Physics</div><div class="tt-topic">Particle Model &amp; Atomic Structure</div></div>
+          <div class="tt-slot humanities"><div class="tt-time">7:00–8:00 PM</div><div class="tt-subject">History</div><div class="tt-topic">Medicine in Britain – Medieval &amp; Renaissance</div></div>
+        </div>
+      </div>
+      <div class="tt-day-group">
+        <div class="tt-day-label">Friday</div>
+        <div class="tt-row">
+          <div class="tt-slot math"><div class="tt-time">5:00–6:00 PM</div><div class="tt-subject">Maths</div><div class="tt-topic">Graphs &amp; Functions</div></div>
+          <div class="tt-slot english"><div class="tt-time">6:00–7:00 PM</div><div class="tt-subject">English Literature</div><div class="tt-topic">A Christmas Carol – themes &amp; key quotes</div></div>
+          <div class="tt-slot drama"><div class="tt-time">7:00–8:00 PM</div><div class="tt-subject">Drama</div><div class="tt-topic">Devising Drama – Component 1 planning</div></div>
+        </div>
+      </div>
+
+      <div class="tt-week-sub" style="margin-top:1.25rem">Saturday session · 9:00 AM–4:00 PM</div>
+      <div class="tt-row">
+        <div class="tt-slot science"><div class="tt-time">9:00–10:30 AM</div><div class="tt-subject">Biology</div><div class="tt-topic">Homeostasis &amp; Hormones</div></div>
+        <div class="tt-slot science"><div class="tt-time">10:30–12:00 PM</div><div class="tt-subject">Chemistry</div><div class="tt-topic">Chemical Changes &amp; Energy Changes</div></div>
+        <div class="tt-slot break-slot"><div class="tt-time">12:00–1:00 PM</div><div class="tt-subject">LUNCH BREAK</div><div class="tt-topic"></div></div>
+        <div class="tt-slot english"><div class="tt-time">1:00–2:30 PM</div><div class="tt-subject">English Language</div><div class="tt-topic">Creative Writing practice</div></div>
+        <div class="tt-slot science"><div class="tt-time">2:30–4:00 PM</div><div class="tt-subject">Physics</div><div class="tt-topic">Forces &amp; Motion</div></div>
+      </div>
+
+      <div class="tt-week-sub" style="margin-top:1.25rem">Sunday · Practice Papers (exam conditions)</div>
+      <div class="tt-sunday">
+        <div class="tt-sunday-title">📝 Practice Papers Day</div>
+        <div class="tt-papers">
+          <div class="tt-paper"><div class="tt-paper-time">9:00–10:30 AM</div><div class="tt-paper-name">Maths Paper</div><div class="tt-paper-detail">Non-Calculator Past Paper (timed 1h30)</div></div>
+          <div class="tt-paper"><div class="tt-paper-time">11:00 AM–12:30 PM</div><div class="tt-paper-name">English Language Paper</div><div class="tt-paper-detail">Paper 1 Past Paper (timed 1h45)</div></div>
+          <div class="tt-paper"><div class="tt-paper-time">2:00–3:30 PM</div><div class="tt-paper-name">Biology Paper</div><div class="tt-paper-detail">Paper 1 Past Paper (timed 1h45)</div></div>
+          <div class="tt-paper"><div class="tt-paper-time">4:00–5:30 PM</div><div class="tt-paper-name">Chemistry Paper</div><div class="tt-paper-detail">Paper 1 Past Paper (timed 1h45)</div></div>
+        </div>
+        <div class="tt-note">Leave a 30-min gap between papers for a break. Mark each paper with the official mark scheme immediately after.</div>
+      </div>
+
+      <div class="tt-checklist">
+        <div class="tt-checklist-title">✅ Week 1 Checklist</div>
+        <div class="tt-check-grid">
+          <label class="tt-check-item"><input type="checkbox"> English Language: Paper 1 reading techniques revised</label>
+          <label class="tt-check-item"><input type="checkbox"> Physics: Particle model &amp; atomic structure revised</label>
+          <label class="tt-check-item"><input type="checkbox"> English Language: Paper 2 reading + non-fiction writing</label>
+          <label class="tt-check-item"><input type="checkbox"> Physics: Forces &amp; motion revised</label>
+          <label class="tt-check-item"><input type="checkbox"> English Language: Creative writing practice completed</label>
+          <label class="tt-check-item"><input type="checkbox"> Maths: Number &amp; algebra topics covered</label>
+          <label class="tt-check-item"><input type="checkbox"> English Literature: Macbeth – themes, characters &amp; quotations revised</label>
+          <label class="tt-check-item"><input type="checkbox"> Maths: Graphs &amp; functions covered</label>
+          <label class="tt-check-item"><input type="checkbox"> English Literature: A Christmas Carol – themes &amp; quotations revised</label>
+          <label class="tt-check-item"><input type="checkbox"> History: Medicine in Britain – Medieval &amp; Renaissance revised</label>
+          <label class="tt-check-item"><input type="checkbox"> Biology: Cell biology &amp; organisation revised</label>
+          <label class="tt-check-item"><input type="checkbox"> French: Identity &amp; Culture vocabulary reviewed</label>
+          <label class="tt-check-item"><input type="checkbox"> Biology: Infection, response &amp; bioenergetics revised</label>
+          <label class="tt-check-item"><input type="checkbox"> Drama: Component 1 devising plan started</label>
+          <label class="tt-check-item"><input type="checkbox"> Biology: Homeostasis &amp; hormones revised</label>
+          <label class="tt-check-item"><input type="checkbox"> Sunday: Maths non-calculator past paper completed &amp; marked</label>
+          <label class="tt-check-item"><input type="checkbox"> Chemistry: Atomic structure &amp; bonding revised</label>
+          <label class="tt-check-item"><input type="checkbox"> Sunday: English Language Paper 1 past paper completed &amp; marked</label>
+          <label class="tt-check-item"><input type="checkbox"> Chemistry: Quantitative chemistry &amp; extraction revised</label>
+          <label class="tt-check-item"><input type="checkbox"> Sunday: Biology Paper 1 past paper completed &amp; marked</label>
+          <label class="tt-check-item"><input type="checkbox"> Chemistry: Chemical changes &amp; energy changes revised</label>
+          <label class="tt-check-item"><input type="checkbox"> Sunday: Chemistry Paper 1 past paper completed &amp; marked</label>
+          <label class="tt-check-item"><input type="checkbox"> Physics: Energy &amp; electricity revised</label>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- WEEK 2 -->
+  <div class="tt-panel" id="tt-week2">
+    <div class="tt-week">
+      <div class="tt-week-title">📘 Week 2 <span style="font-size:0.8rem;font-weight:400;color:var(--muted)">Humanities &amp; Languages Focus</span></div>
+      <div class="tt-week-sub">Weekday sessions · Mon–Fri · 5:00–8:00 PM</div>
+
+      <div class="tt-day-group">
+        <div class="tt-day-label">Monday</div>
+        <div class="tt-row">
+          <div class="tt-slot humanities"><div class="tt-time">5:00–6:00 PM</div><div class="tt-subject">Geography</div><div class="tt-topic">Living World – Rainforests &amp; Deserts</div></div>
+          <div class="tt-slot humanities"><div class="tt-time">6:00–7:00 PM</div><div class="tt-subject">History</div><div class="tt-topic">Superpower Relations &amp; the Cold War</div></div>
+          <div class="tt-slot english"><div class="tt-time">7:00–8:00 PM</div><div class="tt-subject">English Literature</div><div class="tt-topic">Worlds and Lives Poetry – key poems &amp; themes</div></div>
+        </div>
+      </div>
+      <div class="tt-day-group">
+        <div class="tt-day-label">Tuesday</div>
+        <div class="tt-row">
+          <div class="tt-slot lang"><div class="tt-time">5:00–6:00 PM</div><div class="tt-subject">French</div><div class="tt-topic">Listening Paper practice</div></div>
+          <div class="tt-slot math"><div class="tt-time">6:00–7:00 PM</div><div class="tt-subject">Maths</div><div class="tt-topic">Geometry &amp; Trigonometry</div></div>
+          <div class="tt-slot science"><div class="tt-time">7:00–8:00 PM</div><div class="tt-subject">Biology</div><div class="tt-topic">Inheritance, Variation &amp; Evolution</div></div>
+        </div>
+      </div>
+      <div class="tt-day-group">
+        <div class="tt-day-label">Wednesday</div>
+        <div class="tt-row">
+          <div class="tt-slot humanities"><div class="tt-time">5:00–6:00 PM</div><div class="tt-subject">History</div><div class="tt-topic">Early Elizabethan England – threats &amp; religious settlement</div></div>
+          <div class="tt-slot humanities"><div class="tt-time">6:00–7:00 PM</div><div class="tt-subject">Geography</div><div class="tt-topic">UK Physical Landscapes (Coasts/Rivers)</div></div>
+          <div class="tt-slot science"><div class="tt-time">7:00–8:00 PM</div><div class="tt-subject">Chemistry</div><div class="tt-topic">Rate of Reaction &amp; Equilibrium</div></div>
+        </div>
+      </div>
+      <div class="tt-day-group">
+        <div class="tt-day-label">Thursday</div>
+        <div class="tt-row">
+          <div class="tt-slot lang"><div class="tt-time">5:00–6:00 PM</div><div class="tt-subject">French</div><div class="tt-topic">Speaking prep – role play &amp; photo card</div></div>
+          <div class="tt-slot english"><div class="tt-time">6:00–7:00 PM</div><div class="tt-subject">English Literature</div><div class="tt-topic">An Inspector Calls – themes, characters &amp; structure</div></div>
+          <div class="tt-slot science"><div class="tt-time">7:00–8:00 PM</div><div class="tt-subject">Physics</div><div class="tt-topic">Waves &amp; EM Spectrum</div></div>
+        </div>
+      </div>
+      <div class="tt-day-group">
+        <div class="tt-day-label">Friday</div>
+        <div class="tt-row">
+          <div class="tt-slot math"><div class="tt-time">5:00–6:00 PM</div><div class="tt-subject">Maths</div><div class="tt-topic">Probability &amp; Statistics</div></div>
+          <div class="tt-slot humanities"><div class="tt-time">6:00–7:00 PM</div><div class="tt-subject">Geography</div><div class="tt-topic">Urban Issues – case studies</div></div>
+          <div class="tt-slot drama"><div class="tt-time">7:00–8:00 PM</div><div class="tt-subject">Drama</div><div class="tt-topic">Component 3 – Set text analysis</div></div>
+        </div>
+      </div>
+
+      <div class="tt-week-sub" style="margin-top:1.25rem">Saturday session · 9:00 AM–4:00 PM</div>
+      <div class="tt-row">
+        <div class="tt-slot humanities"><div class="tt-time">9:00–10:30 AM</div><div class="tt-subject">History</div><div class="tt-topic">Medicine in Britain – Industrial &amp; Modern periods</div></div>
+        <div class="tt-slot english"><div class="tt-time">10:30–12:00 PM</div><div class="tt-subject">English Language</div><div class="tt-topic">Non-fiction reading skills</div></div>
+        <div class="tt-slot break-slot"><div class="tt-time">12:00–1:00 PM</div><div class="tt-subject">LUNCH BREAK</div><div class="tt-topic"></div></div>
+        <div class="tt-slot lang"><div class="tt-time">1:00–2:30 PM</div><div class="tt-subject">French</div><div class="tt-topic">Writing Paper practice</div></div>
+        <div class="tt-slot science"><div class="tt-time">2:30–4:00 PM</div><div class="tt-subject">Biology</div><div class="tt-topic">Ecology &amp; Ecosystems</div></div>
+      </div>
+
+      <div class="tt-week-sub" style="margin-top:1.25rem">Sunday · Practice Papers (exam conditions)</div>
+      <div class="tt-sunday">
+        <div class="tt-sunday-title">📝 Practice Papers Day</div>
+        <div class="tt-papers">
+          <div class="tt-paper"><div class="tt-paper-time">9:00–10:30 AM</div><div class="tt-paper-name">English Lit Paper</div><div class="tt-paper-detail">Paper 1 – Macbeth &amp; Christmas Carol (timed 1h45)</div></div>
+          <div class="tt-paper"><div class="tt-paper-time">11:00 AM–12:30 PM</div><div class="tt-paper-name">History Paper</div><div class="tt-paper-detail">Paper 1 – Medicine &amp; Western Front (timed 1h15)</div></div>
+          <div class="tt-paper"><div class="tt-paper-time">2:00–3:30 PM</div><div class="tt-paper-name">Geography Paper</div><div class="tt-paper-detail">Paper 1 Past Paper (timed 1h30)</div></div>
+          <div class="tt-paper"><div class="tt-paper-time">4:00–5:30 PM</div><div class="tt-paper-name">French Paper</div><div class="tt-paper-detail">Full Listening &amp; Reading Papers (timed)</div></div>
+        </div>
+        <div class="tt-note">Leave a 30-min gap between papers for a break. Mark each paper with the official mark scheme immediately after.</div>
+      </div>
+
+      <div class="tt-checklist">
+        <div class="tt-checklist-title">✅ Week 2 Checklist</div>
+        <div class="tt-check-grid">
+          <label class="tt-check-item"><input type="checkbox"> Geography: Natural hazards, living world &amp; UK landscapes revised</label>
+          <label class="tt-check-item"><input type="checkbox"> Biology: Ecology &amp; ecosystems revised</label>
+          <label class="tt-check-item"><input type="checkbox"> Geography: Urban issues &amp; case studies revised</label>
+          <label class="tt-check-item"><input type="checkbox"> Chemistry: Rate of reaction &amp; equilibrium revised</label>
+          <label class="tt-check-item"><input type="checkbox"> Geography: Map skills practised</label>
+          <label class="tt-check-item"><input type="checkbox"> Physics: Waves &amp; EM spectrum revised</label>
+          <label class="tt-check-item"><input type="checkbox"> History: Superpower Relations &amp; Cold War revised</label>
+          <label class="tt-check-item"><input type="checkbox"> Maths: Geometry &amp; trigonometry covered</label>
+          <label class="tt-check-item"><input type="checkbox"> History: Early Elizabethan England revised</label>
+          <label class="tt-check-item"><input type="checkbox"> Maths: Probability &amp; statistics covered</label>
+          <label class="tt-check-item"><input type="checkbox"> History: Medicine – Industrial &amp; Modern periods revised</label>
+          <label class="tt-check-item"><input type="checkbox"> Drama: Component 3 set text analysis started</label>
+          <label class="tt-check-item"><input type="checkbox"> English Literature: Worlds and Lives poetry revised</label>
+          <label class="tt-check-item"><input type="checkbox"> English Language: Non-fiction reading skills practised</label>
+          <label class="tt-check-item"><input type="checkbox"> English Literature: An Inspector Calls revised</label>
+          <label class="tt-check-item"><input type="checkbox"> French: Listening paper practice completed</label>
+          <label class="tt-check-item"><input type="checkbox"> Biology: Inheritance, variation &amp; evolution revised</label>
+          <label class="tt-check-item"><input type="checkbox"> French: Speaking prep – role play &amp; photo card practised</label>
+          <label class="tt-check-item"><input type="checkbox"> Sunday: English Lit Paper 1 past paper completed &amp; marked</label>
+          <label class="tt-check-item"><input type="checkbox"> French: Writing paper practice completed</label>
+          <label class="tt-check-item"><input type="checkbox"> Sunday: History Paper 1 past paper completed &amp; marked</label>
+          <label class="tt-check-item"><input type="checkbox"> Sunday: Geography Paper 1 past paper completed &amp; marked</label>
+          <label class="tt-check-item"><input type="checkbox"> Sunday: French Listening &amp; Reading papers completed &amp; marked</label>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- WEEK 3 -->
+  <div class="tt-panel" id="tt-week3">
+    <div class="tt-week">
+      <div class="tt-week-title">📙 Week 3 <span style="font-size:0.8rem;font-weight:400;color:var(--muted)">Maths, Drama &amp; Mixed Review</span></div>
+      <div class="tt-week-sub">Weekday sessions · Mon–Fri · 5:00–8:00 PM</div>
+
+      <div class="tt-day-group">
+        <div class="tt-day-label">Monday</div>
+        <div class="tt-row">
+          <div class="tt-slot math"><div class="tt-time">5:00–6:00 PM</div><div class="tt-subject">Maths</div><div class="tt-topic">Quadratics &amp; Simultaneous Equations</div></div>
+          <div class="tt-slot english"><div class="tt-time">6:00–7:00 PM</div><div class="tt-subject">English Literature</div><div class="tt-topic">Unseen Poetry technique &amp; annotation</div></div>
+          <div class="tt-slot science"><div class="tt-time">7:00–8:00 PM</div><div class="tt-subject">Biology</div><div class="tt-topic">Paper 1 full topic review</div></div>
+        </div>
+      </div>
+      <div class="tt-day-group">
+        <div class="tt-day-label">Tuesday</div>
+        <div class="tt-row">
+          <div class="tt-slot drama"><div class="tt-time">5:00–6:00 PM</div><div class="tt-subject">Drama</div><div class="tt-topic">Theatre terminology &amp; practitioner study</div></div>
+          <div class="tt-slot humanities"><div class="tt-time">6:00–7:00 PM</div><div class="tt-subject">History</div><div class="tt-topic">The USA 1954–1975 – Civil Rights movement</div></div>
+          <div class="tt-slot science"><div class="tt-time">7:00–8:00 PM</div><div class="tt-subject">Chemistry</div><div class="tt-topic">Atmosphere &amp; Using Resources</div></div>
+        </div>
+      </div>
+      <div class="tt-day-group">
+        <div class="tt-day-label">Wednesday</div>
+        <div class="tt-row">
+          <div class="tt-slot math"><div class="tt-time">5:00–6:00 PM</div><div class="tt-subject">Maths</div><div class="tt-topic">Higher – vectors, proof, advanced trig</div></div>
+          <div class="tt-slot lang"><div class="tt-time">6:00–7:00 PM</div><div class="tt-subject">French</div><div class="tt-topic">General conversation practice</div></div>
+          <div class="tt-slot science"><div class="tt-time">7:00–8:00 PM</div><div class="tt-subject">Physics</div><div class="tt-topic">Space / Paper 2 full review</div></div>
+        </div>
+      </div>
+      <div class="tt-day-group">
+        <div class="tt-day-label">Thursday</div>
+        <div class="tt-row">
+          <div class="tt-slot humanities"><div class="tt-time">5:00–6:00 PM</div><div class="tt-subject">Geography</div><div class="tt-topic">Map skills &amp; fieldwork methodology</div></div>
+          <div class="tt-slot english"><div class="tt-time">6:00–7:00 PM</div><div class="tt-subject">English Language</div><div class="tt-topic">Structural analysis &amp; evaluation</div></div>
+          <div class="tt-slot drama"><div class="tt-time">7:00–8:00 PM</div><div class="tt-subject">Drama</div><div class="tt-topic">Live theatre analysis – Component 3A</div></div>
+        </div>
+      </div>
+      <div class="tt-day-group">
+        <div class="tt-day-label">Friday</div>
+        <div class="tt-row">
+          <div class="tt-slot math"><div class="tt-time">5:00–6:00 PM</div><div class="tt-subject">Maths</div><div class="tt-topic">Non-calculator skills &amp; mental methods</div></div>
+          <div class="tt-slot humanities"><div class="tt-time">6:00–7:00 PM</div><div class="tt-subject">History</div><div class="tt-topic">The USA – Vietnam War &amp; protest movements</div></div>
+          <div class="tt-slot english"><div class="tt-time">7:00–8:00 PM</div><div class="tt-subject">English Literature</div><div class="tt-topic">Essay planning &amp; comparison skills</div></div>
+        </div>
+      </div>
+
+      <div class="tt-week-sub" style="margin-top:1.25rem">Saturday session · 9:00 AM–4:00 PM</div>
+      <div class="tt-row">
+        <div class="tt-slot humanities"><div class="tt-time">9:00–10:30 AM</div><div class="tt-subject">History</div><div class="tt-topic">Western Front – trenches, RAMC, surgery &amp; source skills</div></div>
+        <div class="tt-slot humanities"><div class="tt-time">10:30–12:00 PM</div><div class="tt-subject">Geography</div><div class="tt-topic">Economic World &amp; Resources</div></div>
+        <div class="tt-slot break-slot"><div class="tt-time">12:00–1:00 PM</div><div class="tt-subject">LUNCH BREAK</div><div class="tt-topic"></div></div>
+        <div class="tt-slot lang"><div class="tt-time">1:00–2:30 PM</div><div class="tt-subject">French</div><div class="tt-topic">Full mock – all four skills</div></div>
+        <div class="tt-slot drama"><div class="tt-time">2:30–4:00 PM</div><div class="tt-subject">Drama</div><div class="tt-topic">Portfolio review &amp; Component 3 prep</div></div>
+      </div>
+
+      <div class="tt-week-sub" style="margin-top:1.25rem">Sunday · Practice Papers (exam conditions)</div>
+      <div class="tt-sunday">
+        <div class="tt-sunday-title">📝 Practice Papers Day</div>
+        <div class="tt-papers">
+          <div class="tt-paper"><div class="tt-paper-time">9:00–10:30 AM</div><div class="tt-paper-name">Maths Paper</div><div class="tt-paper-detail">Calculator Past Paper – Papers 2 &amp; 3 (timed)</div></div>
+          <div class="tt-paper"><div class="tt-paper-time">11:00 AM–12:30 PM</div><div class="tt-paper-name">Physics Paper</div><div class="tt-paper-detail">Paper 1 Past Paper (timed 1h45)</div></div>
+          <div class="tt-paper"><div class="tt-paper-time">2:00–3:30 PM</div><div class="tt-paper-name">English Language Paper</div><div class="tt-paper-detail">Paper 2 Past Paper (timed 1h45)</div></div>
+          <div class="tt-paper"><div class="tt-paper-time">4:00–5:30 PM</div><div class="tt-paper-name">History Paper</div><div class="tt-paper-detail">Paper 2 – Cold War &amp; Early Elizabethan (timed 1h45)</div></div>
+        </div>
+        <div class="tt-note">Leave a 30-min gap between papers for a break. Mark each paper with the official mark scheme immediately after.</div>
+      </div>
+
+      <div class="tt-checklist">
+        <div class="tt-checklist-title">✅ Week 3 Checklist</div>
+        <div class="tt-check-grid">
+          <label class="tt-check-item"><input type="checkbox"> Maths: Quadratics &amp; simultaneous equations revised</label>
+          <label class="tt-check-item"><input type="checkbox"> History: Source utility &amp; reliability skills practised</label>
+          <label class="tt-check-item"><input type="checkbox"> Maths: Vectors, proof &amp; advanced trig (Higher) revised</label>
+          <label class="tt-check-item"><input type="checkbox"> Geography: Map skills &amp; fieldwork methodology revised</label>
+          <label class="tt-check-item"><input type="checkbox"> Maths: Non-calculator skills practised</label>
+          <label class="tt-check-item"><input type="checkbox"> Geography: Economic world &amp; resources revised</label>
+          <label class="tt-check-item"><input type="checkbox"> English Literature: Unseen poetry technique practised</label>
+          <label class="tt-check-item"><input type="checkbox"> French: General conversation topics practised</label>
+          <label class="tt-check-item"><input type="checkbox"> English Literature: Essay planning &amp; comparison skills practised</label>
+          <label class="tt-check-item"><input type="checkbox"> French: Full mock across all four skills completed</label>
+          <label class="tt-check-item"><input type="checkbox"> English Language: Structural analysis &amp; evaluation practised</label>
+          <label class="tt-check-item"><input type="checkbox"> Drama: Theatre terminology &amp; practitioners revised</label>
+          <label class="tt-check-item"><input type="checkbox"> Biology: Full Paper 1 topic review completed</label>
+          <label class="tt-check-item"><input type="checkbox"> Drama: Live theatre analysis for Component 3 prepared</label>
+          <label class="tt-check-item"><input type="checkbox"> Chemistry: Atmosphere &amp; using resources revised</label>
+          <label class="tt-check-item"><input type="checkbox"> Drama: Portfolio reviewed</label>
+          <label class="tt-check-item"><input type="checkbox"> Physics: Space / Paper 2 full review done</label>
+          <label class="tt-check-item"><input type="checkbox"> History: The USA – Civil Rights movement revised</label>
+          <label class="tt-check-item"><input type="checkbox"> History: The USA – Vietnam War &amp; protest movements revised</label>
+          <label class="tt-check-item"><input type="checkbox"> History: Western Front – trenches, RAMC &amp; surgery revised</label>
+          <label class="tt-check-item"><input type="checkbox"> Sunday: Maths calculator past paper completed &amp; marked</label>
+          <label class="tt-check-item"><input type="checkbox"> Sunday: Physics Paper 1 past paper completed &amp; marked</label>
+          <label class="tt-check-item"><input type="checkbox"> Sunday: English Language Paper 2 past paper completed &amp; marked</label>
+          <label class="tt-check-item"><input type="checkbox"> Sunday: History Paper 2 past paper completed &amp; marked</label>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- WEEK 4 -->
+  <div class="tt-panel" id="tt-week4">
+    <div class="tt-week">
+      <div class="tt-week-title">📕 Week 4 <span style="font-size:0.8rem;font-weight:400;color:var(--muted)">Exam Technique &amp; Final Consolidation</span></div>
+      <div class="tt-week-sub">Weekday sessions · Mon–Fri · 5:00–8:00 PM</div>
+
+      <div class="tt-day-group">
+        <div class="tt-day-label">Monday</div>
+        <div class="tt-row">
+          <div class="tt-slot math"><div class="tt-time">5:00–6:00 PM</div><div class="tt-subject">Maths</div><div class="tt-topic">Weak topic targeted revision</div></div>
+          <div class="tt-slot science"><div class="tt-time">6:00–7:00 PM</div><div class="tt-subject">Biology</div><div class="tt-topic">Exam technique &amp; 6-mark answers</div></div>
+          <div class="tt-slot science"><div class="tt-time">7:00–8:00 PM</div><div class="tt-subject">Chemistry</div><div class="tt-topic">Remaining weak areas</div></div>
+        </div>
+      </div>
+      <div class="tt-day-group">
+        <div class="tt-day-label">Tuesday</div>
+        <div class="tt-row">
+          <div class="tt-slot english"><div class="tt-time">5:00–6:00 PM</div><div class="tt-subject">English Literature</div><div class="tt-topic">Quotation memorisation for all four texts</div></div>
+          <div class="tt-slot science"><div class="tt-time">6:00–7:00 PM</div><div class="tt-subject">Physics</div><div class="tt-topic">Key equations &amp; past questions</div></div>
+          <div class="tt-slot humanities"><div class="tt-time">7:00–8:00 PM</div><div class="tt-subject">History</div><div class="tt-topic">Extended essay &amp; source analysis practice</div></div>
+        </div>
+      </div>
+      <div class="tt-day-group">
+        <div class="tt-day-label">Wednesday</div>
+        <div class="tt-row">
+          <div class="tt-slot lang"><div class="tt-time">5:00–6:00 PM</div><div class="tt-subject">French</div><div class="tt-topic">Speaking &amp; listening final practice</div></div>
+          <div class="tt-slot humanities"><div class="tt-time">6:00–7:00 PM</div><div class="tt-subject">Geography</div><div class="tt-topic">9-mark answer technique</div></div>
+          <div class="tt-slot drama"><div class="tt-time">7:00–8:00 PM</div><div class="tt-subject">Drama</div><div class="tt-topic">Final Component 3 preparation</div></div>
+        </div>
+      </div>
+      <div class="tt-day-group">
+        <div class="tt-day-label">Thursday</div>
+        <div class="tt-row">
+          <div class="tt-slot math"><div class="tt-time">5:00–6:00 PM</div><div class="tt-subject">Maths</div><div class="tt-topic">Mixed topic revision &amp; exam tips</div></div>
+          <div class="tt-slot english"><div class="tt-time">6:00–7:00 PM</div><div class="tt-subject">English Language</div><div class="tt-topic">Accuracy &amp; vocabulary improvement</div></div>
+          <div class="tt-slot science"><div class="tt-time">7:00–8:00 PM</div><div class="tt-subject">Biology</div><div class="tt-topic">Key facts &amp; definitions check</div></div>
+        </div>
+      </div>
+      <div class="tt-day-group">
+        <div class="tt-day-label">Friday</div>
+        <div class="tt-row">
+          <div class="tt-slot science"><div class="tt-time">5:00–6:00 PM</div><div class="tt-subject">Chemistry</div><div class="tt-topic">Weak topic revision + calculations</div></div>
+          <div class="tt-slot english"><div class="tt-time">6:00–7:00 PM</div><div class="tt-subject">English Literature</div><div class="tt-topic">Final timed essay practice</div></div>
+          <div class="tt-slot science"><div class="tt-time">7:00–8:00 PM</div><div class="tt-subject">Physics</div><div class="tt-topic">Past paper short questions</div></div>
+        </div>
+      </div>
+
+      <div class="tt-week-sub" style="margin-top:1.25rem">Saturday session · 9:00 AM–4:00 PM</div>
+      <div class="tt-row">
+        <div class="tt-slot humanities"><div class="tt-time">9:00–10:30 AM</div><div class="tt-subject">History</div><div class="tt-topic">Full revision – all four topics</div></div>
+        <div class="tt-slot humanities"><div class="tt-time">10:30–12:00 PM</div><div class="tt-subject">Geography</div><div class="tt-topic">Full mock under timed conditions</div></div>
+        <div class="tt-slot break-slot"><div class="tt-time">12:00–1:00 PM</div><div class="tt-subject">LUNCH BREAK</div><div class="tt-topic"></div></div>
+        <div class="tt-slot lang"><div class="tt-time">1:00–2:30 PM</div><div class="tt-subject">French</div><div class="tt-topic">Final listening &amp; reading mock</div></div>
+        <div class="tt-slot math"><div class="tt-time">2:30–4:00 PM</div><div class="tt-subject">Maths</div><div class="tt-topic">Calculator paper – final mock</div></div>
+      </div>
+
+      <div class="tt-week-sub" style="margin-top:1.25rem">Sunday · Practice Papers (exam conditions)</div>
+      <div class="tt-sunday">
+        <div class="tt-sunday-title">📝 Practice Papers Day</div>
+        <div class="tt-papers">
+          <div class="tt-paper"><div class="tt-paper-time">9:00–10:30 AM</div><div class="tt-paper-name">English Lit Paper</div><div class="tt-paper-detail">Paper 2 – Inspector Calls, Poetry &amp; Unseen (timed 2h15)</div></div>
+          <div class="tt-paper"><div class="tt-paper-time">11:00 AM–12:30 PM</div><div class="tt-paper-name">Biology Paper</div><div class="tt-paper-detail">Paper 2 Past Paper (timed 1h45)</div></div>
+          <div class="tt-paper"><div class="tt-paper-time">2:00–3:30 PM</div><div class="tt-paper-name">History Paper</div><div class="tt-paper-detail">Paper 3 – The USA 1954–1975 (timed 1h20)</div></div>
+          <div class="tt-paper"><div class="tt-paper-time">4:00–5:30 PM</div><div class="tt-paper-name">Geography Papers</div><div class="tt-paper-detail">Papers 2 &amp; 3 Past Papers (timed)</div></div>
+        </div>
+        <div class="tt-note">Leave a 30-min gap between papers for a break. Mark each paper with the official mark scheme immediately after.</div>
+      </div>
+
+      <div class="tt-checklist">
+        <div class="tt-checklist-title">✅ Week 4 Checklist</div>
+        <div class="tt-check-grid">
+          <label class="tt-check-item"><input type="checkbox"> Maths: All weak topics targeted and re-revised</label>
+          <label class="tt-check-item"><input type="checkbox"> History: Extended essay &amp; source analysis timed practice done</label>
+          <label class="tt-check-item"><input type="checkbox"> Maths: Final calculator mock completed &amp; marked</label>
+          <label class="tt-check-item"><input type="checkbox"> Geography: Full mock paper completed &amp; marked</label>
+          <label class="tt-check-item"><input type="checkbox"> English Language: Final timed paper completed</label>
+          <label class="tt-check-item"><input type="checkbox"> Geography: 9-mark answer technique practised</label>
+          <label class="tt-check-item"><input type="checkbox"> English Literature: Key quotations memorised for all four texts</label>
+          <label class="tt-check-item"><input type="checkbox"> French: Speaking &amp; listening final mock completed</label>
+          <label class="tt-check-item"><input type="checkbox"> English Literature: Final timed essay completed</label>
+          <label class="tt-check-item"><input type="checkbox"> French: Final reading &amp; listening mock completed</label>
+          <label class="tt-check-item"><input type="checkbox"> Biology: 6-mark extended answer technique practised</label>
+          <label class="tt-check-item"><input type="checkbox"> Drama: Component 3 fully prepared</label>
+          <label class="tt-check-item"><input type="checkbox"> Biology: All key facts &amp; definitions checked</label>
+          <label class="tt-check-item"><input type="checkbox"> Chemistry: All calculations revised</label>
+          <label class="tt-check-item"><input type="checkbox"> Chemistry: Remaining weak areas addressed</label>
+          <label class="tt-check-item"><input type="checkbox"> Physics: All required equations memorised</label>
+          <label class="tt-check-item"><input type="checkbox"> Physics: Past paper short questions completed</label>
+          <label class="tt-check-item"><input type="checkbox"> History: All four topics fully revised</label>
+          <label class="tt-check-item"><input type="checkbox"> Sunday: English Lit Paper 2 past paper completed &amp; marked</label>
+          <label class="tt-check-item"><input type="checkbox"> Sunday: Biology Paper 2 past paper completed &amp; marked</label>
+          <label class="tt-check-item"><input type="checkbox"> Sunday: History Paper 3 – The USA past paper completed &amp; marked</label>
+          <label class="tt-check-item"><input type="checkbox"> Sunday: Geography Papers 2 &amp; 3 completed &amp; marked</label>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SUBJECT CRITERIA -->
+  <div class="tt-panel" id="tt-subjects">
+    <p class="section-label" style="margin-bottom:1rem">Revision Criteria by Subject</p>
+    <div class="tt-subjects-grid">
+      <div class="tt-subject-card"><h4>📖 AQA English Language</h4><ul>
+        <li>Paper 1: List 4 things, language analysis, structural features, evaluation, creative writing</li>
+        <li>Paper 2: True/False, summary, language analysis, compare perspectives, non-fiction writing</li>
+        <li>Key skills: Inference, language analysis, structural analysis, evaluation, planning</li>
+      </ul></div>
+      <div class="tt-subject-card"><h4>📚 AQA English Literature</h4><ul>
+        <li>Macbeth: ambition, guilt, power, appearance vs reality, fate &amp; free will</li>
+        <li>A Christmas Carol: redemption, poverty, social responsibility, greed, transformation</li>
+        <li>An Inspector Calls: responsibility, class, gender, capitalism vs socialism</li>
+        <li>Poetry: Worlds and Lives Anthology – compare named poems with unseen</li>
+      </ul></div>
+      <div class="tt-subject-card"><h4>🔬 AQA Biology</h4><ul>
+        <li>Paper 1: Cell biology, organisation, infection &amp; response, bioenergetics</li>
+        <li>Paper 2: Homeostasis, inheritance, variation, ecology</li>
+        <li>Key skills: Required practicals, 6-mark extended answers, data interpretation</li>
+      </ul></div>
+      <div class="tt-subject-card"><h4>⚗️ AQA Chemistry</h4><ul>
+        <li>Paper 1: Atomic structure, bonding, quantitative, extraction, chemical changes, energy</li>
+        <li>Paper 2: Rate &amp; equilibrium, organic, analysis, atmosphere, using resources</li>
+        <li>Key skills: Moles calculations, titrations, yield, empirical formula</li>
+      </ul></div>
+      <div class="tt-subject-card"><h4>⚡ AQA Physics</h4><ul>
+        <li>Paper 1: Energy, electricity, particle model, atomic structure</li>
+        <li>Paper 2: Forces, waves, magnetism, space (separate only)</li>
+        <li>Key: Memorise all required equations listed in specification</li>
+      </ul></div>
+      <div class="tt-subject-card"><h4>🌍 AQA Geography</h4><ul>
+        <li>Paper 1: Natural hazards, living world, physical landscapes</li>
+        <li>Paper 2: Urban issues, economic world, resource management</li>
+        <li>Paper 3: Issue evaluation (pre-released), fieldwork</li>
+        <li>Key skills: OS maps, graphs, data interpretation, 9-mark extended answers</li>
+      </ul></div>
+      <div class="tt-subject-card"><h4>🇫🇷 AQA French</h4><ul>
+        <li>Paper 1: Listening (25%) – audio extracts, multiple choice, gap fill</li>
+        <li>Paper 2: Reading (25%) – vocabulary, translation French→English</li>
+        <li>Paper 3: Speaking (25%) – role play, photo card, general conversation</li>
+        <li>Paper 4: Writing (25%) – message, structured question, translation English→French</li>
+      </ul></div>
+      <div class="tt-subject-card"><h4>🎭 OCR Drama</h4><ul>
+        <li>Component 1: Devising Drama (40%) – create, perform, portfolio</li>
+        <li>Component 2: Performance from Text (20%) – two scripted extracts</li>
+        <li>Component 3: Theatre Makers in Practice (40%) – live theatre analysis, set text interpretation</li>
+        <li>Key concepts: Stanislavski, Brecht, staging types, proxemics, status</li>
+      </ul></div>
+      <div class="tt-subject-card"><h4>🔢 Edexcel Maths</h4><ul>
+        <li>Paper 1: Non-Calculator (33%)</li>
+        <li>Papers 2 &amp; 3: Calculator (33% each)</li>
+        <li>Topics: Number, algebra, graphs, ratio, geometry, probability, statistics</li>
+        <li>Higher only: vectors, calculus, advanced trig, proof</li>
+      </ul></div>
+      <div class="tt-subject-card"><h4>📜 Edexcel History</h4><ul>
+        <li>Paper 1: Medicine in Britain c.1250–present + Western Front (30%)</li>
+        <li>Paper 2: Cold War 1941–1991 + Early Elizabethan England 1558–1588 (40%)</li>
+        <li>Paper 3: The USA 1954–1975 (30%)</li>
+        <li>Key skills: Source analysis (utility, reliability, provenance), narrative accounts, essays</li>
+      </ul></div>
+    </div>
+  </div>
+
+  <!-- REVISION TIPS -->
+  <div class="tt-panel" id="tt-tips">
+    <p class="section-label" style="margin-bottom:1rem">Revision Tips &amp; Strategies</p>
+    <div class="tt-tips">
+      <div class="tt-tip"><h4>🧠 Active Recall</h4><p>Instead of re-reading notes, test yourself using flashcards, past paper questions, or self-quizzing. This is the most effective revision technique.</p></div>
+      <div class="tt-tip"><h4>🔁 Spaced Repetition</h4><p>Revisit topics after 1 day, 3 days, then a week. This forces your brain to strengthen memory pathways over time.</p></div>
+      <div class="tt-tip"><h4>📝 Past Papers (Sundays)</h4><p>Complete every Sunday paper under strict timed, exam conditions — no notes, no phone. Mark immediately using official mark schemes and log your score.</p></div>
+      <div class="tt-tip"><h4>🍅 Pomodoro Technique</h4><p>Study for 25 minutes then take a 5-minute break. After 4 sessions take a 20-minute break. Maintains focus throughout weekday sessions.</p></div>
+      <div class="tt-tip"><h4>📋 Exam Command Words</h4><p>Know exactly what "describe", "explain", "evaluate", "analyse", "compare", and "assess" mean in each of your specific subjects.</p></div>
+      <div class="tt-tip"><h4>💤 Look After Yourself</h4><p>Sleep 8–9 hours. Exercise regularly. Eat well. Your brain consolidates memory during sleep — revision without sleep is significantly less effective.</p></div>
+    </div>
+  </div>
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/js/all.min.js" crossorigin="anonymous"></script>
@@ -742,6 +1449,13 @@ function showPage(id, btn) {
   if (id === 'tracker') renderTrackerPage();
 }
 
+function showTTPanel(id, tab) {
+  document.querySelectorAll('.tt-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tt-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('tt-' + id).classList.add('active');
+  if (tab) tab.classList.add('active');
+}
+
 // ════════════════════════════════════════
 // BUILD TIMER PAGE
 // ════════════════════════════════════════
@@ -751,6 +1465,7 @@ SUBJECTS.forEach(s => {
   const btn = document.createElement('button');
   btn.className = 'subject-btn';
   btn.id = 'subjectbtn-' + s.name.replace(/\s+/g,'_');
+  btn.dataset.subj = s.name;
   btn.innerHTML = `<span class="icon">${s.icon}</span>${s.name}<div class="subject-rag-pip" id="pip-${s.name.replace(/\s+/g,'_')}"></div>`;
   btn.onclick = () => selectSubject(s.name, btn);
   grid.appendChild(btn);
@@ -1443,15 +2158,14 @@ async function initAccessControl() {
 // THEME TOGGLE
 // ════════════════════════════════════════
 function toggleTheme() {
-  const isLight = document.body.classList.toggle('light-mode');
-  document.getElementById('themeToggle').textContent = isLight ? '☀️' : '🌙';
-  localStorage.setItem('gcse_theme', isLight ? 'light' : 'dark');
+  const isDark = document.body.classList.toggle('dark-mode');
+  document.getElementById('themeToggle').textContent = isDark ? '☀️' : '🌙';
+  localStorage.setItem('gcse_theme', isDark ? 'dark' : 'light');
 }
 // Restore saved theme preference
 (function() {
-  if (localStorage.getItem('gcse_theme') === 'light') {
-    document.body.classList.add('light-mode');
-    // Button will be updated once DOM is ready
+  if (localStorage.getItem('gcse_theme') === 'dark') {
+    document.body.classList.add('dark-mode');
     document.addEventListener('DOMContentLoaded', () => {
       const btn = document.getElementById('themeToggle');
       if (btn) btn.textContent = '☀️';
