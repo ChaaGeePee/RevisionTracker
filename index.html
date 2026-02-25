@@ -629,7 +629,16 @@ body {
   <div class="log-section">
     <div class="log-header">
       <p class="section-label" style="margin-bottom:0">Session Log</p>
-      <button class="clear-btn" onclick="clearLog()">clear all</button>
+      <div style="display:flex;align-items:center;gap:0.5rem;flex-wrap:wrap">
+        <button id="logSortBtn" style="background:var(--surface2);border:1px solid var(--border);color:var(--muted);font-family:var(--font);font-size:0.78rem;font-weight:700;padding:0.28rem 0.7rem;border-radius:var(--r-pill);cursor:pointer;transition:all 0.15s" onclick="toggleLogSort()" title="Toggle sort order">🕐 Newest first</button>
+        <button class="clear-btn" onclick="clearLog()">clear all</button>
+      </div>
+    </div>
+    <div id="logDateFilterBar" style="display:flex;align-items:center;gap:0.6rem;padding:0.5rem 0 0.2rem;flex-wrap:wrap">
+      <span style="font-size:0.72rem;font-weight:900;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);white-space:nowrap">📅 Date:</span>
+      <button id="logDateAllBtn" style="background:var(--accent);color:#fff;border:none;font-family:var(--font);font-size:0.8rem;font-weight:700;padding:0.28rem 0.85rem;border-radius:var(--r-pill);cursor:pointer;transition:all 0.15s" onclick="setLogDateFilter(null,this)">All</button>
+      <input type="date" id="logDatePicker" style="background:var(--surface2);border:1px solid var(--border);color:var(--text);font-family:var(--font);font-size:0.82rem;padding:0.25rem 0.6rem;border-radius:var(--r-sm);outline:none;cursor:pointer;transition:border-color 0.15s" oninput="setLogDateFilter(this.value,null)" title="Pick a date to filter sessions">
+      <span id="logDateCount" style="font-size:0.78rem;color:var(--muted);font-weight:600"></span>
     </div>
     <div class="log-list" id="logList">
       <div class="log-empty">No sessions yet. Start a timer to begin tracking! 🎯</div>
@@ -1656,8 +1665,10 @@ function onComplete() {
   document.title='✓ Done! — ' + selectedSubject;
 
   // Log
+  const _now = new Date();
   sessionLog.unshift({ subject:selectedSubject, topic:selectedTopic, minutes:selectedMinutes,
-    time: new Date().toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'}) });
+    time: _now.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'}),
+    date: _now.toISOString().slice(0,10) });
   renderLog(); updateTimerStats();
 
   // Show overlay
@@ -1760,27 +1771,86 @@ function updateTimerStats() {
 // ════════════════════════════════════════
 // SESSION LOG
 // ════════════════════════════════════════
+let logSortOrder = 'newest'; // 'newest' | 'oldest'
+let logDateFilter = null;    // null = show all, or 'YYYY-MM-DD'
+
+function toggleLogSort() {
+  logSortOrder = logSortOrder === 'newest' ? 'oldest' : 'newest';
+  const btn = document.getElementById('logSortBtn');
+  if (btn) btn.textContent = logSortOrder === 'newest' ? '🕐 Newest first' : '🕐 Oldest first';
+  renderLog();
+}
+
+function setLogDateFilter(dateStr, allBtnEl) {
+  logDateFilter = dateStr || null;
+  // Style the All button
+  const allBtn = allBtnEl || document.getElementById('logDateAllBtn');
+  if (allBtn) {
+    allBtn.style.background = logDateFilter ? 'var(--surface2)' : 'var(--accent)';
+    allBtn.style.color       = logDateFilter ? 'var(--muted)'   : '#fff';
+    allBtn.style.border      = logDateFilter ? '1px solid var(--border)' : 'none';
+  }
+  // Clear the picker if All was clicked
+  if (!logDateFilter) {
+    const dp = document.getElementById('logDatePicker');
+    if (dp) dp.value = '';
+  }
+  renderLog();
+}
+
 function renderLog() {
   const list = document.getElementById('logList');
   if (!sessionLog.length) {
-    list.innerHTML='<div style="font-family:\'DM Mono\',monospace;font-size:0.7rem;color:var(--muted);text-align:center;padding:1rem">No sessions yet.</div>';
+    list.innerHTML = '<div class="log-empty">No sessions yet. Start a timer to begin tracking! 🎯</div>';
+    const countEl = document.getElementById('logDateCount');
+    if (countEl) countEl.textContent = '';
     return;
   }
-  list.innerHTML = sessionLog.map(e => `
+
+  // Back-fill date for legacy entries saved before date tracking was added
+  const today = new Date().toISOString().slice(0,10);
+  sessionLog.forEach(e => { if (!e.date) e.date = today; });
+
+  // Filter by selected date
+  let filtered = logDateFilter
+    ? sessionLog.filter(e => e.date === logDateFilter)
+    : sessionLog;
+
+  // Sort
+  if (logSortOrder === 'oldest') filtered = [...filtered].reverse();
+
+  // Update count label
+  const countEl = document.getElementById('logDateCount');
+  if (countEl) {
+    if (logDateFilter) {
+      const d = new Date(logDateFilter + 'T00:00:00');
+      const label = d.toLocaleDateString('en-GB', {weekday:'short', day:'numeric', month:'short', year:'numeric'});
+      countEl.textContent = `${filtered.length} session${filtered.length !== 1 ? 's' : ''} on ${label}`;
+    } else {
+      countEl.textContent = `${sessionLog.length} session${sessionLog.length !== 1 ? 's' : ''} total`;
+    }
+  }
+
+  if (!filtered.length) {
+    list.innerHTML = '<div class="log-empty">No sessions recorded on this date.</div>';
+    return;
+  }
+
+  list.innerHTML = filtered.map(e => `
     <div class="log-item">
       <div class="log-dot"></div>
       <div class="log-info">
         <div class="log-subject">${e.subject}</div>
-        ${e.topic?`<div class="log-topic-text">${e.topic.replace(' (Higher)','')+(e.topic.includes('(Higher)')?` <span style="color:var(--higher);font-size:0.6rem">[H]</span>`:'')}</div>`:''}
+        ${e.topic ? `<div class="log-topic-text">${e.topic.replace(' (Higher)','')+(e.topic.includes('(Higher)') ? ` <span style="color:var(--higher);font-size:0.6rem">[H]</span>` : '')}</div>` : ''}
       </div>
       <div class="log-right">
         <span class="log-duration">${e.minutes}m</span>
-        <span class="log-time">${e.time}</span>
+        <span class="log-time">${e.date ? `<span style="font-size:0.7rem;opacity:0.65">${e.date.slice(5).replace('-','/')}</span> ` : ''}${e.time}</span>
       </div>
     </div>`).join('');
 }
 
-function clearLog() { sessionLog=[]; renderLog(); updateTimerStats(); }
+function clearLog() { sessionLog = []; renderLog(); updateTimerStats(); }
 
 // ════════════════════════════════════════
 // RAG TRACKER PAGE
@@ -2125,7 +2195,7 @@ function activateOwner() {
 function activateViewer() {
   document.getElementById('viewerBanner').style.display = 'block';
   document.getElementById('ownerBar').style.display     = 'none';
-  document.querySelectorAll('.rag-btn,.tracker-rag-btn,.ctrl-btn,.dur-btn,.clear-btn,.reset-all-btn,.stb-clear,.filter-btn,#customMins,.rag-prompt-btn').forEach(el => {
+  document.querySelectorAll('.rag-btn,.tracker-rag-btn,.ctrl-btn,.dur-btn,.clear-btn,.reset-all-btn,.stb-clear,#customMins,.rag-prompt-btn').forEach(el => {
     el.style.pointerEvents = 'none';
     el.style.opacity = '0.5';
   });
