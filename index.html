@@ -121,6 +121,107 @@ body {
 .ac-error{font-size:0.85rem;color:var(--danger);min-height:1.2em;margin-bottom:0.4rem}
 .ac-link{font-size:0.85rem;color:var(--muted);background:none;border:none;cursor:pointer;text-decoration:underline;text-underline-offset:3px;padding:0}
 .ac-link:hover{color:var(--danger)}
+
+/* ── MOCK EXAMS PAGE ── */
+.mock-summary-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:0.7rem;margin-bottom:2rem}
+.mock-summary-card{background:var(--surface);border:2px solid var(--border);border-radius:var(--r);padding:1rem;text-align:center;box-shadow:var(--sh)}
+.mock-summary-card .msc-val{font-family:var(--mono);font-size:1.6rem;font-weight:500;color:var(--text);line-height:1.1}
+.mock-summary-card .msc-key{font-size:0.72rem;font-weight:900;text-transform:uppercase;letter-spacing:0.09em;color:var(--muted);margin-top:0.3rem}
+.mock-summary-card.highlight{border-color:var(--accent-border);background:var(--accent-bg)}
+.mock-summary-card.highlight .msc-val{color:var(--accent)}
+.mock-subject-group{background:var(--surface);border:2px solid var(--border);border-radius:var(--r);margin-bottom:1.25rem;overflow:hidden;box-shadow:var(--sh)}
+.mock-subj-header{display:flex;align-items:center;gap:0.75rem;padding:0.85rem 1.1rem;background:var(--surface2);border-bottom:1px solid var(--border);cursor:pointer;transition:background 0.15s;user-select:none}
+.mock-subj-header:hover{background:var(--border)}
+.mock-subj-icon{font-size:1.1rem;flex-shrink:0}
+.mock-subj-name{font-size:0.95rem;font-weight:800;color:var(--text);flex:1}
+.mock-subj-avg{font-family:var(--mono);font-size:0.9rem;font-weight:500;color:var(--muted);margin-right:0.5rem}
+.mock-subj-grade{font-size:0.85rem;font-weight:900;padding:0.2rem 0.6rem;border-radius:var(--r-pill);min-width:2rem;text-align:center}
+.mock-subj-collapse{font-size:0.85rem;color:var(--muted);transition:transform 0.2s;flex-shrink:0}
+.mock-subj-header.collapsed .mock-subj-collapse{transform:rotate(-90deg)}
+.mock-papers-table{width:100%;border-collapse:collapse}
+.mock-papers-table th{font-size:0.72rem;font-weight:900;letter-spacing:0.09em;text-transform:uppercase;color:var(--muted);padding:0.55rem 1rem;border-bottom:1px solid var(--border);text-align:left;background:var(--surface2)}
+.mock-papers-table th:not(:first-child):not(:last-child){text-align:center}
+.mock-papers-table td{padding:0.55rem 1rem;border-bottom:1px solid var(--border);vertical-align:middle;font-size:0.88rem;color:var(--text2)}
+.mock-papers-table tr:last-child td{border-bottom:none}
+.mock-papers-table td:not(:first-child):not(:last-child){text-align:center}
+.mock-paper-name{font-weight:700;color:var(--text);font-size:0.9rem}
+.mock-score-input{width:62px;background:var(--surface2);border:2px solid var(--border);color:var(--text);font-family:var(--mono);font-size:0.9rem;padding:0.28rem 0.45rem;border-radius:var(--r-sm);text-align:center;outline:none;transition:border-color 0.15s}
+.mock-score-input:focus{border-color:var(--accent)}
+.mock-score-input:disabled{opacity:0.4;cursor:not-allowed}
+.mock-date-input{background:var(--surface2);border:2px solid var(--border);color:var(--text);font-family:var(--font);font-size:0.82rem;padding:0.28rem 0.5rem;border-radius:var(--r-sm);outline:none;transition:border-color 0.15s;width:128px}
+.mock-date-input:focus{border-color:var(--accent)}
+.mock-date-input:disabled{opacity:0.4;cursor:not-allowed}
+.mock-notes-input{width:100%;min-width:160px;background:var(--surface2);border:2px solid var(--border);color:var(--text);font-family:var(--font);font-size:0.82rem;padding:0.28rem 0.55rem;border-radius:var(--r-sm);outline:none;transition:border-color 0.15s;resize:none;line-height:1.4}
+.mock-notes-input:focus{border-color:var(--accent)}
+.mock-notes-input:disabled{opacity:0.4;cursor:not-allowed}
+.mock-pct-badge{display:inline-flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:0.82rem;font-weight:700;padding:0.2rem 0.55rem;border-radius:var(--r-pill);min-width:50px;transition:all 0.2s}
+.mock-pct-badge.grade-9,.mock-pct-badge.grade-8{background:var(--green-bg);color:var(--green);border:1px solid var(--green-border)}
+.mock-pct-badge.grade-7,.mock-pct-badge.grade-6{background:var(--teal-bg);color:var(--teal);border:1px solid var(--teal-border)}
+.mock-pct-badge.grade-5,.mock-pct-badge.grade-4{background:var(--amber-bg);color:var(--amber);border:1px solid var(--amber-border)}
+.mock-pct-badge.grade-3,.mock-pct-badge.grade-2,.mock-pct-badge.grade-1{background:var(--red-bg);color:var(--red);border:1px solid var(--red-border)}
+.mock-pct-badge.empty{background:var(--ns-bg);color:var(--faint);border:1px solid var(--ns-border)}
+.mock-grade-badge{display:inline-flex;align-items:center;justify-content:center;font-size:1rem;font-weight:900;width:32px;height:32px;border-radius:50%}
+.mock-grade-badge.grade-9{background:#15803d;color:#fff}
+.mock-grade-badge.grade-8{background:#16a34a;color:#fff}
+.mock-grade-badge.grade-7{background:var(--teal);color:#fff}
+.mock-grade-badge.grade-6{background:#0891b2;color:#fff}
+.mock-grade-badge.grade-5{background:var(--warn);color:#fff}
+.mock-grade-badge.grade-4{background:#d97706;color:#fff}
+.mock-grade-badge.grade-3{background:var(--danger);color:#fff}
+.mock-grade-badge.grade-2,.mock-grade-badge.grade-1{background:#991b1b;color:#fff}
+.mock-grade-badge.empty{background:var(--surface2);color:var(--faint);border:2px solid var(--border);font-size:0.72rem}
+.mock-reset-btn{background:none;border:2px solid var(--red-border);color:var(--danger);font-family:var(--font);font-size:0.78rem;font-weight:700;padding:0.3rem 0.75rem;border-radius:var(--r-pill);cursor:pointer;transition:all 0.15s}
+.mock-reset-btn:hover{background:var(--red-bg)}
+/* ── MOCK EXAM TIMER PANEL ── */
+.mtp-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.55);z-index:120;display:flex;align-items:center;justify-content:center;padding:1.5rem;backdrop-filter:blur(4px)}
+.mtp-panel{background:var(--surface);border:2px solid var(--border);border-radius:18px;padding:1.75rem 2rem 2rem;max-width:360px;width:100%;box-shadow:0 8px 40px rgba(0,0,0,0.22);position:relative;animation:slideDown .2s ease}
+.mtp-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.1rem}
+.mtp-paper-label{font-size:0.82rem;font-weight:900;letter-spacing:0.1em;text-transform:uppercase;color:var(--danger)}
+.mtp-close{background:none;border:none;font-size:1.1rem;color:var(--muted);cursor:pointer;line-height:1;padding:0.1rem 0.3rem;border-radius:4px;transition:all .15s}
+.mtp-close:hover{color:var(--danger);background:var(--danger-bg)}
+.mtp-duration-row{display:flex;gap:0.4rem;flex-wrap:wrap;margin-bottom:1.2rem;justify-content:center}
+.mtp-dur-btn{flex:1;min-width:58px;background:var(--surface2);border:2px solid var(--border);color:var(--text2);font-family:var(--font);font-size:0.82rem;font-weight:700;padding:0.4rem 0.5rem;border-radius:var(--r-sm);cursor:pointer;transition:all .15s;text-align:center}
+.mtp-dur-btn:hover{border-color:var(--danger);color:var(--danger)}
+.mtp-dur-btn.active{background:var(--danger-bg);border-color:var(--danger);color:var(--danger)}
+/* ring */
+.mtp-ring-wrap{position:relative;width:200px;height:200px;margin:0 auto 1.4rem}
+.mtp-ring-svg{position:absolute;inset:0;transform:rotate(-90deg)}
+.mtp-ring-bg{fill:none;stroke:var(--surface2);stroke-width:10}
+.mtp-ring-prog{fill:none;stroke:var(--danger);stroke-width:10;stroke-linecap:round;stroke-dasharray:515.22;stroke-dashoffset:0;transition:stroke-dashoffset 1s linear,stroke .3s}
+.mtp-ring-prog.warn{stroke:var(--warn)}
+.mtp-ring-prog.safe{stroke:var(--teal)}
+.mtp-time-inner{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.2rem}
+.mtp-time-digits{font-family:var(--mono);font-size:2.2rem;font-weight:500;color:var(--text);letter-spacing:-0.02em;line-height:1}
+.mtp-time-label{font-size:0.7rem;font-weight:900;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.mtp-panel.running .mtp-time-digits{animation:pulse-ring 2s ease-in-out infinite}
+/* controls */
+.mtp-controls{display:flex;gap:.7rem;justify-content:center;margin-bottom:.9rem}
+.mtp-btn{font-family:var(--font);font-size:.95rem;font-weight:800;padding:.65rem 2rem;border-radius:var(--r-sm);border:none;cursor:pointer;transition:all .15s;letter-spacing:.02em}
+.mtp-start{background:var(--danger);color:#fff;min-width:110px}
+.mtp-start:hover{filter:brightness(1.1);transform:translateY(-1px)}
+.mtp-reset{background:var(--surface2);border:2px solid var(--border);color:var(--muted)}
+.mtp-reset:hover{border-color:var(--danger);color:var(--danger)}
+.mtp-done-banner{background:var(--danger-bg);border:2px solid var(--red-border);border-radius:var(--r-sm);padding:.65rem 1rem;text-align:center;font-size:.9rem;font-weight:800;color:var(--danger);animation:slideDown .3s ease}
+/* open-timer button in table rows */
+.mock-timer-btn{background:none;border:2px solid var(--red-border);color:var(--danger);font-family:var(--font);font-size:0.75rem;font-weight:800;padding:.22rem .55rem;border-radius:var(--r-pill);cursor:pointer;transition:all .15s;white-space:nowrap}
+.mock-timer-btn:hover{background:var(--danger-bg)}
+.mock-time-badge{font-family:var(--mono);font-size:0.8rem;color:var(--teal);font-weight:600;white-space:nowrap}
+/* ── MOCK ROUND BAR ── */
+.mock-round-bar{display:flex;align-items:center;gap:0.6rem;margin-bottom:1.5rem;flex-wrap:wrap;background:var(--surface);border:2px solid var(--border);border-radius:var(--r);padding:0.6rem 0.85rem;box-shadow:var(--sh)}
+.mock-round-tabs{display:flex;gap:0.4rem;flex-wrap:wrap;flex:1}
+.mock-round-tab{display:flex;align-items:center;gap:0.4rem;padding:0.38rem 0.75rem;border-radius:var(--r-sm);border:2px solid var(--border);background:var(--surface2);cursor:pointer;transition:all 0.15s;font-size:0.88rem;font-weight:700;color:var(--muted)}
+.mock-round-tab:hover{border-color:var(--accent);color:var(--text)}
+.mock-round-tab.active{background:var(--accent-bg);border-color:var(--accent);color:var(--accent)}
+.mock-round-tab-name{white-space:nowrap}
+.mock-round-tab-actions{display:flex;gap:0.15rem;margin-left:0.25rem}
+.mock-round-tab-actions button{background:none;border:none;cursor:pointer;font-size:0.72rem;padding:0.1rem 0.2rem;opacity:0.5;line-height:1;border-radius:3px;transition:opacity 0.15s}
+.mock-round-tab-actions button:hover{opacity:1;background:var(--surface2)}
+.mock-add-round-btn{background:var(--accent);color:#fff;border:none;font-family:var(--font);font-size:0.85rem;font-weight:800;padding:0.42rem 1rem;border-radius:var(--r-sm);cursor:pointer;white-space:nowrap;transition:all 0.15s;flex-shrink:0}
+.mock-add-round-btn:hover{background:var(--accent-hover);transform:translateY(-1px)}
+/* ── MOCK VIEW TOGGLE ── */
+.mock-view-btn{background:var(--surface2);border:2px solid var(--border);color:var(--muted);font-family:var(--font);font-size:0.82rem;font-weight:700;padding:0.3rem 0.85rem;border-radius:var(--r-pill);cursor:pointer;transition:all 0.15s;white-space:nowrap}
+.mock-view-btn:hover{border-color:var(--accent);color:var(--accent)}
+.mock-view-btn.active{background:var(--accent-bg);border-color:var(--accent);color:var(--accent)}
 .ac-divider{height:1px;background:var(--border);margin:1.1rem 0}
 
 .viewer-banner{width:100%;background:var(--warn-bg);border-bottom:2px solid var(--warn-border);padding:0.55rem 1.2rem;font-size:0.875rem;font-weight:700;color:var(--warn);text-align:center;position:sticky;top:0;z-index:49}
@@ -156,6 +257,7 @@ body {
 .theme-toggle:hover{border-color:var(--accent);color:var(--accent)}
 
 .page{display:none;width:100%;max-width:840px;padding:2rem 1.25rem 5rem;position:relative}
+#page-mock{max-width:1100px}
 .page.active{display:block}
 
 /* ── SHARED ── */
@@ -552,6 +654,7 @@ body {
   <button class="nav-tab active" onclick="showPage('timer',this)">⏱ Timer</button>
   <button class="nav-tab" onclick="showPage('tracker',this)">📊 RAG Tracker</button>
   <button class="nav-tab" onclick="showPage('timetable',this)">📅 Timetable</button>
+  <button class="nav-tab" onclick="showPage('mock',this)">📝 Mock Exams</button>
   <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()" title="Toggle light/dark mode">🌙</button>
 </nav>
 
@@ -1178,6 +1281,36 @@ body {
   </div>
 </div>
 
+<!-- ══════════ MOCK EXAMS PAGE ══════════ -->
+<div class="page" id="page-mock">
+  <div class="page-hero" style="background:linear-gradient(135deg,#b91c1c 0%,#c2410c 100%);margin-bottom:1.75rem">
+    <div class="page-hero-label">📝 Practice Paper Scores</div>
+    <h1>Mock Exam Tracker</h1>
+    <p>Track each mock round separately — log scores, spot weak areas, watch your grades improve</p>
+  </div>
+
+  <!-- Round selector bar -->
+  <div class="mock-round-bar" id="mockRoundBar">
+    <div class="mock-round-tabs" id="mockRoundTabs"></div>
+    <button class="mock-add-round-btn" id="mockAddRoundBtn" onclick="addMockRound()" title="Add new mock round">+ New Round</button>
+  </div>
+
+  <!-- Summary for active round -->
+  <div class="mock-summary-grid" id="mockSummaryGrid"></div>
+
+  <!-- Progress view toggle -->
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;flex-wrap:wrap;gap:0.5rem">
+    <p class="section-label" style="margin-bottom:0;flex:1" id="mockSectionLabel">Papers by Subject</p>
+    <div style="display:flex;gap:0.5rem;align-items:center">
+      <button class="mock-view-btn active" id="mockViewRound" onclick="setMockView('round',this)">📋 This Round</button>
+      <button class="mock-view-btn" id="mockViewProgress" onclick="setMockView('progress',this)">📈 Progress</button>
+      <button class="mock-reset-btn" onclick="confirmResetMocks()">Reset all</button>
+    </div>
+  </div>
+
+  <div id="mockAccordions"></div>
+</div>
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/js/all.min.js" crossorigin="anonymous"></script>
 <script>
 // ════════════════════════════════════════
@@ -1274,7 +1407,8 @@ if (!IS_CONFIGURED) {
         <pre>create table revision_data (
   id   text primary key,
   rag  jsonb not null default '{}',
-  log  jsonb not null default '[]'
+  log  jsonb not null default '[]',
+  mock jsonb not null default '{}'
 );
 
 -- Allow anyone with the anon key to read/write:
@@ -1391,7 +1525,8 @@ async function persistData() {
     await sb.upsert('revision_data', {
       id: 'owner',
       rag: ragStore,
-      log: sessionLog
+      log: sessionLog,
+      mock: mockData
     });
     showSaveIndicator('saved');
   } catch(e) {
@@ -2049,12 +2184,14 @@ async function init() {
     if (row) {
       ragStore = row.rag || {};
       sessionLog = row.log || [];
+      mockData = migrateLegacyMockData(row.mock || {});
     }
   } catch(e) {
     console.warn('Could not load from Supabase:', e);
   }
 
   loadEl.remove();
+  initMockPage();
   updateTimerStats();
   renderLog();
   // Rebuild subject pips now that RAG data is loaded
@@ -2199,6 +2336,10 @@ function activateViewer() {
     el.style.pointerEvents = 'none';
     el.style.opacity = '0.5';
   });
+  document.querySelectorAll('.mock-score-input,.mock-date-input,.mock-notes-input,.mock-reset-btn,.mock-add-round-btn').forEach(el => {
+    el.disabled = true;
+    el.style.opacity = '0.45';
+  });
 }
 
 async function initAccessControl() {
@@ -2243,8 +2384,748 @@ function toggleTheme() {
   }
 })();
 
+// ════════════════════════════════════════
+// MOCK EXAM TRACKER  (multi-round)
+// ════════════════════════════════════════
+
+const MOCK_PAPERS = [
+  { subject:'English Language',  icon:'📖', papers:[
+    { id:'eng-lang-p1', name:'Paper 1' },
+    { id:'eng-lang-p2', name:'Paper 2' }
+  ]},
+  { subject:'English Literature', icon:'📚', papers:[
+    { id:'eng-lit-p1', name:'Paper 1 (Macbeth + Christmas Carol)' },
+    { id:'eng-lit-p2', name:'Paper 2 (Inspector Calls + Poetry)' }
+  ]},
+  { subject:'Biology', icon:'🔬', papers:[
+    { id:'bio-p1', name:'Paper 1' },
+    { id:'bio-p2', name:'Paper 2' }
+  ]},
+  { subject:'Chemistry', icon:'⚗️', papers:[
+    { id:'chem-p1', name:'Paper 1' },
+    { id:'chem-p2', name:'Paper 2' }
+  ]},
+  { subject:'Physics', icon:'⚡', papers:[
+    { id:'phys-p1', name:'Paper 1' },
+    { id:'phys-p2', name:'Paper 2' }
+  ]},
+  { subject:'Geography', icon:'🌍', papers:[
+    { id:'geo-p1', name:'Paper 1' },
+    { id:'geo-p2', name:'Paper 2' },
+    { id:'geo-p3', name:'Paper 3' }
+  ]},
+  { subject:'Maths', icon:'📐', papers:[
+    { id:'maths-p1', name:'Paper 1 (Non-Calc)' },
+    { id:'maths-p2', name:'Paper 2 (Calc)' },
+    { id:'maths-p3', name:'Paper 3 (Calc)' }
+  ]},
+  { subject:'History', icon:'🏛️', papers:[
+    { id:'hist-p1', name:'Paper 1 (Medicine + Western Front)' },
+    { id:'hist-p2', name:'Paper 2 (Cold War + Elizabeth)' },
+    { id:'hist-p3', name:'Paper 3 (USA)' }
+  ]},
+  { subject:'French', icon:'🇫🇷', papers:[
+    { id:'fr-p1', name:'Paper 1 Listening' },
+    { id:'fr-p2', name:'Paper 2 Reading' },
+    { id:'fr-p4', name:'Paper 4 Writing' }
+  ]},
+  { subject:'Drama', icon:'🎭', papers:[
+    { id:'drama-p1', name:'Component 3 Written Exam' }
+  ]}
+];
+
+/*
+  mockData shape:
+  {
+    rounds: [ { id: 'r1', name: 'Mock 1' }, { id: 'r2', name: 'Mock 2' }, … ],
+    entries: {
+      'r1__eng-lang-p1': { score: '68', max: '80', date: '2025-03-10', notes: 'Lost marks on Q3' },
+      …
+    }
+  }
+*/
+let mockData = { rounds: [], entries: {} };
+let activeMockRound = null;   // id of the currently selected round
+let mockView = 'round';       // 'round' | 'progress'
+const MOCK_KEY = 'gcse_mock_scores';
+
+// ── Migrate legacy flat mockData (from before rounds existed) ──
+function migrateLegacyMockData(raw) {
+  // Old shape: { 'eng-lang-p1': { score, max, date, notes }, … }
+  // New shape: { rounds: [{id,name}], entries: { 'r1__paperId': {…} } }
+  if (raw && raw.rounds) return raw; // already new shape
+  if (!raw || typeof raw !== 'object') return { rounds: [], entries: {} };
+  // Migrate old entries into "Mock 1"
+  const r1 = { id: 'r1', name: 'Mock 1' };
+  const entries = {};
+  Object.keys(raw).forEach(paperId => {
+    if (paperId === 'rounds' || paperId === 'entries') return;
+    entries[`r1__${paperId}`] = raw[paperId];
+  });
+  return { rounds: [r1], entries };
+}
+
+function loadMockData() {
+  try {
+    const local = localStorage.getItem(MOCK_KEY);
+    if (local && (!mockData.rounds || mockData.rounds.length === 0)) {
+      mockData = migrateLegacyMockData(JSON.parse(local));
+    }
+  } catch(e) {}
+}
+
+function saveMockData() {
+  localStorage.setItem(MOCK_KEY, JSON.stringify(mockData));
+  if (typeof scheduleSave === 'function') scheduleSave();
+}
+
+function calcGrade(pct) {
+  if (pct >= 0.9) return '9';
+  if (pct >= 0.8) return '8';
+  if (pct >= 0.7) return '7';
+  if (pct >= 0.6) return '6';
+  if (pct >= 0.5) return '5';
+  if (pct >= 0.4) return '4';
+  if (pct >= 0.3) return '3';
+  if (pct >= 0.2) return '2';
+  return '1';
+}
+
+function gradeClass(g) {
+  return g ? 'grade-' + g : 'empty';
+}
+
+function entryKey(roundId, paperId) {
+  return `${roundId}__${paperId}`;
+}
+
+function getEntry(roundId, paperId) {
+  return mockData.entries[entryKey(roundId, paperId)] || {};
+}
+
+// ── ROUND MANAGEMENT ──
+function addMockRound() {
+  const num = mockData.rounds.length + 1;
+  const name = prompt(`Name this round:`, `Mock ${num}`);
+  if (!name || !name.trim()) return;
+  const id = 'r' + Date.now();
+  mockData.rounds.push({ id, name: name.trim() });
+  activeMockRound = id;
+  saveMockData();
+  renderMockPage();
+}
+
+function renameMockRound(roundId, e) {
+  e.stopPropagation();
+  const round = mockData.rounds.find(r => r.id === roundId);
+  if (!round) return;
+  const name = prompt('Rename round:', round.name);
+  if (!name || !name.trim()) return;
+  round.name = name.trim();
+  saveMockData();
+  renderMockRoundTabs();
+}
+
+function deleteMockRound(roundId, e) {
+  e.stopPropagation();
+  const round = mockData.rounds.find(r => r.id === roundId);
+  if (!round) return;
+  if (!confirm(`Delete "${round.name}" and all its scores? This cannot be undone.`)) return;
+  mockData.rounds = mockData.rounds.filter(r => r.id !== roundId);
+  // Remove entries for this round
+  Object.keys(mockData.entries).forEach(k => {
+    if (k.startsWith(roundId + '__')) delete mockData.entries[k];
+  });
+  if (activeMockRound === roundId) {
+    activeMockRound = mockData.rounds.length > 0 ? mockData.rounds[mockData.rounds.length - 1].id : null;
+  }
+  saveMockData();
+  renderMockPage();
+}
+
+function selectMockRound(id) {
+  activeMockRound = id;
+  renderMockRoundTabs();
+  renderMockSummary();
+  renderMockAccordions();
+}
+
+function setMockView(view, btn) {
+  mockView = view;
+  document.querySelectorAll('.mock-view-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('mockSectionLabel').textContent =
+    view === 'round' ? (activeMockRound ? (mockData.rounds.find(r=>r.id===activeMockRound)?.name || 'Papers') + ' — Papers by Subject' : 'Papers by Subject')
+                     : 'Progress Across All Rounds';
+  renderMockAccordions();
+}
+
+// ── RENDER ROUND TABS ──
+function renderMockRoundTabs() {
+  const tabs = document.getElementById('mockRoundTabs');
+  const isViewer = document.getElementById('viewerBanner').style.display !== 'none';
+  if (!mockData.rounds.length) {
+    tabs.innerHTML = '<span style="font-size:0.85rem;color:var(--muted);padding:0 0.5rem">No rounds yet — add one to start logging scores</span>';
+    return;
+  }
+  tabs.innerHTML = mockData.rounds.map(r => `
+    <div class="mock-round-tab ${r.id === activeMockRound ? 'active' : ''}" onclick="selectMockRound('${r.id}')">
+      <span class="mock-round-tab-name">${r.name}</span>
+      ${!isViewer ? `<span class="mock-round-tab-actions">
+        <button onclick="renameMockRound('${r.id}',event)" title="Rename">✏️</button>
+        <button onclick="deleteMockRound('${r.id}',event)" title="Delete">🗑</button>
+      </span>` : ''}
+    </div>`).join('');
+}
+
+// ── SUMMARY STATS ──
+function renderMockSummary() {
+  const grid = document.getElementById('mockSummaryGrid');
+  if (!activeMockRound) {
+    grid.innerHTML = '<div style="color:var(--muted);font-size:0.9rem;padding:0.5rem 0;grid-column:1/-1">Add a round above to start tracking scores.</div>';
+    return;
+  }
+  let total = 0, completed = 0, totalPct = 0, best = null, bestPct = -1;
+  MOCK_PAPERS.forEach(sg => sg.papers.forEach(p => {
+    total++;
+    const d = getEntry(activeMockRound, p.id);
+    if (d.score !== undefined && d.score !== '' && d.max) {
+      const s = parseFloat(d.score), m = parseFloat(d.max);
+      if (!isNaN(s) && !isNaN(m) && m > 0) {
+        completed++; totalPct += s/m;
+        if (s/m > bestPct) { bestPct = s/m; best = sg.subject; }
+      }
+    }
+  }));
+  const avgPct = completed > 0 ? totalPct / completed : null;
+  const avgGrade = avgPct !== null ? calcGrade(avgPct) : null;
+  const round = mockData.rounds.find(r => r.id === activeMockRound);
+  grid.innerHTML = `
+    <div class="mock-summary-card highlight">
+      <div class="msc-val">${completed}/${total}</div>
+      <div class="msc-key">${round?.name || 'Round'} Done</div>
+    </div>
+    <div class="mock-summary-card">
+      <div class="msc-val">${avgPct !== null ? Math.round(avgPct*100)+'%' : '—'}</div>
+      <div class="msc-key">Average Score</div>
+    </div>
+    <div class="mock-summary-card">
+      <div class="msc-val" style="${avgGrade ? 'color:var(--green)' : ''}">${avgGrade || '—'}</div>
+      <div class="msc-key">Avg Grade</div>
+    </div>
+    <div class="mock-summary-card">
+      <div class="msc-val" style="font-size:1rem;padding-top:0.2rem">${best || '—'}</div>
+      <div class="msc-key">Best Subject</div>
+    </div>`;
+}
+
+// ── RENDER ACCORDIONS ──
+function renderMockAccordions() {
+  if (mockView === 'progress') {
+    renderProgressView();
+    return;
+  }
+  renderRoundView();
+}
+
+function renderRoundView() {
+  const wrap = document.getElementById('mockAccordions');
+  wrap.innerHTML = '';
+  if (!activeMockRound) {
+    wrap.innerHTML = '<div style="text-align:center;padding:3rem 1rem;color:var(--muted)">👆 Add a round above to get started</div>';
+    return;
+  }
+  const isViewer = document.getElementById('viewerBanner').style.display !== 'none';
+
+  MOCK_PAPERS.forEach(sg => {
+    let subjTotal = 0, subjCount = 0;
+    sg.papers.forEach(p => {
+      const d = getEntry(activeMockRound, p.id);
+      if (d.score !== undefined && d.score !== '' && d.max) {
+        const s = parseFloat(d.score), m = parseFloat(d.max);
+        if (!isNaN(s) && !isNaN(m) && m > 0) { subjTotal += s/m; subjCount++; }
+      }
+    });
+    const subjAvg = subjCount > 0 ? subjTotal / subjCount : null;
+    const subjGrade = subjAvg !== null ? calcGrade(subjAvg) : null;
+    const gc = gradeClass(subjGrade);
+
+    const rows = sg.papers.map(p => {
+      const d = getEntry(activeMockRound, p.id);
+      const score = d.score !== undefined ? d.score : '';
+      const maxM  = d.max   !== undefined ? d.max   : '';
+      const date  = d.date  || '';
+      const notes = d.notes || '';
+      const timeTaken = d.timeTaken || null;
+      const timeTakenLabel = timeTaken ? fmtMtp(timeTaken) : '<span style="color:var(--faint)">—</span>';
+      let pct = '', grade = '';
+      if (score !== '' && maxM !== '' && parseFloat(maxM) > 0) {
+        const pv = parseFloat(score) / parseFloat(maxM);
+        pct = Math.round(pv * 100) + '%';
+        grade = calcGrade(pv);
+      }
+      const dis = isViewer ? 'disabled' : '';
+      const ek = `${activeMockRound}__${p.id}`;
+      return `<tr>
+        <td class="mock-paper-name">${p.name}</td>
+        <td style="text-align:center"><button class="mock-timer-btn" onclick="openMockTimer('${p.id}', this.dataset.name)" data-name="${p.name}">⏱ Start</button></td>
+        <td><input class="mock-score-input" type="number" min="0" placeholder="—" value="${score}" ${dis}
+          oninput="updateMockEntry('${ek}','score',this.value)"></td>
+        <td><input class="mock-score-input" type="number" min="1" placeholder="—" value="${maxM}" ${dis}
+          oninput="updateMockEntry('${ek}','max',this.value)"></td>
+        <td><span class="mock-pct-badge ${grade ? gradeClass(grade) : 'empty'}">${pct || '—'}</span></td>
+        <td><span class="mock-grade-badge ${gradeClass(grade)}">${grade || '?'}</span></td>
+        <td style="text-align:center">
+          <span class="mock-time-badge">${timeTakenLabel}</span>
+        </td>
+        <td><input class="mock-date-input" type="date" value="${date}" ${dis}
+          oninput="updateMockEntry('${ek}','date',this.value)"></td>
+        <td><textarea class="mock-notes-input" rows="1" placeholder="Weak areas, actions…" ${dis}
+          oninput="updateMockEntry('${ek}','notes',this.value)">${notes}</textarea></td>
+      </tr>`;
+    }).join('');
+
+    const grp = document.createElement('div');
+    grp.className = 'mock-subject-group';
+    grp.innerHTML = `
+      <div class="mock-subj-header" onclick="toggleMockGroup(this)">
+        <span class="mock-subj-icon">${sg.icon}</span>
+        <span class="mock-subj-name">${sg.subject}</span>
+        <span class="mock-subj-avg">${subjAvg !== null ? Math.round(subjAvg*100)+'%' : ''}</span>
+        <span class="mock-grade-badge ${gc}" style="width:26px;height:26px;font-size:0.82rem">${subjGrade || '?'}</span>
+        <span class="mock-subj-collapse" style="margin-left:0.5rem">▾</span>
+      </div>
+      <div class="mock-group-body">
+        <div style="overflow-x:auto">
+        <table class="mock-papers-table">
+          <thead><tr>
+            <th>Paper</th><th style="text-align:center">⏱</th><th>Score</th><th>Max</th><th>%</th><th>Grade</th><th style="text-align:center">Time Taken</th><th>Date</th>
+            <th style="min-width:180px">Notes / Weak Areas</th>
+          </tr></thead>
+          <tbody>${rows}</tbody>
+        </table>
+        </div>
+      </div>`;
+    wrap.appendChild(grp);
+  });
+}
+
+// ── PROGRESS VIEW — shows all rounds side by side per paper ──
+function renderProgressView() {
+  const wrap = document.getElementById('mockAccordions');
+  wrap.innerHTML = '';
+  if (!mockData.rounds.length) {
+    wrap.innerHTML = '<div style="text-align:center;padding:3rem 1rem;color:var(--muted)">No rounds yet — add one to get started</div>';
+    return;
+  }
+
+  MOCK_PAPERS.forEach(sg => {
+    const rows = sg.papers.map(p => {
+      const cells = mockData.rounds.map(r => {
+        const d = getEntry(r.id, p.id);
+        if (d.score !== undefined && d.score !== '' && d.max) {
+          const s = parseFloat(d.score), m = parseFloat(d.max);
+          if (!isNaN(s) && !isNaN(m) && m > 0) {
+            const pv = s / m;
+            const pct = Math.round(pv * 100);
+            const grade = calcGrade(pv);
+            const timeStr = d.timeTaken ? `<span style="font-family:var(--mono);font-size:0.72rem;color:var(--faint)">${fmtMtp(d.timeTaken)}</span>` : '';
+            return `<td>
+              <div style="display:flex;flex-direction:column;align-items:center;gap:0.25rem">
+                <span class="mock-grade-badge ${gradeClass(grade)}" style="width:26px;height:26px;font-size:0.82rem">${grade}</span>
+                <span style="font-family:var(--mono);font-size:0.8rem;color:var(--muted)">${pct}%</span>
+                <span style="font-size:0.72rem;color:var(--faint)">${d.score}/${m}</span>
+                ${timeStr}
+              </div>
+            </td>`;
+          }
+        }
+        return `<td><span style="color:var(--faint);font-size:0.8rem">—</span></td>`;
+      }).join('');
+
+      // Trend arrow: compare first and last completed rounds
+      const completed = mockData.rounds
+        .map(r => { const d = getEntry(r.id, p.id); if (d.score!==undefined&&d.score!==''&&d.max){const s=parseFloat(d.score),m=parseFloat(d.max);if(!isNaN(s)&&!isNaN(m)&&m>0)return s/m;} return null; })
+        .filter(v => v !== null);
+      let trend = '';
+      if (completed.length >= 2) {
+        const diff = completed[completed.length-1] - completed[0];
+        if (diff > 0.02) trend = `<span style="color:var(--green);font-size:0.9rem;font-weight:900">↑ +${Math.round(diff*100)}%</span>`;
+        else if (diff < -0.02) trend = `<span style="color:var(--red);font-size:0.9rem;font-weight:900">↓ ${Math.round(diff*100)}%</span>`;
+        else trend = `<span style="color:var(--muted);font-size:0.9rem">→ same</span>`;
+      }
+
+      return `<tr>
+        <td class="mock-paper-name" style="white-space:nowrap">${p.name}</td>
+        ${cells}
+        <td style="text-align:center">${trend}</td>
+      </tr>`;
+    }).join('');
+
+    const roundHeaders = mockData.rounds.map(r => `<th style="text-align:center;min-width:80px">${r.name}</th>`).join('');
+
+    const grp = document.createElement('div');
+    grp.className = 'mock-subject-group';
+    grp.innerHTML = `
+      <div class="mock-subj-header" onclick="toggleMockGroup(this)">
+        <span class="mock-subj-icon">${sg.icon}</span>
+        <span class="mock-subj-name">${sg.subject}</span>
+        <span class="mock-subj-collapse" style="margin-left:auto">▾</span>
+      </div>
+      <div class="mock-group-body">
+        <div style="overflow-x:auto">
+        <table class="mock-papers-table">
+          <thead><tr>
+            <th>Paper</th>${roundHeaders}<th style="text-align:center">Trend</th>
+          </tr></thead>
+          <tbody>${rows}</tbody>
+        </table>
+        </div>
+      </div>`;
+    wrap.appendChild(grp);
+  });
+}
+
+function toggleMockGroup(header) {
+  header.classList.toggle('collapsed');
+  header.nextElementSibling.style.display = header.classList.contains('collapsed') ? 'none' : '';
+}
+
+function updateMockEntry(entryKey, field, value) {
+  if (!mockData.entries[entryKey]) mockData.entries[entryKey] = {};
+  mockData.entries[entryKey][field] = value;
+  saveMockData();
+  renderMockSummary();
+  refreshEntryRow(entryKey);
+}
+
+function refreshEntryRow(ek) {
+  const d = mockData.entries[ek] || {};
+  const score = d.score !== undefined ? d.score : '';
+  const maxM  = d.max   !== undefined ? d.max   : '';
+  let pct = '', grade = '';
+  if (score !== '' && maxM !== '' && parseFloat(maxM) > 0) {
+    const pv = parseFloat(score) / parseFloat(maxM);
+    pct = Math.round(pv * 100) + '%';
+    grade = calcGrade(pv);
+  }
+  const inputs = document.querySelectorAll(`[oninput*="'${ek}'"]`);
+  if (!inputs.length) return;
+  const row = inputs[0].closest('tr');
+  if (!row) return;
+  const pctBadge   = row.querySelector('.mock-pct-badge');
+  const gradeBadge = row.querySelector('.mock-grade-badge');
+  if (pctBadge)   { pctBadge.textContent = pct||'—'; pctBadge.className = 'mock-pct-badge '+(grade?gradeClass(grade):'empty'); }
+  if (gradeBadge) { gradeBadge.textContent = grade||'?'; gradeBadge.className = 'mock-grade-badge '+gradeClass(grade); }
+  // Update subject header avg
+  const paperId = ek.split('__')[1];
+  refreshMockSubjectHeader(paperId);
+}
+
+function refreshTimeBadge(ek, secs) {
+  // Find the time badge cell in the round view table for this entry
+  const inputs = document.querySelectorAll(`[oninput*="'${ek}'"]`);
+  if (!inputs.length) return;
+  const row = inputs[0].closest('tr');
+  if (!row) return;
+  const badge = row.querySelector('.mock-time-badge');
+  if (badge) badge.innerHTML = fmtMtp(secs);
+}
+
+function refreshMockSubjectHeader(paperId) {
+  if (!activeMockRound) return;
+  const sg = MOCK_PAPERS.find(s => s.papers.some(p => p.id === paperId));
+  if (!sg) return;
+  let subjTotal = 0, subjCount = 0;
+  sg.papers.forEach(p => {
+    const d = getEntry(activeMockRound, p.id);
+    if (d.score !== undefined && d.score !== '' && d.max) {
+      const s = parseFloat(d.score), m = parseFloat(d.max);
+      if (!isNaN(s) && !isNaN(m) && m > 0) { subjTotal += s/m; subjCount++; }
+    }
+  });
+  const subjAvg = subjCount > 0 ? subjTotal / subjCount : null;
+  const subjGrade = subjAvg !== null ? calcGrade(subjAvg) : null;
+  const gc = gradeClass(subjGrade);
+  document.querySelectorAll('.mock-subj-header').forEach(h => {
+    if (h.querySelector('.mock-subj-name')?.textContent === sg.subject) {
+      const avgEl   = h.querySelector('.mock-subj-avg');
+      const gradeEl = h.querySelector('.mock-grade-badge');
+      if (avgEl)   avgEl.textContent = subjAvg !== null ? Math.round(subjAvg*100)+'%' : '';
+      if (gradeEl) { gradeEl.textContent = subjGrade||'?'; gradeEl.className='mock-grade-badge '+gc; gradeEl.style.cssText='width:26px;height:26px;font-size:0.82rem'; }
+    }
+  });
+}
+
+function confirmResetMocks() {
+  if (confirm('Delete ALL mock rounds and scores? This cannot be undone.')) {
+    mockData = { rounds: [], entries: {} };
+    activeMockRound = null;
+    saveMockData();
+    renderMockPage();
+  }
+}
+
+function renderMockPage() {
+  // Ensure there's a valid active round
+  if (!activeMockRound && mockData.rounds.length > 0) {
+    activeMockRound = mockData.rounds[mockData.rounds.length - 1].id;
+  }
+  renderMockRoundTabs();
+  renderMockSummary();
+  renderMockAccordions();
+}
+
+function initMockPage() {
+  loadMockData();
+  // Migrate if needed
+  if (typeof mockData.rounds === 'undefined') {
+    mockData = migrateLegacyMockData(mockData);
+  }
+  if (mockData.rounds.length > 0 && !activeMockRound) {
+    activeMockRound = mockData.rounds[mockData.rounds.length - 1].id;
+  }
+  renderMockPage();
+}
+
+
+// ════════════════════════════════════════
+// MOCK EXAM TIMER
+// ════════════════════════════════════════
+
+// Real exam durations in minutes for each paper id
+const MOCK_EXAM_DURATIONS = {
+  'eng-lang-p1': 105, // 1h45
+  'eng-lang-p2': 105,
+  'eng-lit-p1':  105,
+  'eng-lit-p2':  105,
+  'bio-p1':      105,
+  'bio-p2':      105,
+  'chem-p1':     105,
+  'chem-p2':     105,
+  'phys-p1':     105,
+  'phys-p2':     105,
+  'geo-p1':      90,  // 1h30
+  'geo-p2':      75,  // 1h15
+  'geo-p3':      75,
+  'maths-p1':    90,
+  'maths-p2':    90,
+  'maths-p3':    90,
+  'hist-p1':     75,
+  'hist-p2':     75,
+  'hist-p3':     60,  // 1h
+  'fr-p1':       45,
+  'fr-p2':       60,
+  'fr-p4':       75,
+  'drama-p1':    90,
+};
+
+let mtpInterval    = null;
+let mtpRunning     = false;
+let mtpTotal       = 0;
+let mtpRemaining   = 0;
+let mtpPaperId     = null;
+const MTP_CIRCUM   = 515.22; // 2π × 82
+
+function fmtMtp(secs) {
+  const h = Math.floor(secs / 3600);
+  const m = Math.floor((secs % 3600) / 60);
+  const s = secs % 60;
+  if (h > 0) return `${h}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+  return `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+}
+
+function openMockTimer(paperId, paperName) {
+  mtpPaperId = paperId;
+  // Stop any running timer first
+  clearInterval(mtpInterval);
+  mtpRunning = false;
+
+  document.getElementById('mtpPaperLabel').textContent = paperName;
+  document.getElementById('mtpStartBtn').textContent = 'START';
+  document.getElementById('mtpDoneBanner').style.display = 'none';
+  document.getElementById('mockTimerPanel').querySelector('.mtp-panel').classList.remove('running');
+
+  // Build duration buttons — default durations + custom presets
+  const defaultMins = MOCK_EXAM_DURATIONS[paperId] || 90;
+  // Offer default, ±15min variants, and a short 30-min option
+  const opts = [...new Set([30, defaultMins - 15, defaultMins, defaultMins + 15].filter(v => v > 0))].sort((a,b)=>a-b);
+  const row = document.getElementById('mtpDurationRow');
+  row.innerHTML = opts.map(m => {
+    const h = Math.floor(m/60), rem = m%60;
+    const label = h > 0 ? (rem > 0 ? `${h}h ${rem}m` : `${h}h`) : `${m}m`;
+    return `<button class="mtp-dur-btn${m===defaultMins?' active':''}" onclick="mtpSetDuration(${m},this)">${label}</button>`;
+  }).join('') + `<button class="mtp-dur-btn" onclick="mtpCustomDuration(this)">Custom…</button>`;
+
+  mtpSetDurationValue(defaultMins);
+  document.getElementById('mockTimerPanel').style.display = 'flex';
+}
+
+function mtpSetDuration(mins, btn) {
+  document.querySelectorAll('.mtp-dur-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  mtpSetDurationValue(mins);
+  if (mtpRunning) { clearInterval(mtpInterval); mtpRunning = false; document.getElementById('mtpStartBtn').textContent = 'START'; }
+}
+
+function mtpCustomDuration(btn) {
+  const val = prompt('Enter duration in minutes:', '90');
+  if (!val) return;
+  const mins = parseInt(val);
+  if (isNaN(mins) || mins < 1) return;
+  // Replace Custom… button with the chosen value
+  const h = Math.floor(mins/60), rem = mins%60;
+  const label = h > 0 ? (rem > 0 ? `${h}h ${rem}m` : `${h}h`) : `${mins}m`;
+  btn.textContent = label;
+  btn.classList.add('active');
+  document.querySelectorAll('.mtp-dur-btn').forEach(b => { if(b!==btn) b.classList.remove('active'); });
+  mtpSetDurationValue(mins);
+  if (mtpRunning) { clearInterval(mtpInterval); mtpRunning = false; document.getElementById('mtpStartBtn').textContent = 'START'; }
+}
+
+function mtpSetDurationValue(mins) {
+  mtpTotal = mins * 60;
+  mtpRemaining = mtpTotal;
+  mtpUpdateDisplay();
+  mtpUpdateRing(1);
+  document.getElementById('mtpTimeLabel').textContent = 'READY';
+}
+
+function mockTimerStartPause() {
+  if (mtpRunning) {
+    clearInterval(mtpInterval);
+    mtpRunning = false;
+    document.getElementById('mtpStartBtn').textContent = 'RESUME';
+    document.getElementById('mtpTimeLabel').textContent = 'PAUSED';
+    document.getElementById('mockTimerPanel').querySelector('.mtp-panel').classList.remove('running');
+    // Save elapsed time so far (even if not finished)
+    const elapsed = mtpTotal - mtpRemaining;
+    if (elapsed > 0 && mtpPaperId && activeMockRound) {
+      const ek = entryKey(activeMockRound, mtpPaperId);
+      if (!mockData.entries[ek]) mockData.entries[ek] = {};
+      mockData.entries[ek].timeTaken = elapsed;
+      saveMockData();
+      // Refresh just the time badge in the row without full re-render
+      refreshTimeBadge(ek, elapsed);
+    }
+  } else {
+    if (mtpRemaining <= 0) { mockTimerReset(); return; }
+    document.getElementById('mtpStartBtn').textContent = 'PAUSE';
+    document.getElementById('mtpTimeLabel').textContent = 'IN PROGRESS';
+    document.getElementById('mockTimerPanel').querySelector('.mtp-panel').classList.add('running');
+    mtpRunning = true;
+    mtpInterval = setInterval(() => {
+      mtpRemaining--;
+      mtpUpdateDisplay();
+      mtpUpdateRing(mtpRemaining / mtpTotal);
+      if (mtpRemaining <= 0) {
+        clearInterval(mtpInterval);
+        mtpRunning = false;
+        mtpTimerComplete();
+      }
+    }, 1000);
+  }
+}
+
+function mockTimerReset() {
+  clearInterval(mtpInterval);
+  mtpRunning = false;
+  mtpRemaining = mtpTotal;
+  document.getElementById('mtpStartBtn').textContent = 'START';
+  document.getElementById('mtpTimeLabel').textContent = 'READY';
+  document.getElementById('mtpDoneBanner').style.display = 'none';
+  document.getElementById('mockTimerPanel').querySelector('.mtp-panel').classList.remove('running');
+  mtpUpdateDisplay();
+  mtpUpdateRing(1);
+}
+
+function mtpTimerComplete() {
+  document.getElementById('mtpTimeLabel').textContent = 'TIMES UP';
+  document.getElementById('mtpDoneBanner').style.display = 'block';
+  document.getElementById('mtpStartBtn').textContent = 'START';
+  document.getElementById('mockTimerPanel').querySelector('.mtp-panel').classList.remove('running');
+  // Save elapsed time to the active entry
+  if (mtpPaperId && activeMockRound) {
+    const ek = entryKey(activeMockRound, mtpPaperId);
+    if (!mockData.entries[ek]) mockData.entries[ek] = {};
+    mockData.entries[ek].timeTaken = mtpTotal; // completed the full duration
+    saveMockData();
+    renderMockAccordions();
+  }
+  // Play a short beep via Web Audio
+  try {
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    [0, 0.3, 0.6].forEach(delay => {
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.connect(gain); gain.connect(ctx.destination);
+      osc.frequency.value = 880;
+      gain.gain.setValueAtTime(0.4, ctx.currentTime + delay);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + delay + 0.25);
+      osc.start(ctx.currentTime + delay);
+      osc.stop(ctx.currentTime + delay + 0.25);
+    });
+  } catch(e) {}
+}
+
+function mtpUpdateDisplay() {
+  document.getElementById('mtpTimeDigits').textContent = fmtMtp(mtpRemaining);
+}
+
+function mtpUpdateRing(f) {
+  const ring = document.getElementById('mtpRingProg');
+  if (!ring) return;
+  ring.style.strokeDashoffset = MTP_CIRCUM * (1 - f);
+  ring.classList.remove('warn','safe');
+  if (f > 0.5)       ring.classList.add('safe');
+  else if (f <= 0.15) { /* keep danger/red default */ }
+  else               ring.classList.add('warn');
+}
+
+function closeMockTimer() {
+  clearInterval(mtpInterval);
+  mtpRunning = false;
+  document.getElementById('mockTimerPanel').style.display = 'none';
+}
+
+function mockTimerOverlayClick(e) {
+  if (e.target === document.getElementById('mockTimerPanel')) closeMockTimer();
+}
+
+// initMockPage() is called by init() after Supabase data loads
+
+
 init();
 </script>
+
+
+<!-- ══════════ MOCK EXAM TIMER PANEL ══════════ -->
+<div id="mockTimerPanel" class="mtp-overlay" style="display:none" onclick="mockTimerOverlayClick(event)">
+  <div class="mtp-panel">
+    <div class="mtp-header">
+      <div class="mtp-paper-label" id="mtpPaperLabel">Paper Timer</div>
+      <button class="mtp-close" onclick="closeMockTimer()" title="Close">✕</button>
+    </div>
+    <div class="mtp-duration-row" id="mtpDurationRow"></div>
+    <div class="mtp-ring-wrap">
+      <svg class="mtp-ring-svg" viewBox="0 0 190 190">
+        <circle class="mtp-ring-bg" cx="95" cy="95" r="82"/>
+        <circle class="mtp-ring-prog" id="mtpRingProg" cx="95" cy="95" r="82"/>
+      </svg>
+      <div class="mtp-time-inner">
+        <div class="mtp-time-digits" id="mtpTimeDigits">1:45:00</div>
+        <div class="mtp-time-label" id="mtpTimeLabel">READY</div>
+      </div>
+    </div>
+    <div class="mtp-controls">
+      <button class="mtp-btn mtp-start" id="mtpStartBtn" onclick="mockTimerStartPause()">START</button>
+      <button class="mtp-btn mtp-reset" onclick="mockTimerReset()">RESET</button>
+    </div>
+    <div class="mtp-done-banner" id="mtpDoneBanner" style="display:none">
+      ⏰ Time's up! Log your score below.
+    </div>
+  </div>
+</div>
 
 </body>
 </html>
