@@ -600,6 +600,35 @@ body {
 .tt-tip h4{font-size:1rem;font-weight:900;color:var(--teal);margin-bottom:0.45rem}
 .tt-tip p{font-size:0.9rem;font-weight:600;color:var(--text2);line-height:1.7}
 
+/* ── EXAM TIMETABLE ── */
+.exam-intro{background:var(--warn-bg);border:2px solid var(--warn-border);border-radius:var(--r);padding:0.85rem 1.2rem;margin-bottom:1.75rem;font-size:0.9rem;font-weight:600;color:var(--warn);line-height:1.6}
+.exam-intro strong{font-weight:900}
+.exam-week{background:var(--surface);border:2px solid var(--border);border-radius:var(--r);margin-bottom:1.5rem;overflow:hidden;box-shadow:var(--sh)}
+.exam-week-header{background:linear-gradient(135deg,var(--accent) 0%,var(--teal) 100%);color:#fff;padding:0.85rem 1.2rem;font-size:1rem;font-weight:900;letter-spacing:0.02em}
+.exam-week-header span{font-size:0.8rem;font-weight:600;opacity:0.85;margin-left:0.6rem}
+.exam-days-grid{display:grid;grid-template-columns:repeat(5,1fr);border-top:1px solid var(--border)}
+.exam-day{border-right:1px solid var(--border);padding:0.75rem 0.8rem;min-height:90px}
+.exam-day:last-child{border-right:none}
+.exam-day-label{font-size:0.68rem;font-weight:900;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);margin-bottom:0.2rem}
+.exam-day-date{font-family:var(--mono);font-size:0.72rem;color:var(--faint);margin-bottom:0.55rem}
+.exam-entry{background:var(--accent-bg);border:1px solid var(--accent-border);border-radius:var(--r-sm);padding:0.38rem 0.55rem;margin-bottom:0.35rem}
+.exam-entry.pm{background:var(--teal-bg);border-color:var(--teal-border)}
+.exam-entry.holiday{background:var(--surface2);border-color:var(--border)}
+.exam-entry-slot{font-size:0.62rem;font-weight:900;letter-spacing:0.08em;text-transform:uppercase;color:var(--accent);margin-bottom:0.15rem}
+.exam-entry.pm .exam-entry-slot{color:var(--teal)}
+.exam-entry.holiday .exam-entry-slot{color:var(--muted)}
+.exam-entry-subject{font-size:0.82rem;font-weight:800;color:var(--text);line-height:1.3}
+.exam-entry-detail{font-size:0.72rem;font-weight:600;color:var(--muted);line-height:1.4;margin-top:0.1rem}
+.exam-entry.higher .exam-entry-detail{color:var(--higher)}
+.exam-half-term{grid-column:1/-1;background:var(--green-bg);border-top:1px solid var(--green-border);padding:0.7rem 1rem;text-align:center;font-size:0.9rem;font-weight:800;color:var(--green)}
+.exam-contingency{background:var(--danger-bg);border:2px solid var(--red-border);border-radius:var(--r);padding:0.85rem 1.2rem;margin-top:1rem;font-size:0.875rem;font-weight:600;color:var(--danger);line-height:1.6}
+.exam-contingency strong{font-weight:900}
+.exam-week-header.w2{background:linear-gradient(135deg,#1d4ed8 0%,#0d9488 100%)}
+.exam-week-header.w3{background:linear-gradient(135deg,#0d9488 0%,#6d28d9 100%)}
+.exam-week-header.w4{background:linear-gradient(135deg,#b91c1c 0%,#1d4ed8 100%)}
+.exam-week-header.w5{background:linear-gradient(135deg,#15803d 0%,#0369a1 100%)}
+.exam-week-header.w6{background:linear-gradient(135deg,#7c3aed 0%,#b91c1c 100%)}
+
 /* ── MOBILE ── */
 @media(max-width:600px){
   .nav-tab{padding:0.85rem 0.9rem;font-size:0.8rem}
@@ -610,6 +639,7 @@ body {
   .page-hero{padding:1.5rem}
   .stats-bar{flex-wrap:wrap}
   .stat{min-width:45%}
+  .exam-days-grid{grid-template-columns:1fr 1fr}
 }
 </style>
 </head>
@@ -655,6 +685,7 @@ body {
   <button class="nav-tab" onclick="showPage('tracker',this)">📊 RAG Tracker</button>
   <button class="nav-tab" onclick="showPage('timetable',this)">📅 Timetable</button>
   <button class="nav-tab" onclick="showPage('mock',this)">📝 Mock Exams</button>
+  <button class="nav-tab" onclick="showPage('exams',this)">📅 Exam Timetable</button>
   <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()" title="Toggle light/dark mode">🌙</button>
 </nav>
 
@@ -1309,6 +1340,219 @@ body {
   </div>
 
   <div id="mockAccordions"></div>
+</div>
+
+<!-- ══════════ EXAM TIMETABLE PAGE ══════════ -->
+<div class="page" id="page-exams">
+  <div class="page-hero" style="background:linear-gradient(135deg,#1d4ed8 0%,#0d9488 100%);margin-bottom:1.75rem">
+    <div class="page-hero-label">📅 Year 11 External Exams</div>
+    <h1>Exam Timetable</h1>
+    <p>Summer 2026 — your subjects only</p>
+  </div>
+
+  <div class="exam-intro">
+    <strong>⚠️ Important:</strong> All candidates must be available up to and including <strong>Thursday 24th June 2026</strong> (contingency day) in case an awarding body needs to reschedule an exam.
+    &nbsp;|&nbsp; <strong>F</strong> = Foundation tier &nbsp;·&nbsp; <strong>H</strong> = Higher tier
+  </div>
+
+  <!-- WEEK 1 -->
+  <div class="exam-week">
+    <div class="exam-week-header">Week 1 <span>4–8 May 2026</span></div>
+    <div class="exam-days-grid">
+      <div class="exam-day">
+        <div class="exam-day-label">Monday</div>
+        <div class="exam-day-date">4 May</div>
+        <div class="exam-entry holiday"><div class="exam-entry-slot">All Day</div><div class="exam-entry-subject">Bank Holiday</div></div>
+      </div>
+      <div class="exam-day">
+        <div class="exam-day-label">Tuesday</div>
+        <div class="exam-day-date">5 May</div>
+        <div class="exam-entry holiday"><div class="exam-entry-slot">—</div><div class="exam-entry-subject">No exams</div></div>
+      </div>
+      <div class="exam-day">
+        <div class="exam-day-label">Wednesday</div>
+        <div class="exam-day-date">6 May</div>
+        <div class="exam-entry pm"><div class="exam-entry-slot">PM · OCR</div><div class="exam-entry-subject">Drama</div><div class="exam-entry-detail">Paper 1 — 1h 30m</div></div>
+      </div>
+      <div class="exam-day">
+        <div class="exam-day-label">Thursday</div>
+        <div class="exam-day-date">7 May</div>
+        <div class="exam-entry holiday"><div class="exam-entry-slot">—</div><div class="exam-entry-subject">No exams</div></div>
+      </div>
+      <div class="exam-day">
+        <div class="exam-day-label">Friday</div>
+        <div class="exam-day-date">8 May</div>
+        <div class="exam-entry holiday"><div class="exam-entry-slot">—</div><div class="exam-entry-subject">No exams</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- WEEK 2 -->
+  <div class="exam-week">
+    <div class="exam-week-header w2">Week 2 <span>11–15 May 2026</span></div>
+    <div class="exam-days-grid">
+      <div class="exam-day">
+        <div class="exam-day-label">Monday</div>
+        <div class="exam-day-date">11 May</div>
+        <div class="exam-entry"><div class="exam-entry-slot">AM · AQA</div><div class="exam-entry-subject">English Literature</div><div class="exam-entry-detail">Paper 1 — 1h 45m</div></div>
+      </div>
+      <div class="exam-day">
+        <div class="exam-day-label">Tuesday</div>
+        <div class="exam-day-date">12 May</div>
+        <div class="exam-entry pm"><div class="exam-entry-slot">PM · AQA</div><div class="exam-entry-subject">Biology</div><div class="exam-entry-detail">Paper 1 — F: 1h 15m / H: 1h 45m</div></div>
+      </div>
+      <div class="exam-day">
+        <div class="exam-day-label">Wednesday</div>
+        <div class="exam-day-date">13 May</div>
+        <div class="exam-entry"><div class="exam-entry-slot">AM · AQA</div><div class="exam-entry-subject">Geography</div><div class="exam-entry-detail">Paper 1 — 1h 30m</div></div>
+      </div>
+      <div class="exam-day">
+        <div class="exam-day-label">Thursday</div>
+        <div class="exam-day-date">14 May</div>
+        <div class="exam-entry"><div class="exam-entry-slot">AM · Edexcel</div><div class="exam-entry-subject">Mathematics</div><div class="exam-entry-detail">Paper 1 Non-Calc — 1h 30m</div></div>
+      </div>
+      <div class="exam-day">
+        <div class="exam-day-label">Friday</div>
+        <div class="exam-day-date">15 May</div>
+        <div class="exam-entry"><div class="exam-entry-slot">AM · Edexcel</div><div class="exam-entry-subject">History</div><div class="exam-entry-detail">Paper 1 — 1h 20m</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- WEEK 3 -->
+  <div class="exam-week">
+    <div class="exam-week-header w3">Week 3 <span>18–22 May 2026</span></div>
+    <div class="exam-days-grid">
+      <div class="exam-day">
+        <div class="exam-day-label">Monday</div>
+        <div class="exam-day-date">18 May</div>
+        <div class="exam-entry"><div class="exam-entry-slot">AM · AQA</div><div class="exam-entry-subject">Chemistry</div><div class="exam-entry-detail">Paper 1 — F: 1h 15m / H: 1h 45m</div></div>
+      </div>
+      <div class="exam-day">
+        <div class="exam-day-label">Tuesday</div>
+        <div class="exam-day-date">19 May</div>
+        <div class="exam-entry"><div class="exam-entry-slot">AM · AQA</div><div class="exam-entry-subject">English Literature</div><div class="exam-entry-detail">Modern Texts &amp; Poetry — 2h 15m</div></div>
+      </div>
+      <div class="exam-day">
+        <div class="exam-day-label">Wednesday</div>
+        <div class="exam-day-date">20 May</div>
+        <div class="exam-entry"><div class="exam-entry-slot">AM · AQA</div><div class="exam-entry-subject">French L&amp;R</div><div class="exam-entry-detail">F: 35m &amp; 45m / H: 45m &amp; 1h</div></div>
+      </div>
+      <div class="exam-day">
+        <div class="exam-day-label">Thursday</div>
+        <div class="exam-day-date">21 May</div>
+        <div class="exam-entry"><div class="exam-entry-slot">AM · AQA</div><div class="exam-entry-subject">English Language</div><div class="exam-entry-detail">Paper 1 — 1h 45m</div></div>
+      </div>
+      <div class="exam-day">
+        <div class="exam-day-label">Friday</div>
+        <div class="exam-day-date">22 May</div>
+        <div class="exam-entry holiday"><div class="exam-entry-slot">—</div><div class="exam-entry-subject">No exams</div></div>
+      </div>
+      <div class="exam-half-term">🏖️ HALF TERM HOLIDAY</div>
+    </div>
+  </div>
+
+  <!-- WEEK 4 -->
+  <div class="exam-week">
+    <div class="exam-week-header w4">Week 4 <span>1–5 June 2026</span></div>
+    <div class="exam-days-grid">
+      <div class="exam-day">
+        <div class="exam-day-label">Monday</div>
+        <div class="exam-day-date">1 Jun</div>
+        <div class="exam-entry holiday"><div class="exam-entry-slot">—</div><div class="exam-entry-subject">No exams</div></div>
+      </div>
+      <div class="exam-day">
+        <div class="exam-day-label">Tuesday</div>
+        <div class="exam-day-date">2 Jun</div>
+        <div class="exam-entry"><div class="exam-entry-slot">AM · AQA</div><div class="exam-entry-subject">Physics</div><div class="exam-entry-detail">Paper 1 — F: 1h 15m / H: 1h 45m</div></div>
+        <div class="exam-entry pm"><div class="exam-entry-slot">PM · AQA</div><div class="exam-entry-subject">Geography</div><div class="exam-entry-detail">Paper 2 — 1h 30m</div></div>
+      </div>
+      <div class="exam-day">
+        <div class="exam-day-label">Wednesday</div>
+        <div class="exam-day-date">3 Jun</div>
+        <div class="exam-entry"><div class="exam-entry-slot">AM · Edexcel</div><div class="exam-entry-subject">Mathematics</div><div class="exam-entry-detail">Paper 2 Calc — 1h 30m</div></div>
+        <div class="exam-entry pm"><div class="exam-entry-slot">PM · AQA</div><div class="exam-entry-subject">French Writing</div><div class="exam-entry-detail">F: 1h / H: 1h 15m</div></div>
+      </div>
+      <div class="exam-day">
+        <div class="exam-day-label">Thursday</div>
+        <div class="exam-day-date">4 Jun</div>
+        <div class="exam-entry"><div class="exam-entry-slot">AM · Edexcel</div><div class="exam-entry-subject">History</div><div class="exam-entry-detail">Paper 2 — 1h 50m</div></div>
+      </div>
+      <div class="exam-day">
+        <div class="exam-day-label">Friday</div>
+        <div class="exam-day-date">5 Jun</div>
+        <div class="exam-entry"><div class="exam-entry-slot">AM · AQA</div><div class="exam-entry-subject">English Language</div><div class="exam-entry-detail">Paper 2 — 1h 45m</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- WEEK 5 -->
+  <div class="exam-week">
+    <div class="exam-week-header w5">Week 5 <span>8–12 June 2026</span></div>
+    <div class="exam-days-grid">
+      <div class="exam-day">
+        <div class="exam-day-label">Monday</div>
+        <div class="exam-day-date">8 Jun</div>
+        <div class="exam-entry"><div class="exam-entry-slot">AM · AQA</div><div class="exam-entry-subject">Biology</div><div class="exam-entry-detail">Paper 2 — F: 1h 15m / H: 1h 45m</div></div>
+      </div>
+      <div class="exam-day">
+        <div class="exam-day-label">Tuesday</div>
+        <div class="exam-day-date">9 Jun</div>
+        <div class="exam-entry pm"><div class="exam-entry-slot">PM · Edexcel</div><div class="exam-entry-subject">History</div><div class="exam-entry-detail">Paper 3 — 1h 30m</div></div>
+      </div>
+      <div class="exam-day">
+        <div class="exam-day-label">Wednesday</div>
+        <div class="exam-day-date">10 Jun</div>
+        <div class="exam-entry"><div class="exam-entry-slot">AM · Edexcel</div><div class="exam-entry-subject">Mathematics</div><div class="exam-entry-detail">Paper 3 Calc — 1h 30m</div></div>
+      </div>
+      <div class="exam-day">
+        <div class="exam-day-label">Thursday</div>
+        <div class="exam-day-date">11 Jun</div>
+        <div class="exam-entry"><div class="exam-entry-slot">AM · AQA</div><div class="exam-entry-subject">Geography</div><div class="exam-entry-detail">Paper 3 — 1h 30m</div></div>
+      </div>
+      <div class="exam-day">
+        <div class="exam-day-label">Friday</div>
+        <div class="exam-day-date">12 Jun</div>
+        <div class="exam-entry"><div class="exam-entry-slot">AM · AQA</div><div class="exam-entry-subject">Chemistry</div><div class="exam-entry-detail">Paper 2 — F: 1h 15m / H: 1h 45m</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- WEEK 6 -->
+  <div class="exam-week">
+    <div class="exam-week-header w6">Week 6 <span>15 June 2026</span></div>
+    <div class="exam-days-grid">
+      <div class="exam-day">
+        <div class="exam-day-label">Monday</div>
+        <div class="exam-day-date">15 Jun</div>
+        <div class="exam-entry"><div class="exam-entry-slot">AM · AQA</div><div class="exam-entry-subject">Physics</div><div class="exam-entry-detail">Paper 2 — F: 1h 15m / H: 1h 45m</div></div>
+      </div>
+      <div class="exam-day">
+        <div class="exam-day-label">Tuesday</div>
+        <div class="exam-day-date">16 Jun</div>
+        <div class="exam-entry holiday"><div class="exam-entry-slot">—</div><div class="exam-entry-subject">No exams</div></div>
+      </div>
+      <div class="exam-day">
+        <div class="exam-day-label">Wednesday</div>
+        <div class="exam-day-date">17 Jun</div>
+        <div class="exam-entry holiday"><div class="exam-entry-slot">—</div><div class="exam-entry-subject">No exams</div></div>
+      </div>
+      <div class="exam-day">
+        <div class="exam-day-label">Thursday</div>
+        <div class="exam-day-date">18 Jun</div>
+        <div class="exam-entry holiday"><div class="exam-entry-slot">—</div><div class="exam-entry-subject">No exams</div></div>
+      </div>
+      <div class="exam-day">
+        <div class="exam-day-label">Friday</div>
+        <div class="exam-day-date">19 Jun</div>
+        <div class="exam-entry holiday"><div class="exam-entry-slot">—</div><div class="exam-entry-subject">No exams</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="exam-contingency">
+    <strong>⚠️ Contingency Day — Thursday 24th June 2026:</strong> In the unlikely event of national or local disruption, awarding bodies have designated Thursday 24th June as a contingency day. All candidates must remain available and able to attend school up to and including this date.
+  </div>
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/js/all.min.js" crossorigin="anonymous"></script>
