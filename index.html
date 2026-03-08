@@ -763,6 +763,7 @@ body {
 </div>
 <div id="extendRow" style="display:none;justify-content:center;align-items:center;gap:0.5rem;margin-top:0.75rem;flex-wrap:wrap">
 <span style="font-size:0.72rem;font-weight:900;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted)">+ Add time:</span>
+<button class="extend-btn" onclick="extendTimer(1)">+1m</button>
 <button class="extend-btn" onclick="extendTimer(5)">+5m</button>
 <button class="extend-btn" onclick="extendTimer(10)">+10m</button>
 <button class="extend-btn" onclick="extendTimer(15)">+15m</button>
@@ -2047,7 +2048,7 @@ function onComplete() {
     return null;
   }
   const topicSection = getTopicSection(selectedSubject, selectedTopic);
-  sessionLog.unshift({ subject:selectedSubject, topic:selectedTopic, section:topicSection, minutes:selectedMinutes,
+  sessionLog.unshift({ subject:selectedSubject, topic:selectedTopic, section:topicSection, minutes:Math.round(totalSeconds/60),
     time: _now.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'}),
     date: _now.toISOString().slice(0,10) });
   renderLog(); updateTimerStats();
@@ -2064,12 +2065,12 @@ function onComplete() {
     topEl.textContent = clean; topEl.style.display='block';
     ragPrompt.style.display='block';
     dismissBtn.style.display='none';
-    subEl.textContent = `${selectedMinutes} mins of focused revision. How well do you know it?`;
+    subEl.textContent = `${Math.round(totalSeconds/60)} mins of focused revision. How well do you know it?`;
   } else {
     topEl.style.display='none';
     ragPrompt.style.display='none';
     dismissBtn.style.display='inline-block';
-    subEl.textContent = `${selectedMinutes} minute${selectedMinutes!==1?'s':''} of revision. Great work — take a short break!`;
+    const _actualMins = Math.round(totalSeconds/60); subEl.textContent = `${_actualMins} minute${_actualMins!==1?'s':''} of revision. Great work — take a short break!`;
   }
   document.getElementById('completionOverlay').classList.add('show');
   remainingSeconds=totalSeconds; updateRing(1);
