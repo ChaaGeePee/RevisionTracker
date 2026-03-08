@@ -202,6 +202,9 @@ body {
 .mtp-start:hover{filter:brightness(1.1);transform:translateY(-1px)}
 .mtp-reset{background:var(--surface2);border:2px solid var(--border);color:var(--muted)}
 .mtp-reset:hover{border-color:var(--danger);color:var(--danger)}
+.mtp-finish{background:var(--teal-bg);border:2px solid var(--teal-border);color:var(--teal)}
+.mtp-finish:hover{background:var(--teal);color:#fff;border-color:var(--teal);transform:translateY(-1px)}
+.mtp-finish:disabled{opacity:0.35;cursor:not-allowed;transform:none}
 .mtp-done-banner{background:var(--danger-bg);border:2px solid var(--red-border);border-radius:var(--r-sm);padding:.65rem 1rem;text-align:center;font-size:.9rem;font-weight:800;color:var(--danger);animation:slideDown .3s ease}
 /* open-timer button in table rows */
 .mock-timer-btn{background:none;border:2px solid var(--red-border);color:var(--danger);font-family:var(--font);font-size:0.75rem;font-weight:800;padding:.22rem .55rem;border-radius:var(--r-pill);cursor:pointer;transition:all .15s;white-space:nowrap}
@@ -3246,6 +3249,7 @@ function mockTimerStartPause() {
     document.getElementById('mtpStartBtn').textContent = 'RESUME';
     document.getElementById('mtpTimeLabel').textContent = 'PAUSED';
     document.getElementById('mockTimerPanel').querySelector('.mtp-panel').classList.remove('running');
+    document.getElementById('mtpFinishBtn').disabled = false;
     // Save elapsed time so far (even if not finished)
     const elapsed = mtpTotal - mtpRemaining;
     if (elapsed > 0 && mtpPaperId && activeMockRound) {
@@ -3261,6 +3265,7 @@ function mockTimerStartPause() {
     document.getElementById('mtpStartBtn').textContent = 'PAUSE';
     document.getElementById('mtpTimeLabel').textContent = 'IN PROGRESS';
     document.getElementById('mockTimerPanel').querySelector('.mtp-panel').classList.add('running');
+    document.getElementById('mtpFinishBtn').disabled = false;
     mtpRunning = true;
     mtpInterval = setInterval(() => {
       mtpRemaining--;
@@ -3285,6 +3290,7 @@ function mockTimerReset() {
   document.getElementById('mtpStartBtn').textContent = 'START';
   document.getElementById('mtpTimeLabel').textContent = 'READY';
   document.getElementById('mtpDoneBanner').style.display = 'none';
+  document.getElementById('mtpFinishBtn').disabled = true;
   document.getElementById('mockTimerPanel').querySelector('.mtp-panel').classList.remove('running');
   mtpUpdateDisplay();
   mtpUpdateRing(1);
@@ -3317,10 +3323,37 @@ function mtpPlayWarningBeep() {
   }, 3000);
 }
 
+function mockTimerFinishEarly() {
+  if (mtpRemaining <= 0) return;
+  clearInterval(mtpInterval);
+  mtpRunning = false;
+  const elapsed = mtpTotal - mtpRemaining;
+  document.getElementById('mtpStartBtn').textContent = 'START';
+  document.getElementById('mtpTimeLabel').textContent = 'FINISHED EARLY';
+  document.getElementById('mtpFinishBtn').disabled = true;
+  document.getElementById('mockTimerPanel').querySelector('.mtp-panel').classList.remove('running');
+  // Show done banner with actual time taken
+  const banner = document.getElementById('mtpDoneBanner');
+  banner.innerHTML = `✅ Finished in ${fmtMtp(elapsed)} — log your score below.`;
+  banner.style.background = 'var(--teal-bg)';
+  banner.style.borderColor = 'var(--teal-border)';
+  banner.style.color = 'var(--teal)';
+  banner.style.display = 'block';
+  // Save actual elapsed time to session log
+  if (elapsed > 0 && mtpPaperId && activeMockRound) {
+    const ek = entryKey(activeMockRound, mtpPaperId);
+    if (!mockData.entries[ek]) mockData.entries[ek] = {};
+    mockData.entries[ek].timeTaken = elapsed;
+    saveMockData();
+    refreshTimeBadge(ek, elapsed);
+  }
+}
+
 function mtpTimerComplete() {
   document.getElementById('mtpTimeLabel').textContent = 'TIMES UP';
   document.getElementById('mtpDoneBanner').style.display = 'block';
   document.getElementById('mtpStartBtn').textContent = 'START';
+  document.getElementById('mtpFinishBtn').disabled = true;
   document.getElementById('mockTimerPanel').querySelector('.mtp-panel').classList.remove('running');
   // Save elapsed time to the active entry
   if (mtpPaperId && activeMockRound) {
@@ -3395,6 +3428,7 @@ init();
 </div>
 <div class="mtp-controls">
 <button class="mtp-btn mtp-start" id="mtpStartBtn" onclick="mockTimerStartPause()">START</button>
+<button class="mtp-btn mtp-finish" id="mtpFinishBtn" onclick="mockTimerFinishEarly()" disabled title="Stop the timer and save your actual time">✓ FINISH</button>
 <button class="mtp-btn mtp-reset" onclick="mockTimerReset()">RESET</button>
 </div>
 <div class="mtp-done-banner" id="mtpDoneBanner" style="display:none">
