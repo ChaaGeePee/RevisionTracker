@@ -2010,7 +2010,18 @@ function onComplete() {
 
   // Log
   const _now = new Date();
-  sessionLog.unshift({ subject:selectedSubject, topic:selectedTopic, minutes:selectedMinutes,
+  // Look up the section (subtopic group) for the selected topic
+  function getTopicSection(subject, topic) {
+    if (!subject || !topic) return null;
+    const sections = TOPICS[subject];
+    if (!sections) return null;
+    for (const [section, topics] of Object.entries(sections)) {
+      if (topics.includes(topic)) return section;
+    }
+    return null;
+  }
+  const topicSection = getTopicSection(selectedSubject, selectedTopic);
+  sessionLog.unshift({ subject:selectedSubject, topic:selectedTopic, section:topicSection, minutes:selectedMinutes,
     time: _now.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'}),
     date: _now.toISOString().slice(0,10) });
   renderLog(); updateTimerStats();
@@ -2186,6 +2197,7 @@ function renderLog() {
       <div class="log-info">
         <div class="log-subject">${e.subject}</div>
         ${e.topic ? `<div class="log-topic-text">${e.topic.replace(' (Higher)','')+(e.topic.includes('(Higher)') ? ` <span style="color:var(--higher);font-size:0.6rem">[H]</span>` : '')}</div>` : ''}
+        ${e.section ? `<div style="font-size:0.72rem;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--muted);margin-top:0.15rem;padding:0.1rem 0.5rem;background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-pill);display:inline-block">${e.section}</div>` : ''}
       </div>
       <div class="log-right">
         <span class="log-duration">${e.minutes}m</span>
