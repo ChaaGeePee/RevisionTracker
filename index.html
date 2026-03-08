@@ -196,8 +196,8 @@ body {
 .mtp-time-label{font-size:0.7rem;font-weight:900;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
 .mtp-panel.running .mtp-time-digits{animation:pulse-ring 2s ease-in-out infinite}
 /* controls */
-.mtp-controls{display:flex;gap:.7rem;justify-content:center;margin-bottom:.9rem}
-.mtp-btn{font-family:var(--font);font-size:.95rem;font-weight:800;padding:.65rem 2rem;border-radius:var(--r-sm);border:none;cursor:pointer;transition:all .15s;letter-spacing:.02em}
+.mtp-controls{display:flex;gap:.7rem;justify-content:center;margin-bottom:.9rem;flex-wrap:wrap}
+.mtp-btn{font-family:var(--font);font-size:.9rem;font-weight:800;padding:.65rem 1.4rem;border-radius:var(--r-sm);border:none;cursor:pointer;transition:all .15s;letter-spacing:.02em}
 .mtp-start{background:var(--danger);color:#fff;min-width:110px}
 .mtp-start:hover{filter:brightness(1.1);transform:translateY(-1px)}
 .mtp-reset{background:var(--surface2);border:2px solid var(--border);color:var(--muted)}
@@ -415,6 +415,9 @@ body {
 .btn-start:hover{background:var(--accent-hover);transform:translateY(-1px);box-shadow:0 5px 16px rgba(29,78,216,0.4)}
 .btn-reset{background:var(--surface2);border:2px solid var(--border);color:var(--muted)}
 .btn-reset:hover{border-color:var(--danger);color:var(--danger)}
+.btn-finish{background:var(--teal-bg);border:2px solid var(--teal-border);color:var(--teal)}
+.btn-finish:hover{background:var(--teal);color:#fff;border-color:var(--teal);transform:translateY(-1px)}
+.btn-finish:disabled{opacity:0.32;cursor:not-allowed;transform:none!important}
 @keyframes pulse-ring{0%,100%{opacity:1}50%{opacity:0.75}}
 .timer-card.running .time-digits{animation:pulse-ring 2s ease-in-out infinite}
 
@@ -760,8 +763,9 @@ body {
 <div class="time-label" id="timeLabel">READY</div>
 </div>
 </div>
-<div class="controls">
+<div class="controls" style="flex-wrap:wrap">
 <button class="ctrl-btn btn-start" id="startBtn" onclick="startPause()">START</button>
+<button class="ctrl-btn btn-finish" id="finishBtn" onclick="finishEarly()" disabled title="Stop and log your actual time">✓ FINISH</button>
 <button class="ctrl-btn btn-reset" onclick="resetTimer()">RESET</button>
 </div>
 <div id="extendRow" style="display:none;justify-content:center;align-items:center;gap:0.5rem;margin-top:0.75rem;flex-wrap:wrap">
@@ -1802,6 +1806,7 @@ let selectedMinutes = 25;
 let totalSeconds = 1500;
 let remainingSeconds = 1500;
 let timerInterval = null;
+let studyBeepInterval = null;
 let isRunning = false;
 let sessionLog = [];
 let activeFilter = 'all';
@@ -1989,40 +1994,140 @@ function startPause() {
   }
   if (isRunning) {
     clearInterval(timerInterval); isRunning = false;
+    clearInterval(studyBeepInterval); studyBeepInterval = null;
     document.getElementById('startBtn').textContent = 'RESUME';
     document.getElementById('timerCard').classList.remove('running');
     document.getElementById('timeLabel').textContent = 'PAUSED';
     document.getElementById('extendRow').style.display='flex';
+    document.getElementById('finishBtn').disabled = false;
   } else {
+    mtpGetAudioCtx(); // unlock audio on user gesture so interval beeps work
     isRunning = true;
     document.getElementById('startBtn').textContent = 'PAUSE';
     document.getElementById('timerCard').classList.add('running');
     document.getElementById('timeLabel').textContent = 'STUDYING';
     document.getElementById('extendRow').style.display='flex';
-    timerInterval = setInterval(() => {
-      remainingSeconds--;
+    document.getElementById('finishBtn').disabled = false;
+    // If resuming with under 60s left, restart the warning beeps
+    if (remainingSeconds <= 60 && remainingSeconds > 0 && !studyBeepInterval) {
+      studyBeepInterval = setInterval(() => {
+        if (remainingSeconds > 0) playStudyWarningBeep();
+      }, 8000);
+    }
+    timerInterval = setInterval(() => {      remainingSeconds--;
       updateDisplay(); updateRing(remainingSeconds/totalSeconds);
       document.title = `${fmt(remainingSeconds)} — ${selectedSubject}`;
-      if (remainingSeconds <= 0) { clearInterval(timerInterval); isRunning=false; onComplete(); }
+      if (remainingSeconds === 60) {
+        playStudyWarningBeep();
+        studyBeepInterval = setInterval(() => {
+          if (remainingSeconds > 0) playStudyWarningBeep();
+        }, 8000);
+      }
+      if (remainingSeconds <= 0) {
+        clearInterval(timerInterval);
+        clearInterval(studyBeepInterval); studyBeepInterval = null;
+        isRunning=false; onComplete();
+      }
     }, 1000);
   }
 }
 
 function resetTimer() {
   clearInterval(timerInterval); isRunning=false;
+  clearInterval(studyBeepInterval); studyBeepInterval = null;
   remainingSeconds=totalSeconds;
   updateDisplay(); updateRing(1);
   document.getElementById('startBtn').textContent='START';
+  document.getElementById('finishBtn').disabled = true;
   document.getElementById('timerCard').classList.remove('running');
   document.getElementById('timeLabel').textContent='READY';
   document.getElementById('extendRow').style.display='none';
   document.title='GCSE Revision Timer';
 }
 
+function finishEarly() {
+  if (!isRunning && remainingSeconds === totalSeconds) return; // nothing started
+  clearInterval(timerInterval); isRunning = false;
+  clearInterval(studyBeepInterval); studyBeepInterval = null;
+  const actualSeconds = totalSeconds - remainingSeconds;
+  if (actualSeconds < 10) return; // ignore accidental clicks
+  document.getElementById('startBtn').textContent = 'START';
+  document.getElementById('finishBtn').disabled = true;
+  document.getElementById('timerCard').classList.remove('running');
+  document.getElementById('timeLabel').textContent = 'DONE ✓';
+  document.getElementById('extendRow').style.display = 'none';
+  document.title = '✓ Done! — ' + selectedSubject;
+  // Log actual elapsed time (not the full planned duration)
+  const _now = new Date();
+  function getTopicSection(subject, topic) {
+    if (!subject || !topic) return null;
+    const sections = TOPICS[subject];
+    if (!sections) return null;
+    for (const [section, topics] of Object.entries(sections)) {
+      if (topics.includes(topic)) return section;
+    }
+    return null;
+  }
+  const topicSection = getTopicSection(selectedSubject, selectedTopic);
+  const actualMins = Math.max(1, Math.round(actualSeconds / 60));
+  sessionLog.unshift({ subject: selectedSubject, topic: selectedTopic, section: topicSection,
+    minutes: actualMins, finishedEarly: true,
+    time: _now.toLocaleTimeString('en-GB', {hour:'2-digit', minute:'2-digit'}),
+    date: _now.toISOString().slice(0, 10) });
+  renderLog(); updateTimerStats();
+  // Show completion overlay
+  document.getElementById('completionTitle').textContent = `${selectedSubject} — Finished Early! ✓`;
+  const topEl = document.getElementById('completedTopicEl');
+  const ragPrompt = document.getElementById('ragPrompt');
+  const dismissBtn = document.getElementById('dismissBtn');
+  const subEl = document.getElementById('completionSubtitle');
+  if (selectedTopic) {
+    const clean = selectedTopic.replace(' (Higher)','') + (selectedTopic.includes('(Higher)')?' [Higher]':'');
+    topEl.textContent = clean; topEl.style.display='block';
+    ragPrompt.style.display='block';
+    dismissBtn.style.display='none';
+    subEl.textContent = `${actualMins} min${actualMins!==1?'s':''} completed. How well do you know it?`;
+  } else {
+    topEl.style.display='none';
+    ragPrompt.style.display='none';
+    dismissBtn.style.display='inline-block';
+    subEl.textContent = `${actualMins} minute${actualMins!==1?'s':''} of revision. Great work!`;
+  }
+  document.getElementById('completionOverlay').classList.add('show');
+  remainingSeconds = totalSeconds; updateRing(1);
+}
+
+function playStudyWarningBeep() {
+  try {
+    const ctx = mtpGetAudioCtx();
+    [[0, 660], [0.35, 880]].forEach(([delay, freq]) => {
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.connect(gain); gain.connect(ctx.destination);
+      osc.type = 'sine';
+      osc.frequency.value = freq;
+      gain.gain.setValueAtTime(0.5, ctx.currentTime + delay);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + delay + 0.5);
+      osc.start(ctx.currentTime + delay);
+      osc.stop(ctx.currentTime + delay + 0.5);
+    });
+  } catch(e) {}
+  const label = document.getElementById('timeLabel');
+  label.textContent = '⚠️ 1 MIN LEFT!';
+  label.style.color = 'var(--warn)';
+  setTimeout(() => { label.textContent = 'STUDYING'; label.style.color = ''; }, 3000);
+}
+
 function extendTimer(mins) {
   const addSecs = mins * 60;
   totalSeconds += addSecs;
   remainingSeconds += addSecs;
+  // If beeping was active, stop it since there's now more than 1 min left
+  if (remainingSeconds > 60 && studyBeepInterval) {
+    clearInterval(studyBeepInterval); studyBeepInterval = null;
+    const label = document.getElementById('timeLabel');
+    label.textContent = 'STUDYING'; label.style.color = '';
+  }
   updateDisplay();
   updateRing(remainingSeconds / totalSeconds);
   // Brief flash to confirm
@@ -3176,7 +3281,18 @@ let mtpRunning     = false;
 let mtpTotal       = 0;
 let mtpRemaining   = 0;
 let mtpPaperId     = null;
+let mtpAudioCtx    = null;
 const MTP_CIRCUM   = 515.22; // 2π × 82
+
+function mtpGetAudioCtx() {
+  if (!mtpAudioCtx) {
+    mtpAudioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  }
+  if (mtpAudioCtx.state === 'suspended') {
+    mtpAudioCtx.resume();
+  }
+  return mtpAudioCtx;
+}
 
 function fmtMtp(secs) {
   const h = Math.floor(secs / 3600);
@@ -3262,6 +3378,7 @@ function mockTimerStartPause() {
     }
   } else {
     if (mtpRemaining <= 0) { mockTimerReset(); return; }
+    mtpGetAudioCtx(); // unlock audio on this user gesture so interval beeps work
     document.getElementById('mtpStartBtn').textContent = 'PAUSE';
     document.getElementById('mtpTimeLabel').textContent = 'IN PROGRESS';
     document.getElementById('mockTimerPanel').querySelector('.mtp-panel').classList.add('running');
@@ -3299,7 +3416,7 @@ function mockTimerReset() {
 function mtpPlayWarningBeep() {
   // Two-tone "ding ding" alert at 1 minute remaining
   try {
-    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    const ctx = mtpGetAudioCtx();
     [[0, 660], [0.35, 880]].forEach(([delay, freq]) => {
       const osc = ctx.createOscillator();
       const gain = ctx.createGain();
@@ -3365,7 +3482,7 @@ function mtpTimerComplete() {
   }
   // Play a short beep via Web Audio
   try {
-    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    const ctx = mtpGetAudioCtx();
     [0, 0.3, 0.6].forEach(delay => {
       const osc = ctx.createOscillator();
       const gain = ctx.createGain();
