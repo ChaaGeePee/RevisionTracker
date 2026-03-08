@@ -3266,6 +3266,9 @@ function mockTimerStartPause() {
       mtpRemaining--;
       mtpUpdateDisplay();
       mtpUpdateRing(mtpRemaining / mtpTotal);
+      if (mtpRemaining === 60) {
+        mtpPlayWarningBeep();
+      }
       if (mtpRemaining <= 0) {
         clearInterval(mtpInterval);
         mtpRunning = false;
@@ -3285,6 +3288,33 @@ function mockTimerReset() {
   document.getElementById('mockTimerPanel').querySelector('.mtp-panel').classList.remove('running');
   mtpUpdateDisplay();
   mtpUpdateRing(1);
+}
+
+function mtpPlayWarningBeep() {
+  // Two-tone "ding ding" alert at 1 minute remaining
+  try {
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    [[0, 660], [0.35, 880]].forEach(([delay, freq]) => {
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.connect(gain); gain.connect(ctx.destination);
+      osc.type = 'sine';
+      osc.frequency.value = freq;
+      gain.gain.setValueAtTime(0.5, ctx.currentTime + delay);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + delay + 0.5);
+      osc.start(ctx.currentTime + delay);
+      osc.stop(ctx.currentTime + delay + 0.5);
+    });
+  } catch(e) {}
+  // Also flash the timer label
+  const label = document.getElementById('mtpTimeLabel');
+  const orig = label.textContent;
+  label.textContent = '⚠️ 1 MINUTE LEFT!';
+  label.style.color = 'var(--warn)';
+  setTimeout(() => {
+    label.textContent = orig || 'IN PROGRESS';
+    label.style.color = '';
+  }, 3000);
 }
 
 function mtpTimerComplete() {
