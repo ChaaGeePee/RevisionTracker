@@ -828,721 +828,459 @@ body {
 <div id="trackerAccordions"></div>
 </div>
 <!-- ══════════ TIMETABLE PAGE ══════════ -->
-<style>
-/* ── REDESIGNED TIMETABLE ── */
-.tt-hero-new {
-  background: var(--accent-bg);
-  border: 2px solid var(--accent-border);
-  border-radius: 16px;
-  padding: 2.5rem 2rem 2rem;
-  margin-bottom: 2rem;
-  position: relative;
-  overflow: hidden;
-}
-.tt-hero-new::before {
-  content: '';
-  position: absolute;
-  top: -60px; right: -60px;
-  width: 260px; height: 260px;
-  border-radius: 50%;
-  background: radial-gradient(circle, rgba(29,78,216,0.07) 0%, transparent 70%);
-}
-.tt-hero-new::after {
-  content: '';
-  position: absolute;
-  bottom: -40px; left: 40px;
-  width: 180px; height: 180px;
-  border-radius: 50%;
-  background: radial-gradient(circle, rgba(29,78,216,0.05) 0%, transparent 70%);
-}
-.tt-hero-tag {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.4rem;
-  background: var(--accent-bg);
-  border: 1px solid var(--accent-border);
-  color: var(--accent);
-  font-size: 0.72rem;
-  font-weight: 900;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  padding: 0.3rem 0.85rem;
-  border-radius: 100px;
-  margin-bottom: 1rem;
-}
-.tt-hero-new h1 {
-  font-size: clamp(1.6rem, 4vw, 2.4rem);
-  font-weight: 900;
-  color: var(--text);
-  letter-spacing: -0.03em;
-  margin-bottom: 0.4rem;
-  line-height: 1.1;
-}
-.tt-hero-new p {
-  color: var(--muted);
-  font-size: 0.975rem;
-  font-weight: 600;
-  margin-bottom: 1.5rem;
-}
-.tt-hero-stats {
-  display: flex;
-  gap: 0.75rem;
-  flex-wrap: wrap;
-}
-.tt-hero-stat {
-  background: var(--surface);
-  border: 1px solid var(--accent-border);
-  border-radius: 10px;
-  padding: 0.65rem 1.1rem;
-  text-align: center;
-  box-shadow: var(--sh);
-}
-.tt-hero-stat-val {
-  font-size: 1.4rem;
-  font-weight: 900;
-  color: var(--accent);
-  line-height: 1;
-}
-.tt-hero-stat-key {
-  font-size: 0.7rem;
-  font-weight: 800;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--muted);
-  margin-top: 0.2rem;
-}
-.tt-alert {
-  display: flex;
-  align-items: flex-start;
-  gap: 0.75rem;
-  background: #fefce8;
-  border: 2px solid #fde047;
-  border-radius: 12px;
-  padding: 1rem 1.25rem;
-  margin-bottom: 1.75rem;
-  font-size: 0.9rem;
-  font-weight: 600;
-  color: #713f12;
-  line-height: 1.6;
-}
-body.dark-mode .tt-alert {
-  background: rgba(253,224,71,0.08);
-  border-color: rgba(253,224,71,0.35);
-  color: #fde047;
-}
-.tt-alert-icon { font-size: 1.2rem; flex-shrink: 0; margin-top: 0.05rem; }
-.tt-alert strong { color: #854d0e; font-weight: 900; }
-body.dark-mode .tt-alert strong { color: #fde047; }
-.tt-nav {
-  display: flex;
-  gap: 0;
-  margin-bottom: 2rem;
-  background: var(--surface);
-  border: 2px solid var(--border);
-  border-radius: 12px;
-  padding: 0.35rem;
-  overflow-x: auto;
-  scrollbar-width: none;
-}
-.tt-nav::-webkit-scrollbar { display: none; }
-.tt-nav-btn {
-  flex-shrink: 0;
-  font-family: var(--font);
-  font-size: 0.82rem;
-  font-weight: 800;
-  padding: 0.5rem 1rem;
-  border-radius: 8px;
-  border: none;
-  background: none;
-  color: var(--muted);
-  cursor: pointer;
-  transition: all 0.15s;
-  white-space: nowrap;
-}
-.tt-nav-btn:hover { color: var(--text); background: var(--surface2); }
-.tt-nav-btn.active { background: #1e1b4b; color: #e0e7ff; }
-body.dark-mode .tt-nav-btn.active { background: #3730a3; color: #e0e7ff; }
-.tt-day-card {
-  background: var(--surface);
-  border: 2px solid var(--border);
-  border-radius: 14px;
-  margin-bottom: 1.25rem;
-  overflow: hidden;
-  box-shadow: var(--sh);
-  transition: box-shadow 0.2s;
-}
-.tt-day-card:hover { box-shadow: var(--sh-md); }
-.tt-day-header {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  padding: 0.85rem 1.25rem;
-  background: var(--surface2);
-  border-bottom: 2px solid var(--border);
-}
-.tt-day-name {
-  font-size: 0.8rem;
-  font-weight: 900;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--text);
-}
-.tt-day-date-badge {
-  font-family: var(--mono);
-  font-size: 0.72rem;
-  font-weight: 600;
-  color: var(--muted);
-  background: var(--surface);
-  border: 1px solid var(--border);
-  padding: 0.18rem 0.6rem;
-  border-radius: 100px;
-}
-.tt-day-hours {
-  margin-left: auto;
-  font-size: 0.72rem;
-  font-weight: 900;
-  color: #6366f1;
-  background: rgba(99,102,241,0.1);
-  border: 1px solid rgba(99,102,241,0.25);
-  padding: 0.18rem 0.65rem;
-  border-radius: 100px;
-}
-.tt-sessions {
-  padding: 0.85rem 1.25rem;
-  display: flex;
-  flex-direction: column;
-  gap: 0.6rem;
-}
-.tt-session {
-  display: flex;
-  align-items: stretch;
-  gap: 0.85rem;
-  padding: 0.8rem 0.95rem 0.8rem 1.2rem;
-  border-radius: 10px;
-  background: var(--surface2);
-  border: 1px solid var(--border);
-  transition: all 0.15s;
-  position: relative;
-  overflow: hidden;
-}
-.tt-session:hover { transform: translateX(3px); border-color: var(--border-strong); }
-.tt-session-stripe {
-  width: 3px;
-  border-radius: 3px;
-  flex-shrink: 0;
-  position: absolute;
-  left: 0; top: 0; bottom: 0;
-}
-.tt-session.s-math .tt-session-stripe { background: var(--sub-maths); }
-.tt-session.s-english .tt-session-stripe { background: var(--sub-english); }
-.tt-session.s-biology .tt-session-stripe { background: var(--sub-biology); }
-.tt-session.s-chemistry .tt-session-stripe { background: var(--sub-chemistry); }
-.tt-session.s-physics .tt-session-stripe { background: var(--sub-physics); }
-.tt-session.s-geography .tt-session-stripe { background: var(--sub-geography); }
-.tt-session.s-history .tt-session-stripe { background: var(--sub-history); }
-.tt-session.s-french .tt-session-stripe { background: var(--sub-french); }
-.tt-session.s-drama .tt-session-stripe { background: var(--sub-drama); }
-.tt-session.s-break .tt-session-stripe { background: var(--border-strong); }
-.tt-session.s-break { opacity: 0.7; }
-.tt-session-left { display: flex; flex-direction: column; gap: 0.15rem; flex: 1; min-width: 0; }
-.tt-session-time { font-family: var(--mono); font-size: 0.68rem; color: var(--muted); font-weight: 500; }
-.tt-session-subj { font-size: 0.9rem; font-weight: 800; color: var(--text); }
-.tt-session-topic { font-size: 0.82rem; font-weight: 600; color: var(--text2); line-height: 1.4; }
-.tt-session-badge {
-  flex-shrink: 0;
-  align-self: center;
-  font-size: 0.65rem;
-  font-weight: 900;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  padding: 0.18rem 0.55rem;
-  border-radius: 100px;
-  white-space: nowrap;
-}
-.badge-p2 { background: rgba(99,102,241,0.12); color: #4f46e5; border: 1px solid rgba(99,102,241,0.3); }
-.badge-hard { background: rgba(185,28,28,0.1); color: #b91c1c; border: 1px solid rgba(185,28,28,0.25); }
-.badge-paper { background: rgba(13,148,136,0.1); color: #0d9488; border: 1px solid rgba(13,148,136,0.25); }
-.badge-break { background: var(--surface); color: var(--faint); border: 1px solid var(--border); }
-body.dark-mode .badge-p2 { color: #818cf8; border-color: rgba(129,140,248,0.35); background: rgba(129,140,248,0.1); }
-body.dark-mode .badge-hard { color: #f87171; border-color: rgba(248,113,113,0.3); background: rgba(248,113,113,0.08); }
-body.dark-mode .badge-paper { color: #2dd4bf; border-color: rgba(45,212,191,0.3); background: rgba(45,212,191,0.08); }
-.tt-papers-day {
-  background: var(--accent-bg);
-  border: 2px solid var(--accent-border);
-  border-radius: 14px;
-  padding: 1.4rem 1.5rem;
-  margin-bottom: 1.25rem;
-}
-.tt-papers-day-label {
-  font-size: 0.72rem;
-  font-weight: 900;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: var(--accent);
-  margin-bottom: 0.3rem;
-}
-.tt-papers-day-title {
-  font-size: 1.1rem;
-  font-weight: 900;
-  color: var(--text);
-  margin-bottom: 1rem;
-}
-.tt-papers-grid-new {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-  gap: 0.7rem;
-}
-.tt-paper-card-new {
-  background: var(--surface);
-  border: 1px solid var(--accent-border);
-  border-radius: 10px;
-  padding: 0.85rem 1rem;
-  box-shadow: var(--sh);
-}
-.tt-paper-card-new-time { font-family: var(--mono); font-size: 0.68rem; color: var(--accent); margin-bottom: 0.2rem; }
-.tt-paper-card-new-name { font-size: 0.95rem; font-weight: 800; color: var(--text); margin-bottom: 0.15rem; }
-.tt-paper-card-new-detail { font-size: 0.8rem; font-weight: 600; color: var(--text2); line-height: 1.45; }
-.tt-papers-note-new {
-  margin-top: 1rem;
-  font-size: 0.82rem;
-  font-weight: 600;
-  color: var(--warn);
-  background: var(--warn-bg);
-  border: 1px solid var(--warn-border);
-  border-radius: 8px;
-  padding: 0.55rem 0.85rem;
-}
-.tt-week-banner {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  margin-bottom: 1.5rem;
-  padding-bottom: 1rem;
-  border-bottom: 2px solid var(--border);
-}
-.tt-week-emoji { font-size: 1.8rem; line-height: 1; }
-.tt-week-title-new { font-size: 1.2rem; font-weight: 900; color: var(--text); letter-spacing: -0.02em; }
-.tt-week-subtitle { font-size: 0.875rem; font-weight: 600; color: var(--muted); }
-.tt-checklist-new {
-  background: var(--surface);
-  border: 2px solid var(--border);
-  border-radius: 14px;
-  padding: 1.4rem 1.5rem;
-  margin-top: 1.75rem;
-  box-shadow: var(--sh);
-}
-.tt-checklist-hdr {
-  display: flex;
-  align-items: center;
-  gap: 0.6rem;
-  font-size: 0.78rem;
-  font-weight: 900;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--muted);
-  margin-bottom: 1.1rem;
-  padding-bottom: 0.85rem;
-  border-bottom: 1px solid var(--border);
-}
-.tt-check-grid-new {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 0.35rem;
-}
-.tt-check-item-new {
-  display: flex;
-  align-items: flex-start;
-  gap: 0.6rem;
-  font-size: 0.875rem;
-  font-weight: 600;
-  color: var(--text2);
-  line-height: 1.5;
-  padding: 0.35rem 0.5rem;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: background 0.1s;
-}
-.tt-check-item-new:hover { background: var(--surface2); }
-.tt-check-item-new input[type=checkbox] { accent-color: #4f46e5; width: 15px; height: 15px; margin-top: 3px; flex-shrink: 0; cursor: pointer; }
-@media(max-width:600px) {
-  .tt-hero-stats { gap: 0.5rem; }
-  .tt-hero-stat { padding: 0.5rem 0.75rem; }
-  .tt-papers-grid-new { grid-template-columns: 1fr; }
-  .tt-nav { gap: 0; }
-}
-</style>
 <div class="page" id="page-timetable">
-
-<div class="tt-hero-new">
-  <div class="tt-hero-tag">&#x1F4C5; Holiday Revision Plan</div>
-  <h1>Revision Timetable</h1>
-  <p>28 March &#x2013; 12 April 2026 &middot; 6 hours every day &middot; Hard topics &amp; Paper 2 focus</p>
-  <div class="tt-hero-stats">
-    <div class="tt-hero-stat"><div class="tt-hero-stat-val">16</div><div class="tt-hero-stat-key">Days</div></div>
-    <div class="tt-hero-stat"><div class="tt-hero-stat-val">96h</div><div class="tt-hero-stat-key">Study Time</div></div>
-    <div class="tt-hero-stat"><div class="tt-hero-stat-val">6h</div><div class="tt-hero-stat-key">Per Day</div></div>
-    <div class="tt-hero-stat"><div class="tt-hero-stat-val">9&#x2013;4</div><div class="tt-hero-stat-key">Daily Hours</div></div>
+<div class="page-hero" style="background:linear-gradient(135deg,#7c3aed 0%,#5b21b6 100%);margin-bottom:1.75rem">
+<div class="page-hero-label">📅 4-Week Plan</div>
+<h1>Revision Timetable</h1>
+<p>Weekdays 5–8 PM · Saturday 9 AM–4 PM · Sunday Practice Papers</p>
+</div>
+<div class="tt-intro">
+<strong>Weekdays:</strong> 3 hours (5:00–8:00 PM)  | 
+    <strong>Saturday:</strong> 5 hours (9:00 AM–4:00 PM, including lunch)  | 
+    <strong>Sunday:</strong> Practice papers under exam conditions
   </div>
+<div class="tt-section-tabs">
+<button class="tt-tab active" onclick="showTTPanel('week1',this)">Week 1 — Sciences &amp; English</button>
+<button class="tt-tab" onclick="showTTPanel('week2',this)">Week 2 — Humanities &amp; Languages</button>
+<button class="tt-tab" onclick="showTTPanel('week3',this)">Week 3 — Maths &amp; Mixed Review</button>
+<button class="tt-tab" onclick="showTTPanel('week4',this)">Week 4 — Exam Technique</button>
+<button class="tt-tab" onclick="showTTPanel('subjects',this)">Subject Criteria</button>
+<button class="tt-tab" onclick="showTTPanel('tips',this)">Revision Tips</button>
 </div>
-
-<div class="tt-alert">
-  <div class="tt-alert-icon">&#x26A1;</div>
-  <div>
-    <strong>Intensive mode:</strong> 9:00&#x2013;12:00 (3 sessions &times; 1hr) &middot; Lunch 12:00&#x2013;1:00 &middot; 1:00&#x2013;4:00 (3 sessions &times; 1hr).
-    Sundays = full past papers under exam conditions.
-    <strong>Paper 2</strong> content tagged <span style="background:#4f46e5;color:#fff;font-size:0.7rem;font-weight:900;padding:0.1rem 0.45rem;border-radius:4px;letter-spacing:0.06em">P2</span>
-    &middot; Harder topics tagged <span style="background:#b91c1c;color:#fff;font-size:0.7rem;font-weight:900;padding:0.1rem 0.45rem;border-radius:4px;letter-spacing:0.06em">HARD</span>
-  </div>
-</div>
-
-<div class="tt-nav">
-  <button class="tt-nav-btn active" onclick="showTTPanel('week1',this)">Wk 1 &middot; 28 Mar&#x2013;3 Apr</button>
-  <button class="tt-nav-btn" onclick="showTTPanel('week2',this)">Wk 2 &middot; 4&#x2013;10 Apr</button>
-  <button class="tt-nav-btn" onclick="showTTPanel('week3',this)">Wk 3 &middot; 11&#x2013;12 Apr</button>
-  <button class="tt-nav-btn" onclick="showTTPanel('subjects',this)">Subject Criteria</button>
-  <button class="tt-nav-btn" onclick="showTTPanel('tips',this)">Revision Tips</button>
-</div>
-
 <!-- WEEK 1 -->
 <div class="tt-panel active" id="tt-week1">
-<div class="tt-week-banner">
-  <div class="tt-week-emoji">&#x1F4D7;</div>
-  <div>
-    <div class="tt-week-title-new">Week 1 &#x2014; Sciences, Maths &amp; English</div>
-    <div class="tt-week-subtitle">28 March &#x2013; 3 April &middot; 9:00 AM &#x2013; 4:00 PM daily (6 hrs) &middot; Paper 2 emphasis</div>
-  </div>
-</div>
-<div class="tt-day-card">
-  <div class="tt-day-header"><div class="tt-day-name">Saturday</div><div class="tt-day-date-badge">28 Mar</div><div class="tt-day-hours">6 hrs</div></div>
-  <div class="tt-sessions">
-    <div class="tt-session s-math"><div class="tt-session-stripe"></div><div class="tt-session-left"><div class="tt-session-time">9:00&#x2013;10:00</div><div class="tt-session-subj">Maths</div><div class="tt-session-topic">Quadratics &#x2014; completing the square, discriminant, solving by formula</div></div><span class="tt-session-badge badge-hard">HARD</span></div>
-    <div class="tt-session s-math"><div class="tt-session-stripe"></div><div class="tt-session-left"><div class="tt-session-time">10:00&#x2013;11:00</div><div class="tt-session-subj">Maths</div><div class="tt-session-topic">Simultaneous equations (linear &amp; quadratic) + inequalities</div></div><span class="tt-session-badge badge-hard">HARD</span></div>
-    <div class="tt-session s-physics"><div class="tt-session-stripe"></div><div class="tt-session-left"><div class="tt-session-time">11:00&#x2013;12:00</div><div class="tt-session-subj">Physics</div><div class="tt-session-topic">Forces &#x2014; resultant forces, Newton&#x27;s laws, momentum &amp; impulse</div></div><span class="tt-session-badge badge-p2">P2</span></div>
-    <div class="tt-session s-break"><div class="tt-session-stripe"></div><div class="tt-session-left"><div class="tt-session-time">12:00&#x2013;1:00</div><div class="tt-session-subj">Lunch &amp; Rest</div><div class="tt-session-topic">Step away from your desk</div></div><span class="tt-session-badge badge-break">BREAK</span></div>
-    <div class="tt-session s-physics"><div class="tt-session-stripe"></div><div class="tt-session-left"><div class="tt-session-time">1:00&#x2013;2:00</div><div class="tt-session-subj">Physics</div><div class="tt-session-topic">Waves &#x2014; transverse, longitudinal, reflection, refraction &amp; EM spectrum</div></div><span class="tt-session-badge badge-p2">P2</span></div>
-    <div class="tt-session s-biology"><div class="tt-session-stripe"></div><div class="tt-session-left"><div class="tt-session-time">2:00&#x2013;3:00</div><div class="tt-session-subj">Biology</div><div class="tt-session-topic">Homeostasis &#x2014; blood glucose, insulin, glucagon, Type 1 &amp; Type 2 diabetes</div></div><span class="tt-session-badge badge-p2">P2</span></div>
-    <div class="tt-session s-biology"><div class="tt-session-stripe"></div><div class="tt-session-left"><div class="tt-session-time">3:00&#x2013;4:00</div><div class="tt-session-subj">Biology</div><div class="tt-session-topic">Hormonal coordination &#x2014; reproductive hormones, menstrual cycle, contraception</div></div><span class="tt-session-badge badge-p2">P2</span></div>
-  </div>
-</div>
-<div class="tt-papers-day">
-  <div class="tt-papers-day-label">&#x1F4DD; Sunday 29 March &#x2014; Past Papers (Exam Conditions)</div>
-  <div class="tt-papers-day-title">Full Papers Day &#x2014; no notes, no phone, timed</div>
-  <div class="tt-papers-grid-new">
-    <div class="tt-paper-card-new"><div class="tt-paper-card-new-time">9:00&#x2013;10:45</div><div class="tt-paper-card-new-name">Maths Paper 2</div><div class="tt-paper-card-new-detail">Calculator &#x2014; full past paper (1h 30m) then mark</div></div>
-    <div class="tt-paper-card-new"><div class="tt-paper-card-new-time">11:15&#x2013;1:00</div><div class="tt-paper-card-new-name">Physics Paper 2</div><div class="tt-paper-card-new-detail">Forces, waves, magnetism (1h 45m) then mark</div></div>
-    <div class="tt-paper-card-new"><div class="tt-paper-card-new-time">1:45&#x2013;3:30</div><div class="tt-paper-card-new-name">Biology Paper 2</div><div class="tt-paper-card-new-detail">Homeostasis, inheritance, ecology (1h 45m) then mark</div></div>
-  </div>
-  <div class="tt-papers-note-new">&#x23F1; Leave 30 min between papers. Mark immediately with official mark scheme &amp; log your score in the Mock Tracker.</div>
-</div>
-<div class="tt-day-card">
-  <div class="tt-day-header"><div class="tt-day-name">Monday</div><div class="tt-day-date-badge">30 Mar</div><div class="tt-day-hours">6 hrs</div></div>
-  <div class="tt-sessions">
-    <div class="tt-session s-chemistry"><div class="tt-session-stripe"></div><div class="tt-session-left"><div class="tt-session-time">9:00&#x2013;10:00</div><div class="tt-session-subj">Chemistry</div><div class="tt-session-topic">Rate of reaction &#x2014; collision theory, catalysts, concentration, temperature &amp; surface area</div></div><span class="tt-session-badge badge-p2">P2</span></div>
-    <div class="tt-session s-chemistry"><div class="tt-session-stripe"></div><div class="tt-session-left"><div class="tt-session-time">10:00&#x2013;11:00</div><div class="tt-session-subj">Chemistry</div><div class="tt-session-topic">Equilibrium (Le Chatelier) &middot; Organic Chemistry &#x2014; alkanes, alkenes, polymers</div></div><span class="tt-session-badge badge-p2">P2</span></div>
-    <div class="tt-session s-english"><div class="tt-session-stripe"></div><div class="tt-session-left"><div class="tt-session-time">11:00&#x2013;12:00</div><div class="tt-session-subj">English Language</div><div class="tt-session-topic">Paper 2 &#x2014; Compare &amp; Contrast non-fiction perspectives + writing techniques</div></div><span class="tt-session-badge badge-p2">P2</span></div>
-    <div class="tt-session s-break"><div class="tt-session-stripe"></div><div class="tt-session-left"><div class="tt-session-time">12:00&#x2013;1:00</div><div class="tt-session-subj">Lunch</div><div class="tt-session-topic"></div></div><span class="tt-session-badge badge-break">BREAK</span></div>
-    <div class="tt-session s-math"><div class="tt-session-stripe"></div><div class="tt-session-left"><div class="tt-session-time">1:00&#x2013;2:00</div><div class="tt-session-subj">Maths</div><div class="tt-session-topic">Circle theorems &#x2014; all 8 theorems with proof + circle geometry problems</div></div><span class="tt-session-badge badge-hard">HARD</span></div>
-    <div class="tt-session s-math"><div class="tt-session-stripe"></div><div class="tt-session-left"><div class="tt-session-time">2:00&#x2013;3:00</div><div class="tt-session-subj">Maths</div><div class="tt-session-topic">Vectors &#x2014; notation, addition, magnitude, column vectors, geometric proofs</div></div><span class="tt-session-badge badge-hard">HARD</span></div>
-    <div class="tt-session s-biology"><div class="tt-session-stripe"></div><div class="tt-session-left"><div class="tt-session-time">3:00&#x2013;4:00</div><div class="tt-session-subj">Biology</div><div class="tt-session-topic">Inheritance &#x2014; genotypes, phenotypes, Punnett squares, sex-linked traits</div></div><span class="tt-session-badge badge-p2">P2</span></div>
-  </div>
-</div>
-<div class="tt-day-card">
-  <div class="tt-day-header"><div class="tt-day-name">Tuesday</div><div class="tt-day-date-badge">31 Mar</div><div class="tt-day-hours">6 hrs</div></div>
-  <div class="tt-sessions">
-    <div class="tt-session s-history"><div class="tt-session-stripe"></div><div class="tt-session-left"><div class="tt-session-time">9:00&#x2013;10:00</div><div class="tt-session-subj">History</div><div class="tt-session-topic">Cold War &#x2014; Berlin Blockade, Korean War, Cuban Missile Crisis &amp; d&#x00E9;tente</div></div><span class="tt-session-badge badge-p2">P2</span></div>
-    <div class="tt-session s-history"><div class="tt-session-stripe"></div><div class="tt-session-left"><div class="tt-session-time">10:00&#x2013;11:00</div><div class="tt-session-subj">History</div><div class="tt-session-topic">Early Elizabethan England &#x2014; religious settlement, threats from Mary Queen of Scots</div></div><span class="tt-session-badge badge-p2">P2</span></div>
-    <div class="tt-session s-french"><div class="tt-session-stripe"></div><div class="tt-session-left"><div class="tt-session-time">11:00&#x2013;12:00</div><div class="tt-session-subj">French</div><div class="tt-session-topic">Paper 4 Writing &#x2014; structured questions, translation into French (harder vocab)</div></div><span class="tt-session-badge badge-hard">HARD</span></div>
-    <div class="tt-session s-break"><div class="tt-session-stripe"></div><div class="tt-session-left"><div class="tt-session-time">12:00&#x2013;1:00</div><div class="tt-session-subj">Lunch</div><div class="tt-session-topic"></div></div><span class="tt-session-badge badge-break">BREAK</span></div>
-    <div class="tt-session s-math"><div class="tt-session-stripe"></div><div class="tt-session-left"><div class="tt-session-time">1:00&#x2013;2:00</div><div class="tt-session-subj">Maths</div><div class="tt-session-topic">Algebraic proof &#x2014; show that, disprove with counter-example, structured proof</div></div><span class="tt-session-badge badge-hard">HARD</span></div>
-    <div class="tt-session s-chemistry"><div class="tt-session-stripe"></div><div class="tt-session-left"><div class="tt-session-time">2:00&#x2013;3:00</div><div class="tt-session-subj">Chemistry</div><div class="tt-session-topic">Atmosphere &amp; Earth&#x27;s Resources &#x2014; life cycle assessments, water treatment, corrosion</div></div><span class="tt-session-badge badge-p2">P2</span></div>
-    <div class="tt-session s-physics"><div class="tt-session-stripe"></div><div class="tt-session-left"><div class="tt-session-time">3:00&#x2013;4:00</div><div class="tt-session-subj">Physics</div><div class="tt-session-topic">Magnetism &amp; electromagnetism &#x2014; motors, generators, transformers</div></div><span class="tt-session-badge badge-p2">P2</span></div>
-  </div>
-</div>
-<div class="tt-day-card">
-  <div class="tt-day-header"><div class="tt-day-name">Wednesday</div><div class="tt-day-date-badge">1 Apr</div><div class="tt-day-hours">6 hrs</div></div>
-  <div class="tt-sessions">
-    <div class="tt-session s-english"><div class="tt-session-stripe"></div><div class="tt-session-left"><div class="tt-session-time">9:00&#x2013;10:00</div><div class="tt-session-subj">English Literature</div><div class="tt-session-topic">An Inspector Calls &#x2014; responsibility, capitalism vs socialism, time structure, gender</div></div><span class="tt-session-badge badge-p2">P2</span></div>
-    <div class="tt-session s-english"><div class="tt-session-stripe"></div><div class="tt-session-left"><div class="tt-session-time">10:00&#x2013;11:00</div><div class="tt-session-subj">English Literature</div><div class="tt-session-topic">Worlds &amp; Lives Poetry &#x2014; unseen poem techniques, compare with named poem</div></div><span class="tt-session-badge badge-p2">P2</span></div>
-    <div class="tt-session s-geography"><div class="tt-session-stripe"></div><div class="tt-session-left"><div class="tt-session-time">11:00&#x2013;12:00</div><div class="tt-session-subj">Geography</div><div class="tt-session-topic">Urban Issues &#x2014; Rio de Janeiro &amp; UK urban case studies, urban change challenges</div></div><span class="tt-session-badge badge-p2">P2</span></div>
-    <div class="tt-session s-break"><div class="tt-session-stripe"></div><div class="tt-session-left"><div class="tt-session-time">12:00&#x2013;1:00</div><div class="tt-session-subj">Lunch</div><div class="tt-session-topic"></div></div><span class="tt-session-badge badge-break">BREAK</span></div>
-    <div class="tt-session s-geography"><div class="tt-session-stripe"></div><div class="tt-session-left"><div class="tt-session-time">1:00&#x2013;2:00</div><div class="tt-session-subj">Geography</div><div class="tt-session-topic">Economic World &#x2014; Zambia &amp; UK development, tourism, trade, aid</div></div><span class="tt-session-badge badge-p2">P2</span></div>
-    <div class="tt-session s-history"><div class="tt-session-stripe"></div><div class="tt-session-left"><div class="tt-session-time">2:00&#x2013;3:00</div><div class="tt-session-subj">History</div><div class="tt-session-topic">Source utility questions &#x2014; CCAP, provenance, nature, origin, purpose</div></div><span class="tt-session-badge badge-hard">HARD</span></div>
-    <div class="tt-session s-drama"><div class="tt-session-stripe"></div><div class="tt-session-left"><div class="tt-session-time">3:00&#x2013;4:00</div><div class="tt-session-subj">Drama</div><div class="tt-session-topic">Component 3 &#x2014; Live theatre analysis &amp; evaluative writing technique</div></div><span class="tt-session-badge badge-hard">HARD</span></div>
-  </div>
-</div>
-<div class="tt-day-card">
-  <div class="tt-day-header"><div class="tt-day-name">Thursday</div><div class="tt-day-date-badge">2 Apr</div><div class="tt-day-hours">6 hrs</div></div>
-  <div class="tt-sessions">
-    <div class="tt-session s-math"><div class="tt-session-stripe"></div><div class="tt-session-left"><div class="tt-session-time">9:00&#x2013;10:00</div><div class="tt-session-subj">Maths</div><div class="tt-session-topic">Advanced trigonometry &#x2014; sine rule, cosine rule, area of non-right triangles</div></div><span class="tt-session-badge badge-hard">HARD</span></div>
-    <div class="tt-session s-math"><div class="tt-session-stripe"></div><div class="tt-session-left"><div class="tt-session-time">10:00&#x2013;11:00</div><div class="tt-session-subj">Maths</div><div class="tt-session-topic">Functions &amp; transformations &#x2014; composite functions, inverse, graph transforms</div></div><span class="tt-session-badge badge-hard">HARD</span></div>
-    <div class="tt-session s-french"><div class="tt-session-stripe"></div><div class="tt-session-left"><div class="tt-session-time">11:00&#x2013;12:00</div><div class="tt-session-subj">French</div><div class="tt-session-topic">Paper 2 Reading &#x2014; translation English&#x2192;French, vocabulary &amp; grammar gaps</div></div><span class="tt-session-badge badge-hard">HARD</span></div>
-    <div class="tt-session s-break"><div class="tt-session-stripe"></div><div class="tt-session-left"><div class="tt-session-time">12:00&#x2013;1:00</div><div class="tt-session-subj">Lunch</div><div class="tt-session-topic"></div></div><span class="tt-session-badge badge-break">BREAK</span></div>
-    <div class="tt-session s-biology"><div class="tt-session-stripe"></div><div class="tt-session-left"><div class="tt-session-time">1:00&#x2013;2:00</div><div class="tt-session-subj">Biology</div><div class="tt-session-topic">Evolution &#x2014; natural selection, speciation, genetic variation, fossil evidence</div></div><span class="tt-session-badge badge-p2">P2</span></div>
-    <div class="tt-session s-biology"><div class="tt-session-stripe"></div><div class="tt-session-left"><div class="tt-session-time">2:00&#x2013;3:00</div><div class="tt-session-subj">Biology</div><div class="tt-session-topic">Ecology &#x2014; food webs, sampling, biodiversity, human impact &amp; conservation</div></div><span class="tt-session-badge badge-p2">P2</span></div>
-    <div class="tt-session s-chemistry"><div class="tt-session-stripe"></div><div class="tt-session-left"><div class="tt-session-time">3:00&#x2013;4:00</div><div class="tt-session-subj">Chemistry</div><div class="tt-session-topic">Chemical analysis &#x2014; purity, paper chromatography, gas tests, flame tests</div></div><span class="tt-session-badge badge-p2">P2</span></div>
-  </div>
-</div>
-<div class="tt-day-card">
-  <div class="tt-day-header"><div class="tt-day-name">Friday</div><div class="tt-day-date-badge">3 Apr</div><div class="tt-day-hours">6 hrs</div></div>
-  <div class="tt-sessions">
-    <div class="tt-session s-english"><div class="tt-session-stripe"></div><div class="tt-session-left"><div class="tt-session-time">9:00&#x2013;10:00</div><div class="tt-session-subj">English Language</div><div class="tt-session-topic">Paper 2 &#x2014; Non-fiction writing: articles, letters, speeches with persuasive devices</div></div><span class="tt-session-badge badge-p2">P2</span></div>
-    <div class="tt-session s-history"><div class="tt-session-stripe"></div><div class="tt-session-left"><div class="tt-session-time">10:00&#x2013;11:00</div><div class="tt-session-subj">History</div><div class="tt-session-topic">The USA 1954&#x2013;75 &#x2014; Civil Rights (Montgomery, MLK, Malcolm X, legislation)</div></div><span class="tt-session-badge badge-hard">HARD</span></div>
-    <div class="tt-session s-history"><div class="tt-session-stripe"></div><div class="tt-session-left"><div class="tt-session-time">11:00&#x2013;12:00</div><div class="tt-session-subj">History</div><div class="tt-session-topic">Vietnam War &#x2014; escalation, guerrilla tactics, media, protests &amp; withdrawal</div></div><span class="tt-session-badge badge-hard">HARD</span></div>
-    <div class="tt-session s-break"><div class="tt-session-stripe"></div><div class="tt-session-left"><div class="tt-session-time">12:00&#x2013;1:00</div><div class="tt-session-subj">Lunch</div><div class="tt-session-topic"></div></div><span class="tt-session-badge badge-break">BREAK</span></div>
-    <div class="tt-session s-physics"><div class="tt-session-stripe"></div><div class="tt-session-left"><div class="tt-session-time">1:00&#x2013;2:00</div><div class="tt-session-subj">Physics</div><div class="tt-session-topic">Space (Separate only) &#x2014; life cycle of stars, big bang, red-shift, orbital motion</div></div><span class="tt-session-badge badge-p2">P2</span></div>
-    <div class="tt-session s-geography"><div class="tt-session-stripe"></div><div class="tt-session-left"><div class="tt-session-time">2:00&#x2013;3:00</div><div class="tt-session-subj">Geography</div><div class="tt-session-topic">Resource Management &#x2014; water, food &amp; energy security, global demand</div></div><span class="tt-session-badge badge-p2">P2</span></div>
-    <div class="tt-session s-drama"><div class="tt-session-stripe"></div><div class="tt-session-left"><div class="tt-session-time">3:00&#x2013;4:00</div><div class="tt-session-subj">Drama</div><div class="tt-session-topic">Set text &#x2014; design concepts, performance approaches, written analysis practice</div></div><span class="tt-session-badge badge-hard">HARD</span></div>
-  </div>
-</div>
-<div class="tt-checklist-new">
-  <div class="tt-checklist-hdr">&#x2705; Week 1 Checklist</div>
-  <div class="tt-check-grid-new">
-    <label class="tt-check-item-new"><input type="checkbox"/> Maths: Quadratics &#x2014; formula, completing square, discriminant</label>
-    <label class="tt-check-item-new"><input type="checkbox"/> Maths: Circle theorems (all 8) &#x2014; can state and apply each</label>
-    <label class="tt-check-item-new"><input type="checkbox"/> Maths: Vectors &#x2014; addition, magnitude, geometric proof</label>
-    <label class="tt-check-item-new"><input type="checkbox"/> Maths: Algebraic proof structured correctly</label>
-    <label class="tt-check-item-new"><input type="checkbox"/> Maths: Advanced trig &#x2014; sine &amp; cosine rule, area formula</label>
-    <label class="tt-check-item-new"><input type="checkbox"/> Physics P2: Forces, waves, magnetism, space revised</label>
-    <label class="tt-check-item-new"><input type="checkbox"/> Biology P2: Homeostasis, hormones, inheritance, evolution, ecology</label>
-    <label class="tt-check-item-new"><input type="checkbox"/> Chemistry P2: Rate/equilibrium, organic chem, analysis, atmosphere</label>
-    <label class="tt-check-item-new"><input type="checkbox"/> History P2: Cold War events + Elizabethan England key facts</label>
-    <label class="tt-check-item-new"><input type="checkbox"/> History: Source utility CCAP method practised</label>
-    <label class="tt-check-item-new"><input type="checkbox"/> English Lit P2: Inspector Calls + poetry technique confident</label>
-    <label class="tt-check-item-new"><input type="checkbox"/> English Lang P2: Compare perspectives + non-fiction writing</label>
-    <label class="tt-check-item-new"><input type="checkbox"/> French P4: Writing translation + structured questions</label>
-    <label class="tt-check-item-new"><input type="checkbox"/> Geography P2: Urban issues + economic world case studies</label>
-    <label class="tt-check-item-new"><input type="checkbox"/> Drama: Live theatre evaluative writing technique practised</label>
-    <label class="tt-check-item-new"><input type="checkbox"/> Sunday: Maths Paper 2 past paper completed &amp; marked</label>
-    <label class="tt-check-item-new"><input type="checkbox"/> Sunday: Physics Paper 2 past paper completed &amp; marked</label>
-    <label class="tt-check-item-new"><input type="checkbox"/> Sunday: Biology Paper 2 past paper completed &amp; marked</label>
-  </div>
+<div class="tt-week">
+<div class="tt-week-title">📗 Week 1 <span style="font-size:0.8rem;font-weight:400;color:var(--muted)">Sciences &amp; English Focus</span></div>
+<div class="tt-week-sub">Weekday sessions · Mon–Fri · 5:00–8:00 PM</div>
+<div class="tt-day-group">
+<div class="tt-day-label">Monday</div>
+<div class="tt-row">
+<div class="tt-slot english"><div class="tt-time">5:00–6:00 PM</div><div class="tt-subject">English Language</div><div class="tt-topic">Paper 1 – Reading skills</div></div>
+<div class="tt-slot science"><div class="tt-time">6:00–7:00 PM</div><div class="tt-subject">Biology</div><div class="tt-topic">Cell Biology &amp; Organisation</div></div>
+<div class="tt-slot science"><div class="tt-time">7:00–8:00 PM</div><div class="tt-subject">Chemistry</div><div class="tt-topic">Atomic Structure &amp; Bonding</div></div>
 </div>
 </div>
-
+<div class="tt-day-group">
+<div class="tt-day-label">Tuesday</div>
+<div class="tt-row">
+<div class="tt-slot math"><div class="tt-time">5:00–6:00 PM</div><div class="tt-subject">Maths</div><div class="tt-topic">Number &amp; Algebra</div></div>
+<div class="tt-slot english"><div class="tt-time">6:00–7:00 PM</div><div class="tt-subject">English Literature</div><div class="tt-topic">Macbeth – themes, characters &amp; key quotes</div></div>
+<div class="tt-slot science"><div class="tt-time">7:00–8:00 PM</div><div class="tt-subject">Physics</div><div class="tt-topic">Energy &amp; Electricity</div></div>
+</div>
+</div>
+<div class="tt-day-group">
+<div class="tt-day-label">Wednesday</div>
+<div class="tt-row">
+<div class="tt-slot science"><div class="tt-time">5:00–6:00 PM</div><div class="tt-subject">Biology</div><div class="tt-topic">Infection, Response &amp; Bioenergetics</div></div>
+<div class="tt-slot lang"><div class="tt-time">6:00–7:00 PM</div><div class="tt-subject">French</div><div class="tt-topic">Vocabulary – Identity &amp; Culture</div></div>
+<div class="tt-slot science"><div class="tt-time">7:00–8:00 PM</div><div class="tt-subject">Chemistry</div><div class="tt-topic">Quantitative Chemistry &amp; Extraction</div></div>
+</div>
+</div>
+<div class="tt-day-group">
+<div class="tt-day-label">Thursday</div>
+<div class="tt-row">
+<div class="tt-slot english"><div class="tt-time">5:00–6:00 PM</div><div class="tt-subject">English Language</div><div class="tt-topic">Paper 2 – Reading &amp; Writing</div></div>
+<div class="tt-slot science"><div class="tt-time">6:00–7:00 PM</div><div class="tt-subject">Physics</div><div class="tt-topic">Particle Model &amp; Atomic Structure</div></div>
+<div class="tt-slot humanities"><div class="tt-time">7:00–8:00 PM</div><div class="tt-subject">History</div><div class="tt-topic">Medicine in Britain – Medieval &amp; Renaissance</div></div>
+</div>
+</div>
+<div class="tt-day-group">
+<div class="tt-day-label">Friday</div>
+<div class="tt-row">
+<div class="tt-slot math"><div class="tt-time">5:00–6:00 PM</div><div class="tt-subject">Maths</div><div class="tt-topic">Graphs &amp; Functions</div></div>
+<div class="tt-slot english"><div class="tt-time">6:00–7:00 PM</div><div class="tt-subject">English Literature</div><div class="tt-topic">A Christmas Carol – themes &amp; key quotes</div></div>
+<div class="tt-slot drama"><div class="tt-time">7:00–8:00 PM</div><div class="tt-subject">Drama</div><div class="tt-topic">Devising Drama – Component 1 planning</div></div>
+</div>
+</div>
+<div class="tt-week-sub" style="margin-top:1.25rem">Saturday session · 9:00 AM–4:00 PM</div>
+<div class="tt-row">
+<div class="tt-slot science"><div class="tt-time">9:00–10:30 AM</div><div class="tt-subject">Biology</div><div class="tt-topic">Homeostasis &amp; Hormones</div></div>
+<div class="tt-slot science"><div class="tt-time">10:30–12:00 PM</div><div class="tt-subject">Chemistry</div><div class="tt-topic">Chemical Changes &amp; Energy Changes</div></div>
+<div class="tt-slot break-slot"><div class="tt-time">12:00–1:00 PM</div><div class="tt-subject">LUNCH BREAK</div><div class="tt-topic"></div></div>
+<div class="tt-slot english"><div class="tt-time">1:00–2:30 PM</div><div class="tt-subject">English Language</div><div class="tt-topic">Creative Writing practice</div></div>
+<div class="tt-slot science"><div class="tt-time">2:30–4:00 PM</div><div class="tt-subject">Physics</div><div class="tt-topic">Forces &amp; Motion</div></div>
+</div>
+<div class="tt-week-sub" style="margin-top:1.25rem">Sunday · Practice Papers (exam conditions)</div>
+<div class="tt-sunday">
+<div class="tt-sunday-title">📝 Practice Papers Day</div>
+<div class="tt-papers">
+<div class="tt-paper"><div class="tt-paper-time">9:00–10:30 AM</div><div class="tt-paper-name">Maths Paper</div><div class="tt-paper-detail">Non-Calculator Past Paper (timed 1h30)</div></div>
+<div class="tt-paper"><div class="tt-paper-time">11:00 AM–12:30 PM</div><div class="tt-paper-name">English Language Paper</div><div class="tt-paper-detail">Paper 1 Past Paper (timed 1h45)</div></div>
+<div class="tt-paper"><div class="tt-paper-time">2:00–3:30 PM</div><div class="tt-paper-name">Biology Paper</div><div class="tt-paper-detail">Paper 1 Past Paper (timed 1h45)</div></div>
+<div class="tt-paper"><div class="tt-paper-time">4:00–5:30 PM</div><div class="tt-paper-name">Chemistry Paper</div><div class="tt-paper-detail">Paper 1 Past Paper (timed 1h45)</div></div>
+</div>
+<div class="tt-note">Leave a 30-min gap between papers for a break. Mark each paper with the official mark scheme immediately after.</div>
+</div>
+<div class="tt-checklist">
+<div class="tt-checklist-title">✅ Week 1 Checklist</div>
+<div class="tt-check-grid">
+<label class="tt-check-item"><input type="checkbox"/> English Language: Paper 1 reading techniques revised</label>
+<label class="tt-check-item"><input type="checkbox"/> Physics: Particle model &amp; atomic structure revised</label>
+<label class="tt-check-item"><input type="checkbox"/> English Language: Paper 2 reading + non-fiction writing</label>
+<label class="tt-check-item"><input type="checkbox"/> Physics: Forces &amp; motion revised</label>
+<label class="tt-check-item"><input type="checkbox"/> English Language: Creative writing practice completed</label>
+<label class="tt-check-item"><input type="checkbox"/> Maths: Number &amp; algebra topics covered</label>
+<label class="tt-check-item"><input type="checkbox"/> English Literature: Macbeth – themes, characters &amp; quotations revised</label>
+<label class="tt-check-item"><input type="checkbox"/> Maths: Graphs &amp; functions covered</label>
+<label class="tt-check-item"><input type="checkbox"/> English Literature: A Christmas Carol – themes &amp; quotations revised</label>
+<label class="tt-check-item"><input type="checkbox"/> History: Medicine in Britain – Medieval &amp; Renaissance revised</label>
+<label class="tt-check-item"><input type="checkbox"/> Biology: Cell biology &amp; organisation revised</label>
+<label class="tt-check-item"><input type="checkbox"/> French: Identity &amp; Culture vocabulary reviewed</label>
+<label class="tt-check-item"><input type="checkbox"/> Biology: Infection, response &amp; bioenergetics revised</label>
+<label class="tt-check-item"><input type="checkbox"/> Drama: Component 1 devising plan started</label>
+<label class="tt-check-item"><input type="checkbox"/> Biology: Homeostasis &amp; hormones revised</label>
+<label class="tt-check-item"><input type="checkbox"/> Sunday: Maths non-calculator past paper completed &amp; marked</label>
+<label class="tt-check-item"><input type="checkbox"/> Chemistry: Atomic structure &amp; bonding revised</label>
+<label class="tt-check-item"><input type="checkbox"/> Sunday: English Language Paper 1 past paper completed &amp; marked</label>
+<label class="tt-check-item"><input type="checkbox"/> Chemistry: Quantitative chemistry &amp; extraction revised</label>
+<label class="tt-check-item"><input type="checkbox"/> Sunday: Biology Paper 1 past paper completed &amp; marked</label>
+<label class="tt-check-item"><input type="checkbox"/> Chemistry: Chemical changes &amp; energy changes revised</label>
+<label class="tt-check-item"><input type="checkbox"/> Sunday: Chemistry Paper 1 past paper completed &amp; marked</label>
+<label class="tt-check-item"><input type="checkbox"/> Physics: Energy &amp; electricity revised</label>
+</div>
+</div>
+</div>
+</div>
 <!-- WEEK 2 -->
 <div class="tt-panel" id="tt-week2">
-<div class="tt-week-banner">
-  <div class="tt-week-emoji">&#x1F4D8;</div>
-  <div>
-    <div class="tt-week-title-new">Week 2 &#x2014; Mixed Revision &amp; Paper 2 Consolidation</div>
-    <div class="tt-week-subtitle">4&#x2013;10 April &middot; 9:00 AM &#x2013; 4:00 PM daily (6 hrs) &middot; Filling gaps &amp; timed practice</div>
-  </div>
-</div>
-<div class="tt-day-card">
-  <div class="tt-day-header"><div class="tt-day-name">Saturday</div><div class="tt-day-date-badge">4 Apr</div><div class="tt-day-hours">6 hrs</div></div>
-  <div class="tt-sessions">
-    <div class="tt-session s-math"><div class="tt-session-stripe"></div><div class="tt-session-left"><div class="tt-session-time">9:00&#x2013;10:00</div><div class="tt-session-subj">Maths</div><div class="tt-session-topic">Iterative methods &amp; numerical solutions &#x2014; trial &amp; improvement, change of sign</div></div><span class="tt-session-badge badge-hard">HARD</span></div>
-    <div class="tt-session s-math"><div class="tt-session-stripe"></div><div class="tt-session-left"><div class="tt-session-time">10:00&#x2013;11:00</div><div class="tt-session-subj">Maths</div><div class="tt-session-topic">Probability &#x2014; tree diagrams, conditional probability, AND/OR rules (higher)</div></div><span class="tt-session-badge badge-hard">HARD</span></div>
-    <div class="tt-session s-english"><div class="tt-session-stripe"></div><div class="tt-session-left"><div class="tt-session-time">11:00&#x2013;12:00</div><div class="tt-session-subj">English Literature</div><div class="tt-session-topic">Timed essay practice &#x2014; An Inspector Calls question under exam conditions</div></div><span class="tt-session-badge badge-paper">TIMED</span></div>
-    <div class="tt-session s-break"><div class="tt-session-stripe"></div><div class="tt-session-left"><div class="tt-session-time">12:00&#x2013;1:00</div><div class="tt-session-subj">Lunch</div><div class="tt-session-topic"></div></div><span class="tt-session-badge badge-break">BREAK</span></div>
-    <div class="tt-session s-history"><div class="tt-session-stripe"></div><div class="tt-session-left"><div class="tt-session-time">1:00&#x2013;2:00</div><div class="tt-session-subj">History</div><div class="tt-session-topic">Western Front &#x2014; conditions in trenches, RAMC, surgical advances &amp; source analysis</div></div><span class="tt-session-badge badge-hard">HARD</span></div>
-    <div class="tt-session s-geography"><div class="tt-session-stripe"></div><div class="tt-session-left"><div class="tt-session-time">2:00&#x2013;3:00</div><div class="tt-session-subj">Geography</div><div class="tt-session-topic">Paper 3 &#x2014; Issue evaluation technique, pre-release booklet skills, 9-mark answers</div></div><span class="tt-session-badge badge-hard">HARD</span></div>
-    <div class="tt-session s-french"><div class="tt-session-stripe"></div><div class="tt-session-left"><div class="tt-session-time">3:00&#x2013;4:00</div><div class="tt-session-subj">French</div><div class="tt-session-topic">General conversation &#x2014; longer answers, opinions, past/future tenses, subjunctive</div></div><span class="tt-session-badge badge-hard">HARD</span></div>
-  </div>
-</div>
-<div class="tt-papers-day">
-  <div class="tt-papers-day-label">&#x1F4DD; Sunday 5 April &#x2014; Past Papers (Exam Conditions)</div>
-  <div class="tt-papers-day-title">Full Papers Day &#x2014; no notes, no phone, timed</div>
-  <div class="tt-papers-grid-new">
-    <div class="tt-paper-card-new"><div class="tt-paper-card-new-time">9:00&#x2013;11:15</div><div class="tt-paper-card-new-name">English Literature Paper 2</div><div class="tt-paper-card-new-detail">Inspector Calls, Poetry &amp; Unseen (2h 15m) then mark</div></div>
-    <div class="tt-paper-card-new"><div class="tt-paper-card-new-time">11:45&#x2013;1:05</div><div class="tt-paper-card-new-name">History Paper 2</div><div class="tt-paper-card-new-detail">Cold War + Early Elizabethan England (1h 45m) then mark</div></div>
-    <div class="tt-paper-card-new"><div class="tt-paper-card-new-time">2:00&#x2013;3:30</div><div class="tt-paper-card-new-name">Chemistry Paper 2</div><div class="tt-paper-card-new-detail">Rate/equilibrium, organic, atmosphere (1h 45m) then mark</div></div>
-  </div>
-  <div class="tt-papers-note-new">&#x23F1; Leave 30 min between papers. Mark immediately with official mark scheme &amp; log your score in the Mock Tracker.</div>
-</div>
-<div class="tt-day-card">
-  <div class="tt-day-header"><div class="tt-day-name">Monday</div><div class="tt-day-date-badge">6 Apr</div><div class="tt-day-hours">6 hrs</div></div>
-  <div class="tt-sessions">
-    <div class="tt-session s-math"><div class="tt-session-stripe"></div><div class="tt-session-left"><div class="tt-session-time">9:00&#x2013;10:00</div><div class="tt-session-subj">Maths</div><div class="tt-session-topic">Graphs of functions &#x2014; exponentials, reciprocals, drawing &amp; interpreting</div></div><span class="tt-session-badge badge-hard">HARD</span></div>
-    <div class="tt-session s-biology"><div class="tt-session-stripe"></div><div class="tt-session-left"><div class="tt-session-time">10:00&#x2013;11:00</div><div class="tt-session-subj">Biology</div><div class="tt-session-topic">6-mark extended answer technique &#x2014; command words, structure, scientific detail</div></div><span class="tt-session-badge badge-hard">HARD</span></div>
-    <div class="tt-session s-chemistry"><div class="tt-session-stripe"></div><div class="tt-session-left"><div class="tt-session-time">11:00&#x2013;12:00</div><div class="tt-session-subj">Chemistry</div><div class="tt-session-topic">Moles calculations &#x2014; yield, atom economy, titration calculations, empirical formula</div></div><span class="tt-session-badge badge-hard">HARD</span></div>
-    <div class="tt-session s-break"><div class="tt-session-stripe"></div><div class="tt-session-left"><div class="tt-session-time">12:00&#x2013;1:00</div><div class="tt-session-subj">Lunch</div><div class="tt-session-topic"></div></div><span class="tt-session-badge badge-break">BREAK</span></div>
-    <div class="tt-session s-history"><div class="tt-session-stripe"></div><div class="tt-session-left"><div class="tt-session-time">1:00&#x2013;2:00</div><div class="tt-session-subj">History</div><div class="tt-session-topic">12-mark narrative account &#x2014; structure: consequence, causation, chronology</div></div><span class="tt-session-badge badge-hard">HARD</span></div>
-    <div class="tt-session s-english"><div class="tt-session-stripe"></div><div class="tt-session-left"><div class="tt-session-time">2:00&#x2013;3:00</div><div class="tt-session-subj">English Language</div><div class="tt-session-topic">Structural analysis &#x2014; Paper 1 Q3, whole-text perspective, form &amp; structure effects</div></div><span class="tt-session-badge badge-hard">HARD</span></div>
-    <div class="tt-session s-physics"><div class="tt-session-stripe"></div><div class="tt-session-left"><div class="tt-session-time">3:00&#x2013;4:00</div><div class="tt-session-subj">Physics</div><div class="tt-session-topic">Equation application &#x2014; all required equations, multi-step calculations past Qs</div></div><span class="tt-session-badge badge-hard">HARD</span></div>
-  </div>
-</div>
-<div class="tt-day-card">
-  <div class="tt-day-header"><div class="tt-day-name">Tuesday</div><div class="tt-day-date-badge">7 Apr</div><div class="tt-day-hours">6 hrs</div></div>
-  <div class="tt-sessions">
-    <div class="tt-session s-french"><div class="tt-session-stripe"></div><div class="tt-session-left"><div class="tt-session-time">9:00&#x2013;10:00</div><div class="tt-session-subj">French</div><div class="tt-session-topic">Paper 1 Listening &#x2014; timed practice paper, identifying detail in longer extracts</div></div><span class="tt-session-badge badge-paper">TIMED</span></div>
-    <div class="tt-session s-geography"><div class="tt-session-stripe"></div><div class="tt-session-left"><div class="tt-session-time">10:00&#x2013;11:00</div><div class="tt-session-subj">Geography</div><div class="tt-session-topic">Map skills &#x2014; 6-fig grid refs, contour lines, cross-sections, OS maps</div></div><span class="tt-session-badge badge-hard">HARD</span></div>
-    <div class="tt-session s-math"><div class="tt-session-stripe"></div><div class="tt-session-left"><div class="tt-session-time">11:00&#x2013;12:00</div><div class="tt-session-subj">Maths</div><div class="tt-session-topic">Ratio, proportion &amp; rates of change &#x2014; harder compound measure problems</div></div><span class="tt-session-badge badge-hard">HARD</span></div>
-    <div class="tt-session s-break"><div class="tt-session-stripe"></div><div class="tt-session-left"><div class="tt-session-time">12:00&#x2013;1:00</div><div class="tt-session-subj">Lunch</div><div class="tt-session-topic"></div></div><span class="tt-session-badge badge-break">BREAK</span></div>
-    <div class="tt-session s-english"><div class="tt-session-stripe"></div><div class="tt-session-left"><div class="tt-session-time">1:00&#x2013;2:00</div><div class="tt-session-subj">English Literature</div><div class="tt-session-topic">Quotation memorisation &#x2014; 5 key quotes per text, all four texts (timed recall)</div></div><span class="tt-session-badge badge-hard">HARD</span></div>
-    <div class="tt-session s-drama"><div class="tt-session-stripe"></div><div class="tt-session-left"><div class="tt-session-time">2:00&#x2013;3:00</div><div class="tt-session-subj">Drama</div><div class="tt-session-topic">Theatre terminology &#x2014; staging types, proxemics, Brecht vs Stanislavski contrast</div></div><span class="tt-session-badge badge-hard">HARD</span></div>
-    <div class="tt-session s-biology"><div class="tt-session-stripe"></div><div class="tt-session-left"><div class="tt-session-time">3:00&#x2013;4:00</div><div class="tt-session-subj">Biology</div><div class="tt-session-topic">Required practicals &#x2014; osmosis, enzyme action, photosynthesis, respiration rates</div></div><span class="tt-session-badge badge-hard">HARD</span></div>
-  </div>
-</div>
-<div class="tt-day-card">
-  <div class="tt-day-header"><div class="tt-day-name">Wednesday</div><div class="tt-day-date-badge">8 Apr</div><div class="tt-day-hours">6 hrs</div></div>
-  <div class="tt-sessions">
-    <div class="tt-session s-history"><div class="tt-session-stripe"></div><div class="tt-session-left"><div class="tt-session-time">9:00&#x2013;10:00</div><div class="tt-session-subj">History</div><div class="tt-session-topic">History Paper 3 (USA) &#x2014; timed practice: 8-mark American Dream question</div></div><span class="tt-session-badge badge-paper">TIMED</span></div>
-    <div class="tt-session s-chemistry"><div class="tt-session-stripe"></div><div class="tt-session-left"><div class="tt-session-time">10:00&#x2013;11:00</div><div class="tt-session-subj">Chemistry</div><div class="tt-session-topic">Required practicals &#x2014; electrolysis, chromatography, titrations (method &amp; results)</div></div><span class="tt-session-badge badge-hard">HARD</span></div>
-    <div class="tt-session s-physics"><div class="tt-session-stripe"></div><div class="tt-session-left"><div class="tt-session-time">11:00&#x2013;12:00</div><div class="tt-session-subj">Physics</div><div class="tt-session-topic">Required practicals &#x2014; specific heat capacity, resistance, refraction, acceleration</div></div><span class="tt-session-badge badge-hard">HARD</span></div>
-    <div class="tt-session s-break"><div class="tt-session-stripe"></div><div class="tt-session-left"><div class="tt-session-time">12:00&#x2013;1:00</div><div class="tt-session-subj">Lunch</div><div class="tt-session-topic"></div></div><span class="tt-session-badge badge-break">BREAK</span></div>
-    <div class="tt-session s-math"><div class="tt-session-stripe"></div><div class="tt-session-left"><div class="tt-session-time">1:00&#x2013;2:00</div><div class="tt-session-subj">Maths</div><div class="tt-session-topic">Geometry &#x2014; advanced angle problems, bearings, loci &amp; construction</div></div><span class="tt-session-badge badge-hard">HARD</span></div>
-    <div class="tt-session s-french"><div class="tt-session-stripe"></div><div class="tt-session-left"><div class="tt-session-time">2:00&#x2013;3:00</div><div class="tt-session-subj">French</div><div class="tt-session-topic">Speaking &#x2014; role play scripts &amp; photo card responses, timing practice</div></div><span class="tt-session-badge badge-paper">TIMED</span></div>
-    <div class="tt-session s-geography"><div class="tt-session-stripe"></div><div class="tt-session-left"><div class="tt-session-time">3:00&#x2013;4:00</div><div class="tt-session-subj">Geography</div><div class="tt-session-topic">Fieldwork &#x2014; methodology, data collection methods, presentation &amp; analysis</div></div><span class="tt-session-badge badge-hard">HARD</span></div>
-  </div>
-</div>
-<div class="tt-day-card">
-  <div class="tt-day-header"><div class="tt-day-name">Thursday</div><div class="tt-day-date-badge">9 Apr</div><div class="tt-day-hours">6 hrs</div></div>
-  <div class="tt-sessions">
-    <div class="tt-session s-english"><div class="tt-session-stripe"></div><div class="tt-session-left"><div class="tt-session-time">9:00&#x2013;10:00</div><div class="tt-session-subj">English Language</div><div class="tt-session-topic">Paper 2 timed practice &#x2014; Q2 summary + Q3 language analysis (45 mins)</div></div><span class="tt-session-badge badge-paper">TIMED</span></div>
-    <div class="tt-session s-math"><div class="tt-session-stripe"></div><div class="tt-session-left"><div class="tt-session-time">10:00&#x2013;11:00</div><div class="tt-session-subj">Maths</div><div class="tt-session-topic">Statistics &#x2014; cumulative frequency, box plots, histograms, interpreting data</div></div><span class="tt-session-badge badge-hard">HARD</span></div>
-    <div class="tt-session s-biology"><div class="tt-session-stripe"></div><div class="tt-session-left"><div class="tt-session-time">11:00&#x2013;12:00</div><div class="tt-session-subj">Biology</div><div class="tt-session-topic">Nervous system &amp; brain &#x2014; neurones, reflex arc, synapses, brain structure</div></div><span class="tt-session-badge badge-p2">P2</span></div>
-    <div class="tt-session s-break"><div class="tt-session-stripe"></div><div class="tt-session-left"><div class="tt-session-time">12:00&#x2013;1:00</div><div class="tt-session-subj">Lunch</div><div class="tt-session-topic"></div></div><span class="tt-session-badge badge-break">BREAK</span></div>
-    <div class="tt-session s-history"><div class="tt-session-stripe"></div><div class="tt-session-left"><div class="tt-session-time">1:00&#x2013;2:00</div><div class="tt-session-subj">History</div><div class="tt-session-topic">Extended essay practice (P2) &#x2014; 20-mark question structure, intro, argument, counter</div></div><span class="tt-session-badge badge-hard">HARD</span></div>
-    <div class="tt-session s-drama"><div class="tt-session-stripe"></div><div class="tt-session-left"><div class="tt-session-time">2:00&#x2013;3:00</div><div class="tt-session-subj">Drama</div><div class="tt-session-topic">Set text response &#x2014; timed written interpretation question (30 mins)</div></div><span class="tt-session-badge badge-paper">TIMED</span></div>
-    <div class="tt-session s-chemistry"><div class="tt-session-stripe"></div><div class="tt-session-left"><div class="tt-session-time">3:00&#x2013;4:00</div><div class="tt-session-subj">Chemistry</div><div class="tt-session-topic">Weak area blitz &#x2014; use RAG tracker to find gaps, focus on red topics</div></div><span class="tt-session-badge badge-hard">HARD</span></div>
-  </div>
-</div>
-<div class="tt-day-card">
-  <div class="tt-day-header"><div class="tt-day-name">Friday</div><div class="tt-day-date-badge">10 Apr</div><div class="tt-day-hours">6 hrs</div></div>
-  <div class="tt-sessions">
-    <div class="tt-session s-math"><div class="tt-session-stripe"></div><div class="tt-session-left"><div class="tt-session-time">9:00&#x2013;10:30</div><div class="tt-session-subj">Maths</div><div class="tt-session-topic">Maths Paper 3 &#x2014; full past paper calculator (1h 30m timed)</div></div><span class="tt-session-badge badge-paper">TIMED</span></div>
-    <div class="tt-session s-physics"><div class="tt-session-stripe"></div><div class="tt-session-left"><div class="tt-session-time">11:00&#x2013;12:00</div><div class="tt-session-subj">Physics</div><div class="tt-session-topic">Weak area blitz &#x2014; RAG tracker focus, red physics topics + required equations</div></div><span class="tt-session-badge badge-hard">HARD</span></div>
-    <div class="tt-session s-break"><div class="tt-session-stripe"></div><div class="tt-session-left"><div class="tt-session-time">12:00&#x2013;1:00</div><div class="tt-session-subj">Lunch</div><div class="tt-session-topic"></div></div><span class="tt-session-badge badge-break">BREAK</span></div>
-    <div class="tt-session s-english"><div class="tt-session-stripe"></div><div class="tt-session-left"><div class="tt-session-time">1:00&#x2013;2:00</div><div class="tt-session-subj">English Literature</div><div class="tt-session-topic">Macbeth &#x2014; timed 45-min character/theme essay (exam conditions)</div></div><span class="tt-session-badge badge-paper">TIMED</span></div>
-    <div class="tt-session s-geography"><div class="tt-session-stripe"></div><div class="tt-session-left"><div class="tt-session-time">2:00&#x2013;3:00</div><div class="tt-session-subj">Geography</div><div class="tt-session-topic">Geography Paper 2 timed practice &#x2014; 9-mark extended answer, case study recall</div></div><span class="tt-session-badge badge-paper">TIMED</span></div>
-    <div class="tt-session s-french"><div class="tt-session-stripe"></div><div class="tt-session-left"><div class="tt-session-time">3:00&#x2013;4:00</div><div class="tt-session-subj">French</div><div class="tt-session-topic">History &#x2014; Medicine in Britain: Industrial &amp; Modern periods, NHS, Jenner, Fleming</div></div><span class="tt-session-badge badge-hard">HARD</span></div>
-  </div>
-</div>
-<div class="tt-checklist-new">
-  <div class="tt-checklist-hdr">&#x2705; Week 2 Checklist</div>
-  <div class="tt-check-grid-new">
-    <label class="tt-check-item-new"><input type="checkbox"/> Maths: Iterative methods, probability &amp; statistics revised</label>
-    <label class="tt-check-item-new"><input type="checkbox"/> Maths: Paper 3 past paper completed &amp; marked</label>
-    <label class="tt-check-item-new"><input type="checkbox"/> Biology: 6-mark answer technique &#x2014; structured &amp; correct</label>
-    <label class="tt-check-item-new"><input type="checkbox"/> Biology: All required practicals methods known</label>
-    <label class="tt-check-item-new"><input type="checkbox"/> Chemistry: Moles calculations &#x2014; yield, atom economy, titration</label>
-    <label class="tt-check-item-new"><input type="checkbox"/> Chemistry: All required practicals methods known</label>
-    <label class="tt-check-item-new"><input type="checkbox"/> Physics: All required equations memorised and applied</label>
-    <label class="tt-check-item-new"><input type="checkbox"/> History P2: Extended essay + narrative account technique practised</label>
-    <label class="tt-check-item-new"><input type="checkbox"/> History P3: 8-mark USA question timed practice done</label>
-    <label class="tt-check-item-new"><input type="checkbox"/> English Lit: Quotations memorised for all 4 texts</label>
-    <label class="tt-check-item-new"><input type="checkbox"/> English Lit: Timed Inspector Calls essay completed</label>
-    <label class="tt-check-item-new"><input type="checkbox"/> English Lang P2: Timed compare + non-fiction writing done</label>
-    <label class="tt-check-item-new"><input type="checkbox"/> French: Timed listening paper completed</label>
-    <label class="tt-check-item-new"><input type="checkbox"/> French: Full Paper 4 writing timed paper done</label>
-    <label class="tt-check-item-new"><input type="checkbox"/> Geography: Fieldwork methods + 9-mark technique practised</label>
-    <label class="tt-check-item-new"><input type="checkbox"/> Drama: Set text timed response done</label>
-    <label class="tt-check-item-new"><input type="checkbox"/> Sunday: English Lit Paper 2 completed &amp; marked</label>
-    <label class="tt-check-item-new"><input type="checkbox"/> Sunday: History Paper 2 completed &amp; marked</label>
-    <label class="tt-check-item-new"><input type="checkbox"/> Sunday: Chemistry Paper 2 completed &amp; marked</label>
-  </div>
+<div class="tt-week">
+<div class="tt-week-title">📘 Week 2 <span style="font-size:0.8rem;font-weight:400;color:var(--muted)">Humanities &amp; Languages Focus</span></div>
+<div class="tt-week-sub">Weekday sessions · Mon–Fri · 5:00–8:00 PM</div>
+<div class="tt-day-group">
+<div class="tt-day-label">Monday</div>
+<div class="tt-row">
+<div class="tt-slot humanities"><div class="tt-time">5:00–6:00 PM</div><div class="tt-subject">Geography</div><div class="tt-topic">Living World – Rainforests &amp; Deserts</div></div>
+<div class="tt-slot humanities"><div class="tt-time">6:00–7:00 PM</div><div class="tt-subject">History</div><div class="tt-topic">Superpower Relations &amp; the Cold War</div></div>
+<div class="tt-slot english"><div class="tt-time">7:00–8:00 PM</div><div class="tt-subject">English Literature</div><div class="tt-topic">Worlds and Lives Poetry – key poems &amp; themes</div></div>
 </div>
 </div>
-
+<div class="tt-day-group">
+<div class="tt-day-label">Tuesday</div>
+<div class="tt-row">
+<div class="tt-slot lang"><div class="tt-time">5:00–6:00 PM</div><div class="tt-subject">French</div><div class="tt-topic">Listening Paper practice</div></div>
+<div class="tt-slot math"><div class="tt-time">6:00–7:00 PM</div><div class="tt-subject">Maths</div><div class="tt-topic">Geometry &amp; Trigonometry</div></div>
+<div class="tt-slot science"><div class="tt-time">7:00–8:00 PM</div><div class="tt-subject">Biology</div><div class="tt-topic">Inheritance, Variation &amp; Evolution</div></div>
+</div>
+</div>
+<div class="tt-day-group">
+<div class="tt-day-label">Wednesday</div>
+<div class="tt-row">
+<div class="tt-slot humanities"><div class="tt-time">5:00–6:00 PM</div><div class="tt-subject">History</div><div class="tt-topic">Early Elizabethan England – threats &amp; religious settlement</div></div>
+<div class="tt-slot humanities"><div class="tt-time">6:00–7:00 PM</div><div class="tt-subject">Geography</div><div class="tt-topic">UK Physical Landscapes (Coasts/Rivers)</div></div>
+<div class="tt-slot science"><div class="tt-time">7:00–8:00 PM</div><div class="tt-subject">Chemistry</div><div class="tt-topic">Rate of Reaction &amp; Equilibrium</div></div>
+</div>
+</div>
+<div class="tt-day-group">
+<div class="tt-day-label">Thursday</div>
+<div class="tt-row">
+<div class="tt-slot lang"><div class="tt-time">5:00–6:00 PM</div><div class="tt-subject">French</div><div class="tt-topic">Speaking prep – role play &amp; photo card</div></div>
+<div class="tt-slot english"><div class="tt-time">6:00–7:00 PM</div><div class="tt-subject">English Literature</div><div class="tt-topic">An Inspector Calls – themes, characters &amp; structure</div></div>
+<div class="tt-slot science"><div class="tt-time">7:00–8:00 PM</div><div class="tt-subject">Physics</div><div class="tt-topic">Waves &amp; EM Spectrum</div></div>
+</div>
+</div>
+<div class="tt-day-group">
+<div class="tt-day-label">Friday</div>
+<div class="tt-row">
+<div class="tt-slot math"><div class="tt-time">5:00–6:00 PM</div><div class="tt-subject">Maths</div><div class="tt-topic">Probability &amp; Statistics</div></div>
+<div class="tt-slot humanities"><div class="tt-time">6:00–7:00 PM</div><div class="tt-subject">Geography</div><div class="tt-topic">Urban Issues – case studies</div></div>
+<div class="tt-slot drama"><div class="tt-time">7:00–8:00 PM</div><div class="tt-subject">Drama</div><div class="tt-topic">Component 3 – Set text analysis</div></div>
+</div>
+</div>
+<div class="tt-week-sub" style="margin-top:1.25rem">Saturday session · 9:00 AM–4:00 PM</div>
+<div class="tt-row">
+<div class="tt-slot humanities"><div class="tt-time">9:00–10:30 AM</div><div class="tt-subject">History</div><div class="tt-topic">Medicine in Britain – Industrial &amp; Modern periods</div></div>
+<div class="tt-slot english"><div class="tt-time">10:30–12:00 PM</div><div class="tt-subject">English Language</div><div class="tt-topic">Non-fiction reading skills</div></div>
+<div class="tt-slot break-slot"><div class="tt-time">12:00–1:00 PM</div><div class="tt-subject">LUNCH BREAK</div><div class="tt-topic"></div></div>
+<div class="tt-slot lang"><div class="tt-time">1:00–2:30 PM</div><div class="tt-subject">French</div><div class="tt-topic">Writing Paper practice</div></div>
+<div class="tt-slot science"><div class="tt-time">2:30–4:00 PM</div><div class="tt-subject">Biology</div><div class="tt-topic">Ecology &amp; Ecosystems</div></div>
+</div>
+<div class="tt-week-sub" style="margin-top:1.25rem">Sunday · Practice Papers (exam conditions)</div>
+<div class="tt-sunday">
+<div class="tt-sunday-title">📝 Practice Papers Day</div>
+<div class="tt-papers">
+<div class="tt-paper"><div class="tt-paper-time">9:00–10:30 AM</div><div class="tt-paper-name">English Lit Paper</div><div class="tt-paper-detail">Paper 1 – Macbeth &amp; Christmas Carol (timed 1h45)</div></div>
+<div class="tt-paper"><div class="tt-paper-time">11:00 AM–12:30 PM</div><div class="tt-paper-name">History Paper</div><div class="tt-paper-detail">Paper 1 – Medicine &amp; Western Front (timed 1h15)</div></div>
+<div class="tt-paper"><div class="tt-paper-time">2:00–3:30 PM</div><div class="tt-paper-name">Geography Paper</div><div class="tt-paper-detail">Paper 1 Past Paper (timed 1h30)</div></div>
+<div class="tt-paper"><div class="tt-paper-time">4:00–5:30 PM</div><div class="tt-paper-name">French Paper</div><div class="tt-paper-detail">Full Listening &amp; Reading Papers (timed)</div></div>
+</div>
+<div class="tt-note">Leave a 30-min gap between papers for a break. Mark each paper with the official mark scheme immediately after.</div>
+</div>
+<div class="tt-checklist">
+<div class="tt-checklist-title">✅ Week 2 Checklist</div>
+<div class="tt-check-grid">
+<label class="tt-check-item"><input type="checkbox"/> Geography: Natural hazards, living world &amp; UK landscapes revised</label>
+<label class="tt-check-item"><input type="checkbox"/> Biology: Ecology &amp; ecosystems revised</label>
+<label class="tt-check-item"><input type="checkbox"/> Geography: Urban issues &amp; case studies revised</label>
+<label class="tt-check-item"><input type="checkbox"/> Chemistry: Rate of reaction &amp; equilibrium revised</label>
+<label class="tt-check-item"><input type="checkbox"/> Geography: Map skills practised</label>
+<label class="tt-check-item"><input type="checkbox"/> Physics: Waves &amp; EM spectrum revised</label>
+<label class="tt-check-item"><input type="checkbox"/> History: Superpower Relations &amp; Cold War revised</label>
+<label class="tt-check-item"><input type="checkbox"/> Maths: Geometry &amp; trigonometry covered</label>
+<label class="tt-check-item"><input type="checkbox"/> History: Early Elizabethan England revised</label>
+<label class="tt-check-item"><input type="checkbox"/> Maths: Probability &amp; statistics covered</label>
+<label class="tt-check-item"><input type="checkbox"/> History: Medicine – Industrial &amp; Modern periods revised</label>
+<label class="tt-check-item"><input type="checkbox"/> Drama: Component 3 set text analysis started</label>
+<label class="tt-check-item"><input type="checkbox"/> English Literature: Worlds and Lives poetry revised</label>
+<label class="tt-check-item"><input type="checkbox"/> English Language: Non-fiction reading skills practised</label>
+<label class="tt-check-item"><input type="checkbox"/> English Literature: An Inspector Calls revised</label>
+<label class="tt-check-item"><input type="checkbox"/> French: Listening paper practice completed</label>
+<label class="tt-check-item"><input type="checkbox"/> Biology: Inheritance, variation &amp; evolution revised</label>
+<label class="tt-check-item"><input type="checkbox"/> French: Speaking prep – role play &amp; photo card practised</label>
+<label class="tt-check-item"><input type="checkbox"/> Sunday: English Lit Paper 1 past paper completed &amp; marked</label>
+<label class="tt-check-item"><input type="checkbox"/> French: Writing paper practice completed</label>
+<label class="tt-check-item"><input type="checkbox"/> Sunday: History Paper 1 past paper completed &amp; marked</label>
+<label class="tt-check-item"><input type="checkbox"/> Sunday: Geography Paper 1 past paper completed &amp; marked</label>
+<label class="tt-check-item"><input type="checkbox"/> Sunday: French Listening &amp; Reading papers completed &amp; marked</label>
+</div>
+</div>
+</div>
+</div>
 <!-- WEEK 3 -->
 <div class="tt-panel" id="tt-week3">
-<div class="tt-week-banner">
-  <div class="tt-week-emoji">&#x1F4D5;</div>
-  <div>
-    <div class="tt-week-title-new">Week 3 &#x2014; Final 2 Days: Complete Consolidation</div>
-    <div class="tt-week-subtitle">11&#x2013;12 April &middot; 9:00 AM &#x2013; 4:00 PM (6 hrs each) &middot; Red topics + final mock papers</div>
-  </div>
-</div>
-<div class="tt-day-card">
-  <div class="tt-day-header"><div class="tt-day-name">Friday</div><div class="tt-day-date-badge">11 Apr</div><div class="tt-day-hours">6 hrs</div></div>
-  <div class="tt-sessions">
-    <div class="tt-session s-math"><div class="tt-session-stripe"></div><div class="tt-session-left"><div class="tt-session-time">9:00&#x2013;10:00</div><div class="tt-session-subj">Maths</div><div class="tt-session-topic">Weak topic blitz &#x2014; use your RAG tracker to target all remaining red Maths areas</div></div><span class="tt-session-badge badge-hard">HARD</span></div>
-    <div class="tt-session s-biology"><div class="tt-session-stripe"></div><div class="tt-session-left"><div class="tt-session-time">10:00&#x2013;11:00</div><div class="tt-session-subj">Biology</div><div class="tt-session-topic">Key definitions blitz &#x2014; 40 must-know terms, active recall flashcards</div></div><span class="tt-session-badge badge-hard">HARD</span></div>
-    <div class="tt-session s-chemistry"><div class="tt-session-stripe"></div><div class="tt-session-left"><div class="tt-session-time">11:00&#x2013;12:00</div><div class="tt-session-subj">Chemistry</div><div class="tt-session-topic">Weak topic blitz &#x2014; RAG tracker, all remaining reds, all calculation types</div></div><span class="tt-session-badge badge-hard">HARD</span></div>
-    <div class="tt-session s-break"><div class="tt-session-stripe"></div><div class="tt-session-left"><div class="tt-session-time">12:00&#x2013;1:00</div><div class="tt-session-subj">Lunch</div><div class="tt-session-topic"></div></div><span class="tt-session-badge badge-break">BREAK</span></div>
-    <div class="tt-session s-physics"><div class="tt-session-stripe"></div><div class="tt-session-left"><div class="tt-session-time">1:00&#x2013;2:00</div><div class="tt-session-subj">Physics</div><div class="tt-session-topic">Key equations &#x2014; rapid-fire recall practice, all P1 &amp; P2 equations timed</div></div><span class="tt-session-badge badge-hard">HARD</span></div>
-    <div class="tt-session s-english"><div class="tt-session-stripe"></div><div class="tt-session-left"><div class="tt-session-time">2:00&#x2013;3:00</div><div class="tt-session-subj">English Language</div><div class="tt-session-topic">Creative writing &#x2014; opening &amp; full narrative plan, vocabulary &amp; accuracy check</div></div><span class="tt-session-badge badge-hard">HARD</span></div>
-    <div class="tt-session s-history"><div class="tt-session-stripe"></div><div class="tt-session-left"><div class="tt-session-time">3:00&#x2013;4:00</div><div class="tt-session-subj">History</div><div class="tt-session-topic">All four topic speedrun &#x2014; key dates, names, events, source skills checklist</div></div><span class="tt-session-badge badge-hard">HARD</span></div>
-  </div>
-</div>
-<div class="tt-papers-day">
-  <div class="tt-papers-day-label">&#x1F4DD; Saturday 12 April &#x2014; FINAL Papers Day</div>
-  <div class="tt-papers-day-title">Last day &#x2014; go out strong! Full papers, timed, exam conditions</div>
-  <div class="tt-papers-grid-new">
-    <div class="tt-paper-card-new"><div class="tt-paper-card-new-time">9:00&#x2013;10:45</div><div class="tt-paper-card-new-name">Geography Papers 2 &amp; 3</div><div class="tt-paper-card-new-detail">Urban/economic world + issue evaluation (timed)</div></div>
-    <div class="tt-paper-card-new"><div class="tt-paper-card-new-time">11:15&#x2013;1:00</div><div class="tt-paper-card-new-name">History Paper 3 (USA)</div><div class="tt-paper-card-new-detail">The USA 1954&#x2013;1975 full paper (1h 20m) then mark</div></div>
-    <div class="tt-paper-card-new"><div class="tt-paper-card-new-time">1:45&#x2013;4:00</div><div class="tt-paper-card-new-name">English Lit Paper 2</div><div class="tt-paper-card-new-detail">Inspector Calls, Poetry &amp; Unseen (2h 15m) then mark</div></div>
-  </div>
-  <div class="tt-papers-note-new">&#x1F3C1; You&#x27;ve done it &#x2014; 16 days, 96 hours. Mark every paper, log all scores in the Mock Tracker. You&#x27;re ready.</div>
-</div>
-<div class="tt-checklist-new">
-  <div class="tt-checklist-hdr">&#x1F3C1; Final 2-Day Checklist</div>
-  <div class="tt-check-grid-new">
-    <label class="tt-check-item-new"><input type="checkbox"/> All red RAG topics across every subject addressed</label>
-    <label class="tt-check-item-new"><input type="checkbox"/> Maths: All required topic types practised at least once</label>
-    <label class="tt-check-item-new"><input type="checkbox"/> Biology: 40 key definitions recalled without notes</label>
-    <label class="tt-check-item-new"><input type="checkbox"/> Chemistry: All calculation types done correctly</label>
-    <label class="tt-check-item-new"><input type="checkbox"/> Physics: Every required equation memorised &amp; applied</label>
-    <label class="tt-check-item-new"><input type="checkbox"/> History: All 4 topics &#x2014; key events, names, dates, skills</label>
-    <label class="tt-check-item-new"><input type="checkbox"/> English Language: Creative writing plan &amp; technique ready</label>
-    <label class="tt-check-item-new"><input type="checkbox"/> Saturday: Geography P2+3 past papers completed &amp; marked</label>
-    <label class="tt-check-item-new"><input type="checkbox"/> Saturday: History Paper 3 completed &amp; marked</label>
-    <label class="tt-check-item-new"><input type="checkbox"/> Saturday: English Lit Paper 2 completed &amp; marked</label>
-    <label class="tt-check-item-new"><input type="checkbox"/> All mock scores logged in the Mock Exam Tracker</label>
-    <label class="tt-check-item-new"><input type="checkbox"/> Stationery, ID, exam timetable all ready for exam season &#x1F3AF;</label>
-  </div>
+<div class="tt-week">
+<div class="tt-week-title">📙 Week 3 <span style="font-size:0.8rem;font-weight:400;color:var(--muted)">Maths, Drama &amp; Mixed Review</span></div>
+<div class="tt-week-sub">Weekday sessions · Mon–Fri · 5:00–8:00 PM</div>
+<div class="tt-day-group">
+<div class="tt-day-label">Monday</div>
+<div class="tt-row">
+<div class="tt-slot math"><div class="tt-time">5:00–6:00 PM</div><div class="tt-subject">Maths</div><div class="tt-topic">Quadratics &amp; Simultaneous Equations</div></div>
+<div class="tt-slot english"><div class="tt-time">6:00–7:00 PM</div><div class="tt-subject">English Literature</div><div class="tt-topic">Unseen Poetry technique &amp; annotation</div></div>
+<div class="tt-slot science"><div class="tt-time">7:00–8:00 PM</div><div class="tt-subject">Biology</div><div class="tt-topic">Paper 1 full topic review</div></div>
 </div>
 </div>
-
-<!-- SUBJECTS -->
+<div class="tt-day-group">
+<div class="tt-day-label">Tuesday</div>
+<div class="tt-row">
+<div class="tt-slot drama"><div class="tt-time">5:00–6:00 PM</div><div class="tt-subject">Drama</div><div class="tt-topic">Theatre terminology &amp; practitioner study</div></div>
+<div class="tt-slot humanities"><div class="tt-time">6:00–7:00 PM</div><div class="tt-subject">History</div><div class="tt-topic">The USA 1954–1975 – Civil Rights movement</div></div>
+<div class="tt-slot science"><div class="tt-time">7:00–8:00 PM</div><div class="tt-subject">Chemistry</div><div class="tt-topic">Atmosphere &amp; Using Resources</div></div>
+</div>
+</div>
+<div class="tt-day-group">
+<div class="tt-day-label">Wednesday</div>
+<div class="tt-row">
+<div class="tt-slot math"><div class="tt-time">5:00–6:00 PM</div><div class="tt-subject">Maths</div><div class="tt-topic">Higher – vectors, proof, advanced trig</div></div>
+<div class="tt-slot lang"><div class="tt-time">6:00–7:00 PM</div><div class="tt-subject">French</div><div class="tt-topic">General conversation practice</div></div>
+<div class="tt-slot science"><div class="tt-time">7:00–8:00 PM</div><div class="tt-subject">Physics</div><div class="tt-topic">Space / Paper 2 full review</div></div>
+</div>
+</div>
+<div class="tt-day-group">
+<div class="tt-day-label">Thursday</div>
+<div class="tt-row">
+<div class="tt-slot humanities"><div class="tt-time">5:00–6:00 PM</div><div class="tt-subject">Geography</div><div class="tt-topic">Map skills &amp; fieldwork methodology</div></div>
+<div class="tt-slot english"><div class="tt-time">6:00–7:00 PM</div><div class="tt-subject">English Language</div><div class="tt-topic">Structural analysis &amp; evaluation</div></div>
+<div class="tt-slot drama"><div class="tt-time">7:00–8:00 PM</div><div class="tt-subject">Drama</div><div class="tt-topic">Live theatre analysis – Component 3A</div></div>
+</div>
+</div>
+<div class="tt-day-group">
+<div class="tt-day-label">Friday</div>
+<div class="tt-row">
+<div class="tt-slot math"><div class="tt-time">5:00–6:00 PM</div><div class="tt-subject">Maths</div><div class="tt-topic">Non-calculator skills &amp; mental methods</div></div>
+<div class="tt-slot humanities"><div class="tt-time">6:00–7:00 PM</div><div class="tt-subject">History</div><div class="tt-topic">The USA – Vietnam War &amp; protest movements</div></div>
+<div class="tt-slot english"><div class="tt-time">7:00–8:00 PM</div><div class="tt-subject">English Literature</div><div class="tt-topic">Essay planning &amp; comparison skills</div></div>
+</div>
+</div>
+<div class="tt-week-sub" style="margin-top:1.25rem">Saturday session · 9:00 AM–4:00 PM</div>
+<div class="tt-row">
+<div class="tt-slot humanities"><div class="tt-time">9:00–10:30 AM</div><div class="tt-subject">History</div><div class="tt-topic">Western Front – trenches, RAMC, surgery &amp; source skills</div></div>
+<div class="tt-slot humanities"><div class="tt-time">10:30–12:00 PM</div><div class="tt-subject">Geography</div><div class="tt-topic">Economic World &amp; Resources</div></div>
+<div class="tt-slot break-slot"><div class="tt-time">12:00–1:00 PM</div><div class="tt-subject">LUNCH BREAK</div><div class="tt-topic"></div></div>
+<div class="tt-slot lang"><div class="tt-time">1:00–2:30 PM</div><div class="tt-subject">French</div><div class="tt-topic">Full mock – all four skills</div></div>
+<div class="tt-slot drama"><div class="tt-time">2:30–4:00 PM</div><div class="tt-subject">Drama</div><div class="tt-topic">Portfolio review &amp; Component 3 prep</div></div>
+</div>
+<div class="tt-week-sub" style="margin-top:1.25rem">Sunday · Practice Papers (exam conditions)</div>
+<div class="tt-sunday">
+<div class="tt-sunday-title">📝 Practice Papers Day</div>
+<div class="tt-papers">
+<div class="tt-paper"><div class="tt-paper-time">9:00–10:30 AM</div><div class="tt-paper-name">Maths Paper</div><div class="tt-paper-detail">Calculator Past Paper – Papers 2 &amp; 3 (timed)</div></div>
+<div class="tt-paper"><div class="tt-paper-time">11:00 AM–12:30 PM</div><div class="tt-paper-name">Physics Paper</div><div class="tt-paper-detail">Paper 1 Past Paper (timed 1h45)</div></div>
+<div class="tt-paper"><div class="tt-paper-time">2:00–3:30 PM</div><div class="tt-paper-name">English Language Paper</div><div class="tt-paper-detail">Paper 2 Past Paper (timed 1h45)</div></div>
+<div class="tt-paper"><div class="tt-paper-time">4:00–5:30 PM</div><div class="tt-paper-name">History Paper</div><div class="tt-paper-detail">Paper 2 – Cold War &amp; Early Elizabethan (timed 1h45)</div></div>
+</div>
+<div class="tt-note">Leave a 30-min gap between papers for a break. Mark each paper with the official mark scheme immediately after.</div>
+</div>
+<div class="tt-checklist">
+<div class="tt-checklist-title">✅ Week 3 Checklist</div>
+<div class="tt-check-grid">
+<label class="tt-check-item"><input type="checkbox"/> Maths: Quadratics &amp; simultaneous equations revised</label>
+<label class="tt-check-item"><input type="checkbox"/> History: Source utility &amp; reliability skills practised</label>
+<label class="tt-check-item"><input type="checkbox"/> Maths: Vectors, proof &amp; advanced trig (Higher) revised</label>
+<label class="tt-check-item"><input type="checkbox"/> Geography: Map skills &amp; fieldwork methodology revised</label>
+<label class="tt-check-item"><input type="checkbox"/> Maths: Non-calculator skills practised</label>
+<label class="tt-check-item"><input type="checkbox"/> Geography: Economic world &amp; resources revised</label>
+<label class="tt-check-item"><input type="checkbox"/> English Literature: Unseen poetry technique practised</label>
+<label class="tt-check-item"><input type="checkbox"/> French: General conversation topics practised</label>
+<label class="tt-check-item"><input type="checkbox"/> English Literature: Essay planning &amp; comparison skills practised</label>
+<label class="tt-check-item"><input type="checkbox"/> French: Full mock across all four skills completed</label>
+<label class="tt-check-item"><input type="checkbox"/> English Language: Structural analysis &amp; evaluation practised</label>
+<label class="tt-check-item"><input type="checkbox"/> Drama: Theatre terminology &amp; practitioners revised</label>
+<label class="tt-check-item"><input type="checkbox"/> Biology: Full Paper 1 topic review completed</label>
+<label class="tt-check-item"><input type="checkbox"/> Drama: Live theatre analysis for Component 3 prepared</label>
+<label class="tt-check-item"><input type="checkbox"/> Chemistry: Atmosphere &amp; using resources revised</label>
+<label class="tt-check-item"><input type="checkbox"/> Drama: Portfolio reviewed</label>
+<label class="tt-check-item"><input type="checkbox"/> Physics: Space / Paper 2 full review done</label>
+<label class="tt-check-item"><input type="checkbox"/> History: The USA – Civil Rights movement revised</label>
+<label class="tt-check-item"><input type="checkbox"/> History: The USA – Vietnam War &amp; protest movements revised</label>
+<label class="tt-check-item"><input type="checkbox"/> History: Western Front – trenches, RAMC &amp; surgery revised</label>
+<label class="tt-check-item"><input type="checkbox"/> Sunday: Maths calculator past paper completed &amp; marked</label>
+<label class="tt-check-item"><input type="checkbox"/> Sunday: Physics Paper 1 past paper completed &amp; marked</label>
+<label class="tt-check-item"><input type="checkbox"/> Sunday: English Language Paper 2 past paper completed &amp; marked</label>
+<label class="tt-check-item"><input type="checkbox"/> Sunday: History Paper 2 past paper completed &amp; marked</label>
+</div>
+</div>
+</div>
+</div>
+<!-- WEEK 4 -->
+<div class="tt-panel" id="tt-week4">
+<div class="tt-week">
+<div class="tt-week-title">📕 Week 4 <span style="font-size:0.8rem;font-weight:400;color:var(--muted)">Exam Technique &amp; Final Consolidation</span></div>
+<div class="tt-week-sub">Weekday sessions · Mon–Fri · 5:00–8:00 PM</div>
+<div class="tt-day-group">
+<div class="tt-day-label">Monday</div>
+<div class="tt-row">
+<div class="tt-slot math"><div class="tt-time">5:00–6:00 PM</div><div class="tt-subject">Maths</div><div class="tt-topic">Weak topic targeted revision</div></div>
+<div class="tt-slot science"><div class="tt-time">6:00–7:00 PM</div><div class="tt-subject">Biology</div><div class="tt-topic">Exam technique &amp; 6-mark answers</div></div>
+<div class="tt-slot science"><div class="tt-time">7:00–8:00 PM</div><div class="tt-subject">Chemistry</div><div class="tt-topic">Remaining weak areas</div></div>
+</div>
+</div>
+<div class="tt-day-group">
+<div class="tt-day-label">Tuesday</div>
+<div class="tt-row">
+<div class="tt-slot english"><div class="tt-time">5:00–6:00 PM</div><div class="tt-subject">English Literature</div><div class="tt-topic">Quotation memorisation for all four texts</div></div>
+<div class="tt-slot science"><div class="tt-time">6:00–7:00 PM</div><div class="tt-subject">Physics</div><div class="tt-topic">Key equations &amp; past questions</div></div>
+<div class="tt-slot humanities"><div class="tt-time">7:00–8:00 PM</div><div class="tt-subject">History</div><div class="tt-topic">Extended essay &amp; source analysis practice</div></div>
+</div>
+</div>
+<div class="tt-day-group">
+<div class="tt-day-label">Wednesday</div>
+<div class="tt-row">
+<div class="tt-slot lang"><div class="tt-time">5:00–6:00 PM</div><div class="tt-subject">French</div><div class="tt-topic">Speaking &amp; listening final practice</div></div>
+<div class="tt-slot humanities"><div class="tt-time">6:00–7:00 PM</div><div class="tt-subject">Geography</div><div class="tt-topic">9-mark answer technique</div></div>
+<div class="tt-slot drama"><div class="tt-time">7:00–8:00 PM</div><div class="tt-subject">Drama</div><div class="tt-topic">Final Component 3 preparation</div></div>
+</div>
+</div>
+<div class="tt-day-group">
+<div class="tt-day-label">Thursday</div>
+<div class="tt-row">
+<div class="tt-slot math"><div class="tt-time">5:00–6:00 PM</div><div class="tt-subject">Maths</div><div class="tt-topic">Mixed topic revision &amp; exam tips</div></div>
+<div class="tt-slot english"><div class="tt-time">6:00–7:00 PM</div><div class="tt-subject">English Language</div><div class="tt-topic">Accuracy &amp; vocabulary improvement</div></div>
+<div class="tt-slot science"><div class="tt-time">7:00–8:00 PM</div><div class="tt-subject">Biology</div><div class="tt-topic">Key facts &amp; definitions check</div></div>
+</div>
+</div>
+<div class="tt-day-group">
+<div class="tt-day-label">Friday</div>
+<div class="tt-row">
+<div class="tt-slot science"><div class="tt-time">5:00–6:00 PM</div><div class="tt-subject">Chemistry</div><div class="tt-topic">Weak topic revision + calculations</div></div>
+<div class="tt-slot english"><div class="tt-time">6:00–7:00 PM</div><div class="tt-subject">English Literature</div><div class="tt-topic">Final timed essay practice</div></div>
+<div class="tt-slot science"><div class="tt-time">7:00–8:00 PM</div><div class="tt-subject">Physics</div><div class="tt-topic">Past paper short questions</div></div>
+</div>
+</div>
+<div class="tt-week-sub" style="margin-top:1.25rem">Saturday session · 9:00 AM–4:00 PM</div>
+<div class="tt-row">
+<div class="tt-slot humanities"><div class="tt-time">9:00–10:30 AM</div><div class="tt-subject">History</div><div class="tt-topic">Full revision – all four topics</div></div>
+<div class="tt-slot humanities"><div class="tt-time">10:30–12:00 PM</div><div class="tt-subject">Geography</div><div class="tt-topic">Full mock under timed conditions</div></div>
+<div class="tt-slot break-slot"><div class="tt-time">12:00–1:00 PM</div><div class="tt-subject">LUNCH BREAK</div><div class="tt-topic"></div></div>
+<div class="tt-slot lang"><div class="tt-time">1:00–2:30 PM</div><div class="tt-subject">French</div><div class="tt-topic">Final listening &amp; reading mock</div></div>
+<div class="tt-slot math"><div class="tt-time">2:30–4:00 PM</div><div class="tt-subject">Maths</div><div class="tt-topic">Calculator paper – final mock</div></div>
+</div>
+<div class="tt-week-sub" style="margin-top:1.25rem">Sunday · Practice Papers (exam conditions)</div>
+<div class="tt-sunday">
+<div class="tt-sunday-title">📝 Practice Papers Day</div>
+<div class="tt-papers">
+<div class="tt-paper"><div class="tt-paper-time">9:00–10:30 AM</div><div class="tt-paper-name">English Lit Paper</div><div class="tt-paper-detail">Paper 2 – Inspector Calls, Poetry &amp; Unseen (timed 2h15)</div></div>
+<div class="tt-paper"><div class="tt-paper-time">11:00 AM–12:30 PM</div><div class="tt-paper-name">Biology Paper</div><div class="tt-paper-detail">Paper 2 Past Paper (timed 1h45)</div></div>
+<div class="tt-paper"><div class="tt-paper-time">2:00–3:30 PM</div><div class="tt-paper-name">History Paper</div><div class="tt-paper-detail">Paper 3 – The USA 1954–1975 (timed 1h20)</div></div>
+<div class="tt-paper"><div class="tt-paper-time">4:00–5:30 PM</div><div class="tt-paper-name">Geography Papers</div><div class="tt-paper-detail">Papers 2 &amp; 3 Past Papers (timed)</div></div>
+</div>
+<div class="tt-note">Leave a 30-min gap between papers for a break. Mark each paper with the official mark scheme immediately after.</div>
+</div>
+<div class="tt-checklist">
+<div class="tt-checklist-title">✅ Week 4 Checklist</div>
+<div class="tt-check-grid">
+<label class="tt-check-item"><input type="checkbox"/> Maths: All weak topics targeted and re-revised</label>
+<label class="tt-check-item"><input type="checkbox"/> History: Extended essay &amp; source analysis timed practice done</label>
+<label class="tt-check-item"><input type="checkbox"/> Maths: Final calculator mock completed &amp; marked</label>
+<label class="tt-check-item"><input type="checkbox"/> Geography: Full mock paper completed &amp; marked</label>
+<label class="tt-check-item"><input type="checkbox"/> English Language: Final timed paper completed</label>
+<label class="tt-check-item"><input type="checkbox"/> Geography: 9-mark answer technique practised</label>
+<label class="tt-check-item"><input type="checkbox"/> English Literature: Key quotations memorised for all four texts</label>
+<label class="tt-check-item"><input type="checkbox"/> French: Speaking &amp; listening final mock completed</label>
+<label class="tt-check-item"><input type="checkbox"/> English Literature: Final timed essay completed</label>
+<label class="tt-check-item"><input type="checkbox"/> French: Final reading &amp; listening mock completed</label>
+<label class="tt-check-item"><input type="checkbox"/> Biology: 6-mark extended answer technique practised</label>
+<label class="tt-check-item"><input type="checkbox"/> Drama: Component 3 fully prepared</label>
+<label class="tt-check-item"><input type="checkbox"/> Biology: All key facts &amp; definitions checked</label>
+<label class="tt-check-item"><input type="checkbox"/> Chemistry: All calculations revised</label>
+<label class="tt-check-item"><input type="checkbox"/> Chemistry: Remaining weak areas addressed</label>
+<label class="tt-check-item"><input type="checkbox"/> Physics: All required equations memorised</label>
+<label class="tt-check-item"><input type="checkbox"/> Physics: Past paper short questions completed</label>
+<label class="tt-check-item"><input type="checkbox"/> History: All four topics fully revised</label>
+<label class="tt-check-item"><input type="checkbox"/> Sunday: English Lit Paper 2 past paper completed &amp; marked</label>
+<label class="tt-check-item"><input type="checkbox"/> Sunday: Biology Paper 2 past paper completed &amp; marked</label>
+<label class="tt-check-item"><input type="checkbox"/> Sunday: History Paper 3 – The USA past paper completed &amp; marked</label>
+<label class="tt-check-item"><input type="checkbox"/> Sunday: Geography Papers 2 &amp; 3 completed &amp; marked</label>
+</div>
+</div>
+</div>
+</div>
+<!-- SUBJECT CRITERIA -->
 <div class="tt-panel" id="tt-subjects">
 <p class="section-label" style="margin-bottom:1rem">Revision Criteria by Subject</p>
 <div class="tt-subjects-grid">
-<div class="tt-subject-card"><h4>&#x1F4D6; AQA English Language</h4><ul>
+<div class="tt-subject-card"><h4>📖 AQA English Language</h4><ul>
 <li>Paper 1: List 4 things, language analysis, structural features, evaluation, creative writing</li>
 <li>Paper 2: True/False, summary, language analysis, compare perspectives, non-fiction writing</li>
 <li>Key skills: Inference, language analysis, structural analysis, evaluation, planning</li>
 </ul></div>
-<div class="tt-subject-card"><h4>&#x1F4DA; AQA English Literature</h4><ul>
+<div class="tt-subject-card"><h4>📚 AQA English Literature</h4><ul>
 <li>Macbeth: ambition, guilt, power, appearance vs reality, fate &amp; free will</li>
 <li>A Christmas Carol: redemption, poverty, social responsibility, greed, transformation</li>
 <li>An Inspector Calls: responsibility, class, gender, capitalism vs socialism</li>
-<li>Poetry: Worlds and Lives Anthology &#x2013; compare named poems with unseen</li>
+<li>Poetry: Worlds and Lives Anthology – compare named poems with unseen</li>
 </ul></div>
-<div class="tt-subject-card"><h4>&#x1F52C; AQA Biology</h4><ul>
+<div class="tt-subject-card"><h4>🔬 AQA Biology</h4><ul>
 <li>Paper 1: Cell biology, organisation, infection &amp; response, bioenergetics</li>
 <li>Paper 2: Homeostasis, inheritance, variation, ecology</li>
 <li>Key skills: Required practicals, 6-mark extended answers, data interpretation</li>
 </ul></div>
-<div class="tt-subject-card"><h4>&#x2697;&#xFE0F; AQA Chemistry</h4><ul>
+<div class="tt-subject-card"><h4>⚗️ AQA Chemistry</h4><ul>
 <li>Paper 1: Atomic structure, bonding, quantitative, extraction, chemical changes, energy</li>
 <li>Paper 2: Rate &amp; equilibrium, organic, analysis, atmosphere, using resources</li>
 <li>Key skills: Moles calculations, titrations, yield, empirical formula</li>
 </ul></div>
-<div class="tt-subject-card"><h4>&#x26A1; AQA Physics</h4><ul>
+<div class="tt-subject-card"><h4>⚡ AQA Physics</h4><ul>
 <li>Paper 1: Energy, electricity, particle model, atomic structure</li>
 <li>Paper 2: Forces, waves, magnetism, space (separate only)</li>
 <li>Key: Memorise all required equations listed in specification</li>
 </ul></div>
-<div class="tt-subject-card"><h4>&#x1F30D; AQA Geography</h4><ul>
+<div class="tt-subject-card"><h4>🌍 AQA Geography</h4><ul>
 <li>Paper 1: Natural hazards, living world, physical landscapes</li>
 <li>Paper 2: Urban issues, economic world, resource management</li>
 <li>Paper 3: Issue evaluation (pre-released), fieldwork</li>
 <li>Key skills: OS maps, graphs, data interpretation, 9-mark extended answers</li>
 </ul></div>
-<div class="tt-subject-card"><h4>&#x1F1EB;&#x1F1F7; AQA French</h4><ul>
-<li>Paper 1: Listening (25%) &#x2013; audio extracts, multiple choice, gap fill</li>
-<li>Paper 2: Reading (25%) &#x2013; vocabulary, translation French&#x2192;English</li>
-<li>Paper 3: Speaking (25%) &#x2013; role play, photo card, general conversation</li>
-<li>Paper 4: Writing (25%) &#x2013; message, structured question, translation English&#x2192;French</li>
+<div class="tt-subject-card"><h4>🇫🇷 AQA French</h4><ul>
+<li>Paper 1: Listening (25%) – audio extracts, multiple choice, gap fill</li>
+<li>Paper 2: Reading (25%) – vocabulary, translation French→English</li>
+<li>Paper 3: Speaking (25%) – role play, photo card, general conversation</li>
+<li>Paper 4: Writing (25%) – message, structured question, translation English→French</li>
 </ul></div>
-<div class="tt-subject-card"><h4>&#x1F3AD; OCR Drama</h4><ul>
-<li>Component 1: Devising Drama (40%) &#x2013; create, perform, portfolio</li>
-<li>Component 2: Performance from Text (20%) &#x2013; two scripted extracts</li>
-<li>Component 3: Theatre Makers in Practice (40%) &#x2013; live theatre analysis, set text interpretation</li>
+<div class="tt-subject-card"><h4>🎭 OCR Drama</h4><ul>
+<li>Component 1: Devising Drama (40%) – create, perform, portfolio</li>
+<li>Component 2: Performance from Text (20%) – two scripted extracts</li>
+<li>Component 3: Theatre Makers in Practice (40%) – live theatre analysis, set text interpretation</li>
 <li>Key concepts: Stanislavski, Brecht, staging types, proxemics, status</li>
 </ul></div>
-<div class="tt-subject-card"><h4>&#x1F522; Edexcel Maths</h4><ul>
+<div class="tt-subject-card"><h4>🔢 Edexcel Maths</h4><ul>
 <li>Paper 1: Non-Calculator (33%)</li>
 <li>Papers 2 &amp; 3: Calculator (33% each)</li>
 <li>Topics: Number, algebra, graphs, ratio, geometry, probability, statistics</li>
 <li>Higher only: vectors, calculus, advanced trig, proof</li>
 </ul></div>
-<div class="tt-subject-card"><h4>&#x1F4DC; Edexcel History</h4><ul>
-<li>Paper 1: Medicine in Britain c.1250&#x2013;present + Western Front (30%)</li>
-<li>Paper 2: Cold War 1941&#x2013;1991 + Early Elizabethan England 1558&#x2013;1588 (40%)</li>
-<li>Paper 3: The USA 1954&#x2013;1975 (30%)</li>
+<div class="tt-subject-card"><h4>📜 Edexcel History</h4><ul>
+<li>Paper 1: Medicine in Britain c.1250–present + Western Front (30%)</li>
+<li>Paper 2: Cold War 1941–1991 + Early Elizabethan England 1558–1588 (40%)</li>
+<li>Paper 3: The USA 1954–1975 (30%)</li>
 <li>Key skills: Source analysis (utility, reliability, provenance), narrative accounts, essays</li>
 </ul></div>
 </div>
@@ -1551,12 +1289,13 @@ body.dark-mode .badge-paper { color: #2dd4bf; border-color: rgba(45,212,191,0.3)
 <div class="tt-panel" id="tt-tips">
 <p class="section-label" style="margin-bottom:1rem">Revision Tips &amp; Strategies</p>
 <div class="tt-tips">
-<div class="tt-tip"><h4>&#x1F9E0; Active Recall</h4><p>Instead of re-reading notes, test yourself using flashcards, past paper questions, or self-quizzing. This is the most effective revision technique.</p></div>
-<div class="tt-tip"><h4>&#x1F501; Spaced Repetition</h4><p>Revisit topics after 1 day, 3 days, then a week. This forces your brain to strengthen memory pathways over time.</p></div>
-<div class="tt-tip"><h4>&#x1F4DD; Past Papers (Sundays)</h4><p>Complete every Sunday paper under strict timed, exam conditions &#x2014; no notes, no phone. Mark immediately using official mark schemes and log your score.</p></div>
-<div class="tt-tip"><h4>&#x1F345; Pomodoro Technique</h4><p>Study for 25 minutes then take a 5-minute break. After 4 sessions take a 20-minute break. Maintains focus throughout weekday sessions.</p></div>
-<div class="tt-tip"><h4>&#x1F4CB; Exam Command Words</h4><p>Know exactly what "describe", "explain", "evaluate", "analyse", "compare", and "assess" mean in each of your specific subjects.</p></div>
-<div class="tt-tip"><h4>&#x1F4A4; Look After Yourself</h4><p>Sleep 8&#x2013;9 hours. Exercise regularly. Eat well. Your brain consolidates memory during sleep &#x2014; revision without sleep is significantly less effective.</p></div>
+<div class="tt-tip"><h4>🧠 Active Recall</h4><p>Instead of re-reading notes, test yourself using flashcards, past paper questions, or self-quizzing. This is the most effective revision technique.</p></div>
+<div class="tt-tip"><h4>🔁 Spaced Repetition</h4><p>Revisit topics after 1 day, 3 days, then a week. This forces your brain to strengthen memory pathways over time.</p></div>
+<div class="tt-tip"><h4>📝 Past Papers (Sundays)</h4><p>Complete every Sunday paper under strict timed, exam conditions — no notes, no phone. Mark immediately using official mark schemes and log your score.</p></div>
+<div class="tt-tip"><h4>🍅 Pomodoro Technique</h4><p>Study for 25 minutes then take a 5-minute break. After 4 sessions take a 20-minute break. Maintains focus throughout weekday sessions.</p></div>
+<div class="tt-tip"><h4>📋 Exam Command Words</h4><p>Know exactly what "describe", "explain", "evaluate", "analyse", "compare", and "assess" mean in each of your specific subjects.</p></div>
+<div class="tt-tip"><h4>💤 Look After Yourself</h4><p>Sleep 8–9 hours. Exercise regularly. Eat well. Your brain consolidates memory during sleep — revision without sleep is significantly less effective.</p></div>
+</div>
 </div>
 </div>
 <!-- ══════════ MOCK EXAMS PAGE ══════════ -->
@@ -2084,7 +1823,7 @@ function showPage(id, btn) {
 
 function showTTPanel(id, tab) {
   document.querySelectorAll('.tt-panel').forEach(p => p.classList.remove('active'));
-  document.querySelectorAll('.tt-tab, .tt-nav-btn').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tt-tab').forEach(t => t.classList.remove('active'));
   document.getElementById('tt-' + id).classList.add('active');
   if (tab) tab.classList.add('active');
 }
