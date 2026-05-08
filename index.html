@@ -630,6 +630,11 @@ body {
 .exam-entry.pm .exam-entry-slot{color:rgba(255,255,255,0.75)}
 .exam-entry.pm .exam-entry-subject{color:#fff}
 .exam-entry.pm .exam-entry-detail{color:rgba(255,255,255,0.85)}
+.exam-entry.done{background:#15803d !important;border:2px solid #166534 !important}
+.exam-entry.done .exam-entry-slot{color:rgba(255,255,255,0.75) !important}
+.exam-entry.done .exam-entry-subject{color:#fff !important}
+.exam-entry.done .exam-entry-detail{color:rgba(255,255,255,0.85) !important}
+.exam-entry.done::after{content:'✓ Done';display:block;font-size:0.65rem;font-weight:900;letter-spacing:0.08em;text-transform:uppercase;color:rgba(255,255,255,0.7);margin-top:0.2rem}
 .exam-entry.holiday{background:var(--surface2);border:1px solid var(--border)}
 .exam-entry.holiday .exam-entry-slot{color:var(--faint)}
 .exam-entry.holiday .exam-entry-subject{color:var(--muted)}
@@ -1168,7 +1173,6 @@ body {
 </div>
 <div class="exam-intro">
 <strong>⚠️ Important:</strong> All candidates must be available up to and including <strong>Thursday 24th June 2026</strong> (contingency day) in case an awarding body needs to reschedule an exam.
-     |  <strong>F</strong> = Foundation tier  ·  <strong>H</strong> = Higher tier
   </div>
 <!-- WEEK 1 -->
 <div class="exam-week">
@@ -1197,7 +1201,7 @@ body {
 <div class="exam-day">
 <div class="exam-day-label">Friday</div>
 <div class="exam-day-date">8 May</div>
-<div class="exam-entry pm"><div class="exam-entry-slot">PM</div><div class="exam-entry-subject">Drama</div><div class="exam-entry-detail">Paper 1 — 1h 30m</div></div>
+<div class="exam-entry pm" data-exam-date="2026-05-08T13:00:00"><div class="exam-entry-slot">PM</div><div class="exam-entry-subject">Drama</div><div class="exam-entry-detail">Paper 1 — 1h 30m</div></div>
 </div>
 </div>
 </div>
@@ -1208,31 +1212,31 @@ body {
 <div class="exam-day">
 <div class="exam-day-label">Monday</div>
 <div class="exam-day-date">11 May</div>
-<div class="exam-entry"><div class="exam-entry-slot">AM</div><div class="exam-entry-subject">English Literature</div><div class="exam-entry-detail">Paper 1 — 1h 45m</div></div>
+<div class="exam-entry" data-exam-date="2026-05-11T09:00:00"><div class="exam-entry-slot">AM</div><div class="exam-entry-subject">English Literature</div><div class="exam-entry-detail">Paper 1 — 1h 45m</div></div>
 
 </div>
 <div class="exam-day">
 <div class="exam-day-label">Tuesday</div>
 <div class="exam-day-date">12 May</div>
 
-<div class="exam-entry pm"><div class="exam-entry-slot">PM</div><div class="exam-entry-subject">Biology</div><div class="exam-entry-detail">Paper 1 — F: 1h 15m / H: 1h 45m</div></div>
+<div class="exam-entry pm" data-exam-date="2026-05-12T13:00:00"><div class="exam-entry-slot">PM</div><div class="exam-entry-subject">Biology</div><div class="exam-entry-detail">Paper 1 — 1h 45m</div></div>
 </div>
 <div class="exam-day">
 <div class="exam-day-label">Wednesday</div>
 <div class="exam-day-date">13 May</div>
-<div class="exam-entry"><div class="exam-entry-slot">AM</div><div class="exam-entry-subject">Geography</div><div class="exam-entry-detail">Paper 1 — 1h 30m</div></div>
+<div class="exam-entry" data-exam-date="2026-05-13T09:00:00"><div class="exam-entry-slot">AM</div><div class="exam-entry-subject">Geography</div><div class="exam-entry-detail">Paper 1 — 1h 30m</div></div>
 
 </div>
 <div class="exam-day">
 <div class="exam-day-label">Thursday</div>
 <div class="exam-day-date">14 May</div>
-<div class="exam-entry"><div class="exam-entry-slot">AM</div><div class="exam-entry-subject">Mathematics</div><div class="exam-entry-detail">Paper 1 Non-Calc — 1h 30m</div></div>
+<div class="exam-entry" data-exam-date="2026-05-14T09:00:00"><div class="exam-entry-slot">AM</div><div class="exam-entry-subject">Mathematics</div><div class="exam-entry-detail">Paper 1 Non-Calc — 1h 30m</div></div>
 
 </div>
 <div class="exam-day">
 <div class="exam-day-label">Friday</div>
 <div class="exam-day-date">15 May</div>
-<div class="exam-entry"><div class="exam-entry-slot">AM</div><div class="exam-entry-subject">History</div><div class="exam-entry-detail">Paper 1 — 1h 20m</div></div>
+<div class="exam-entry" data-exam-date="2026-05-15T09:00:00"><div class="exam-entry-slot">AM</div><div class="exam-entry-subject">History</div><div class="exam-entry-detail">Paper 1 — 1h 20m</div></div>
 
 </div>
 </div>
@@ -1244,25 +1248,25 @@ body {
 <div class="exam-day">
 <div class="exam-day-label">Monday</div>
 <div class="exam-day-date">18 May</div>
-<div class="exam-entry"><div class="exam-entry-slot">AM</div><div class="exam-entry-subject">Chemistry</div><div class="exam-entry-detail">Paper 1 — F: 1h 15m / H: 1h 45m</div></div>
+<div class="exam-entry" data-exam-date="2026-05-18T09:00:00"><div class="exam-entry-slot">AM</div><div class="exam-entry-subject">Chemistry</div><div class="exam-entry-detail">Paper 1 — 1h 45m</div></div>
 
 </div>
 <div class="exam-day">
 <div class="exam-day-label">Tuesday</div>
 <div class="exam-day-date">19 May</div>
-<div class="exam-entry"><div class="exam-entry-slot">AM</div><div class="exam-entry-subject">English Literature</div><div class="exam-entry-detail">Modern Texts &amp; Poetry — 2h 15m</div></div>
+<div class="exam-entry" data-exam-date="2026-05-19T09:00:00"><div class="exam-entry-slot">AM</div><div class="exam-entry-subject">English Literature</div><div class="exam-entry-detail">Modern Texts &amp; Poetry — 2h 15m</div></div>
 
 </div>
 <div class="exam-day">
 <div class="exam-day-label">Wednesday</div>
 <div class="exam-day-date">20 May</div>
-<div class="exam-entry"><div class="exam-entry-slot">AM</div><div class="exam-entry-subject">French L&amp;R</div><div class="exam-entry-detail">F: 35m &amp; 45m / H: 45m &amp; 1h</div></div>
+<div class="exam-entry" data-exam-date="2026-05-20T09:00:00"><div class="exam-entry-slot">AM</div><div class="exam-entry-subject">French L&amp;R</div><div class="exam-entry-detail">45m &amp; 1h</div></div>
 
 </div>
 <div class="exam-day">
 <div class="exam-day-label">Thursday</div>
 <div class="exam-day-date">21 May</div>
-<div class="exam-entry"><div class="exam-entry-slot">AM</div><div class="exam-entry-subject">English Language</div><div class="exam-entry-detail">Paper 1 — 1h 45m</div></div>
+<div class="exam-entry" data-exam-date="2026-05-21T09:00:00"><div class="exam-entry-slot">AM</div><div class="exam-entry-subject">English Language</div><div class="exam-entry-detail">Paper 1 — 1h 45m</div></div>
 
 </div>
 <div class="exam-day">
@@ -1287,26 +1291,26 @@ body {
 <div class="exam-day">
 <div class="exam-day-label">Tuesday</div>
 <div class="exam-day-date">2 Jun</div>
-<div class="exam-entry"><div class="exam-entry-slot">AM</div><div class="exam-entry-subject">Physics</div><div class="exam-entry-detail">Paper 1 — F: 1h 15m / H: 1h 45m</div></div>
+<div class="exam-entry" data-exam-date="2026-06-02T09:00:00"><div class="exam-entry-slot">AM</div><div class="exam-entry-subject">Physics</div><div class="exam-entry-detail">Paper 1 — 1h 45m</div></div>
 
 
 </div>
 <div class="exam-day">
 <div class="exam-day-label">Wednesday</div>
 <div class="exam-day-date">3 Jun</div>
-<div class="exam-entry"><div class="exam-entry-slot">AM</div><div class="exam-entry-subject">Mathematics</div><div class="exam-entry-detail">Paper 2 Calc — 1h 30m</div></div>
-<div class="exam-entry pm"><div class="exam-entry-slot">PM</div><div class="exam-entry-subject">Geography</div><div class="exam-entry-detail">Paper 2 — 1h 30m</div></div>
+<div class="exam-entry" data-exam-date="2026-06-03T09:00:00"><div class="exam-entry-slot">AM</div><div class="exam-entry-subject">Mathematics</div><div class="exam-entry-detail">Paper 2 Calc — 1h 30m</div></div>
+<div class="exam-entry pm" data-exam-date="2026-06-03T13:00:00"><div class="exam-entry-slot">PM</div><div class="exam-entry-subject">Geography</div><div class="exam-entry-detail">Paper 2 — 1h 30m</div></div>
 </div>
 <div class="exam-day">
 <div class="exam-day-label">Thursday</div>
 <div class="exam-day-date">4 Jun</div>
-<div class="exam-entry"><div class="exam-entry-slot">AM</div><div class="exam-entry-subject">History</div><div class="exam-entry-detail">Paper 2 — 1h 50m</div></div>
-<div class="exam-entry pm"><div class="exam-entry-slot">PM</div><div class="exam-entry-subject">French Writing</div><div class="exam-entry-detail">F: 1h / H: 1h 15m</div></div>
+<div class="exam-entry" data-exam-date="2026-06-04T09:00:00"><div class="exam-entry-slot">AM</div><div class="exam-entry-subject">History</div><div class="exam-entry-detail">Paper 2 — 1h 50m</div></div>
+<div class="exam-entry pm" data-exam-date="2026-06-04T13:00:00"><div class="exam-entry-slot">PM</div><div class="exam-entry-subject">French Writing</div><div class="exam-entry-detail">1h 15m</div></div>
 </div>
 <div class="exam-day">
 <div class="exam-day-label">Friday</div>
 <div class="exam-day-date">5 Jun</div>
-<div class="exam-entry"><div class="exam-entry-slot">AM</div><div class="exam-entry-subject">English Language</div><div class="exam-entry-detail">Paper 2 — 1h 45m</div></div>
+<div class="exam-entry" data-exam-date="2026-06-05T09:00:00"><div class="exam-entry-slot">AM</div><div class="exam-entry-subject">English Language</div><div class="exam-entry-detail">Paper 2 — 1h 45m</div></div>
 
 </div>
 </div>
@@ -1318,7 +1322,7 @@ body {
 <div class="exam-day">
 <div class="exam-day-label">Monday</div>
 <div class="exam-day-date">8 Jun</div>
-<div class="exam-entry"><div class="exam-entry-slot">AM</div><div class="exam-entry-subject">Biology</div><div class="exam-entry-detail">Paper 2 — F: 1h 15m / H: 1h 45m</div></div>
+<div class="exam-entry" data-exam-date="2026-06-08T09:00:00"><div class="exam-entry-slot">AM</div><div class="exam-entry-subject">Biology</div><div class="exam-entry-detail">Paper 2 — 1h 45m</div></div>
 
 
 </div>
@@ -1326,24 +1330,24 @@ body {
 <div class="exam-day-label">Tuesday</div>
 <div class="exam-day-date">9 Jun</div>
 
-<div class="exam-entry pm"><div class="exam-entry-slot">PM</div><div class="exam-entry-subject">History</div><div class="exam-entry-detail">Paper 3 — 1h 30m</div></div>
+<div class="exam-entry pm" data-exam-date="2026-06-09T13:00:00"><div class="exam-entry-slot">PM</div><div class="exam-entry-subject">History</div><div class="exam-entry-detail">Paper 3 — 1h 30m</div></div>
 </div>
 <div class="exam-day">
 <div class="exam-day-label">Wednesday</div>
 <div class="exam-day-date">10 Jun</div>
-<div class="exam-entry"><div class="exam-entry-slot">AM</div><div class="exam-entry-subject">Mathematics</div><div class="exam-entry-detail">Paper 3 Calc — 1h 30m</div></div>
+<div class="exam-entry" data-exam-date="2026-06-10T09:00:00"><div class="exam-entry-slot">AM</div><div class="exam-entry-subject">Mathematics</div><div class="exam-entry-detail">Paper 3 Calc — 1h 30m</div></div>
 
 </div>
 <div class="exam-day">
 <div class="exam-day-label">Thursday</div>
 <div class="exam-day-date">11 Jun</div>
-<div class="exam-entry"><div class="exam-entry-slot">AM</div><div class="exam-entry-subject">Geography</div><div class="exam-entry-detail">Paper 3 — 1h 30m</div></div>
+<div class="exam-entry" data-exam-date="2026-06-11T09:00:00"><div class="exam-entry-slot">AM</div><div class="exam-entry-subject">Geography</div><div class="exam-entry-detail">Paper 3 — 1h 30m</div></div>
 
 </div>
 <div class="exam-day">
 <div class="exam-day-label">Friday</div>
 <div class="exam-day-date">12 Jun</div>
-<div class="exam-entry"><div class="exam-entry-slot">AM</div><div class="exam-entry-subject">Chemistry</div><div class="exam-entry-detail">Paper 2 — F: 1h 15m / H: 1h 45m</div></div>
+<div class="exam-entry" data-exam-date="2026-06-12T09:00:00"><div class="exam-entry-slot">AM</div><div class="exam-entry-subject">Chemistry</div><div class="exam-entry-detail">Paper 2 — 1h 45m</div></div>
 
 </div>
 </div>
@@ -1355,7 +1359,7 @@ body {
 <div class="exam-day">
 <div class="exam-day-label">Monday</div>
 <div class="exam-day-date">15 Jun</div>
-<div class="exam-entry"><div class="exam-entry-slot">AM</div><div class="exam-entry-subject">Physics</div><div class="exam-entry-detail">Paper 2 — F: 1h 15m / H: 1h 45m</div></div>
+<div class="exam-entry" data-exam-date="2026-06-15T09:00:00"><div class="exam-entry-slot">AM</div><div class="exam-entry-subject">Physics</div><div class="exam-entry-detail">Paper 2 — 1h 45m</div></div>
 
 </div>
 <div class="exam-day">
@@ -3355,6 +3359,25 @@ function closeMockTimer() {
 function mockTimerOverlayClick(e) {
   if (e.target === document.getElementById('mockTimerPanel')) closeMockTimer();
 }
+
+// ════════════════════════════════════════
+// EXAM ENTRY AUTO-GREEN (turns blue→green once exam time has passed)
+// ════════════════════════════════════════
+(function() {
+  function updateExamEntryColors() {
+    const now = new Date();
+    document.querySelectorAll('.exam-entry[data-exam-date]').forEach(function(el) {
+      const examTime = new Date(el.getAttribute('data-exam-date'));
+      if (now >= examTime) {
+        el.classList.add('done');
+      } else {
+        el.classList.remove('done');
+      }
+    });
+  }
+  updateExamEntryColors();
+  setInterval(updateExamEntryColors, 60000); // re-check every minute
+})();
 
 // initMockPage() is called by init() after Supabase data loads
 
